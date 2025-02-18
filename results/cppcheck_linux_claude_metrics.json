@@ -1,0 +1,15 @@
+{
+    "title": "cppcheck linux claude metrics",
+    "accuracy": 0.7352941176470589,
+    "FP_precision": 1.0,
+    "FP_recall": 0.7230769230769231,
+    "TP_precision": 0.14285714285714285,
+    "TP_recall": 1.0,
+    "true_positives": 3,
+    "false_positives": 18,
+    "true_negatives": 47,
+    "false_negatives": 0,
+    "real_bug_num": 3,
+    "total_num": 68,
+    "failed_num": 4
+}

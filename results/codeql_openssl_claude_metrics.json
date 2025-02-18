@@ -1,0 +1,15 @@
+{
+    "title": "codeql openssl claude metrics",
+    "accuracy": 0.72,
+    "FP_precision": 0.9655172413793104,
+    "FP_recall": 0.6829268292682927,
+    "TP_precision": 0.38095238095238093,
+    "TP_recall": 0.8888888888888888,
+    "true_positives": 8,
+    "false_positives": 13,
+    "true_negatives": 28,
+    "false_negatives": 1,
+    "real_bug_num": 9,
+    "total_num": 50,
+    "failed_num": 0
+}

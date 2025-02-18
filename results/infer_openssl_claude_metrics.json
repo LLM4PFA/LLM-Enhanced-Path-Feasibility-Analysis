@@ -1,0 +1,15 @@
+{
+    "title": "infer openssl claude metrics",
+    "accuracy": 0.625,
+    "FP_precision": 1.0,
+    "FP_recall": 0.5384615384615384,
+    "TP_precision": 0.3333333333333333,
+    "TP_recall": 1.0,
+    "true_positives": 3,
+    "false_positives": 6,
+    "true_negatives": 7,
+    "false_negatives": 0,
+    "real_bug_num": 3,
+    "total_num": 16,
+    "failed_num": 0
+}

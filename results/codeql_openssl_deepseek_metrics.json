@@ -1,0 +1,15 @@
+{
+    "title": "codeql openssl deepseek metrics",
+    "accuracy": 0.68,
+    "FP_precision": 0.9310344827586207,
+    "FP_recall": 0.6585365853658537,
+    "TP_precision": 0.3333333333333333,
+    "TP_recall": 0.7777777777777778,
+    "true_positives": 7,
+    "false_positives": 14,
+    "true_negatives": 27,
+    "false_negatives": 2,
+    "real_bug_num": 9,
+    "total_num": 50,
+    "failed_num": 0
+}

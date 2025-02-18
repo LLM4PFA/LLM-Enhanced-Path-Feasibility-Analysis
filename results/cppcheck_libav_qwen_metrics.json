@@ -1,0 +1,15 @@
+{
+    "title": "cppcheck libav qwen metrics",
+    "accuracy": 0.5,
+    "FP_precision": 0.8,
+    "FP_recall": 0.5,
+    "TP_precision": 0.2,
+    "TP_recall": 0.5,
+    "true_positives": 1,
+    "false_positives": 4,
+    "true_negatives": 4,
+    "false_negatives": 1,
+    "real_bug_num": 2,
+    "total_num": 10,
+    "failed_num": 0
+}

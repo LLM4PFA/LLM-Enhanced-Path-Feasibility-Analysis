@@ -1,0 +1,15 @@
+{
+    "title": "codeql openssl qwen metrics",
+    "accuracy": 0.54,
+    "FP_precision": 0.9090909090909091,
+    "FP_recall": 0.4878048780487805,
+    "TP_precision": 0.25,
+    "TP_recall": 0.7777777777777778,
+    "true_positives": 7,
+    "false_positives": 21,
+    "true_negatives": 20,
+    "false_negatives": 2,
+    "real_bug_num": 9,
+    "total_num": 50,
+    "failed_num": 0
+}

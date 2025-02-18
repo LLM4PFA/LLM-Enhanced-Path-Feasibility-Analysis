@@ -1,0 +1,15 @@
+{
+    "title": "codeql openssl gpt4omini metrics",
+    "accuracy": 0.8,
+    "FP_precision": 0.9696969696969697,
+    "FP_recall": 0.7804878048780488,
+    "TP_precision": 0.47058823529411764,
+    "TP_recall": 0.8888888888888888,
+    "true_positives": 8,
+    "false_positives": 9,
+    "true_negatives": 32,
+    "false_negatives": 1,
+    "real_bug_num": 9,
+    "total_num": 50,
+    "failed_num": 0
+}

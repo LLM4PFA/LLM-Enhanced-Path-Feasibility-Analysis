@@ -1,0 +1,15 @@
+{
+    "title": "codeql libav deepseek metrics",
+    "accuracy": 0.5964912280701754,
+    "FP_precision": 1.0,
+    "FP_recall": 0.5818181818181818,
+    "TP_precision": 0.08,
+    "TP_recall": 1.0,
+    "true_positives": 2,
+    "false_positives": 23,
+    "true_negatives": 32,
+    "false_negatives": 0,
+    "real_bug_num": 2,
+    "total_num": 57,
+    "failed_num": 0
+}

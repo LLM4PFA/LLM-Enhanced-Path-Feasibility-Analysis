@@ -1,0 +1,15 @@
+{
+    "title": "codeql linux deepseek metrics",
+    "accuracy": 0.8428571428571429,
+    "FP_precision": 0.9302325581395349,
+    "FP_recall": 0.8333333333333334,
+    "TP_precision": 0.7037037037037037,
+    "TP_recall": 0.8636363636363636,
+    "true_positives": 19,
+    "false_positives": 8,
+    "true_negatives": 40,
+    "false_negatives": 3,
+    "real_bug_num": 22,
+    "total_num": 70,
+    "failed_num": 10
+}

@@ -1,0 +1,15 @@
+{
+    "title": "infer libav qwen metrics",
+    "accuracy": 0.5,
+    "FP_precision": 1.0,
+    "FP_recall": 0.5,
+    "TP_precision": 0.0,
+    "TP_recall": "",
+    "true_positives": 0,
+    "false_positives": 3,
+    "true_negatives": 3,
+    "false_negatives": 0,
+    "real_bug_num": 0,
+    "total_num": 6,
+    "failed_num": 0
+}

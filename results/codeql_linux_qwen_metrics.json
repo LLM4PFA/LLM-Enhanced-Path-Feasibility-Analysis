@@ -1,0 +1,15 @@
+{
+    "title": "codeql linux qwen metrics",
+    "accuracy": 0.8,
+    "FP_precision": 0.9047619047619048,
+    "FP_recall": 0.7916666666666666,
+    "TP_precision": 0.6428571428571429,
+    "TP_recall": 0.8181818181818182,
+    "true_positives": 18,
+    "false_positives": 10,
+    "true_negatives": 38,
+    "false_negatives": 4,
+    "real_bug_num": 22,
+    "total_num": 70,
+    "failed_num": 10
+}

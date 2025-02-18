@@ -1,0 +1,15 @@
+{
+    "title": "codeql libav claude metrics",
+    "accuracy": 0.5789473684210527,
+    "FP_precision": 0.9696969696969697,
+    "FP_recall": 0.5818181818181818,
+    "TP_precision": 0.041666666666666664,
+    "TP_recall": 0.5,
+    "true_positives": 1,
+    "false_positives": 23,
+    "true_negatives": 32,
+    "false_negatives": 1,
+    "real_bug_num": 2,
+    "total_num": 57,
+    "failed_num": 0
+}

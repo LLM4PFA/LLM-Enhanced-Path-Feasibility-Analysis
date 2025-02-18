@@ -1,0 +1,15 @@
+{
+    "title": "codeql linux claude metrics",
+    "accuracy": 0.8571428571428571,
+    "FP_precision": 0.9523809523809523,
+    "FP_recall": 0.8333333333333334,
+    "TP_precision": 0.7142857142857143,
+    "TP_recall": 0.9090909090909091,
+    "true_positives": 20,
+    "false_positives": 8,
+    "true_negatives": 40,
+    "false_negatives": 2,
+    "real_bug_num": 22,
+    "total_num": 70,
+    "failed_num": 9
+}
