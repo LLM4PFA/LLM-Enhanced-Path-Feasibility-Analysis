@@ -1,0 +1,1419 @@
+[
+    {
+        "prt": "arch_clkdm",
+        "function_call": [
+            "int clkdm_read_wkdep(struct clockdomain *clkdm1, struct clockdomain *clkdm2)\n{\n\tstruct clkdm_dep *cd;\n\tint ret = 0;\n\n\tif (!clkdm1 || !clkdm2)\n\t\treturn -EINVAL;\n\n\tcd = _clkdm_deps_lookup(clkdm2, clkdm1->wkdep_srcs);\n\tif (IS_ERR(cd))\n\t\tret = PTR_ERR(cd);\n\n\tif (!arch_clkdm || !arch_clkdm->clkdm_read_wkdep)\n\t\tret = -EINVAL;\n\n\tif (ret) {\n\t\tpr_debug(\"clockdomain: hardware cannot set/clear wake up of %s when %s wakes up\\n\",\n\t\t\t clkdm1->name, clkdm2->name);\n\t\treturn ret;\n\t}\n\n\t/* XXX It's faster to return the wkdep_usecount */\n\treturn arch_clkdm->clkdm_read_wkdep(clkdm1, clkdm2);\n}"
+        ],
+        "sink": "return arch_clkdm->clkdm_read_wkdep(clkdm1, clkdm2);",
+        "final_sink": "return arch_clkdm->clkdm_read_wkdep(clkdm1, clkdm2);",
+        "source": [
+            "\t\t\tskb_prev = skb;"
+        ],
+        "index": 0
+    },
+    {
+        "prt": "arch_clkdm",
+        "function_call": [
+            "int clkdm_read_sleepdep(struct clockdomain *clkdm1, struct clockdomain *clkdm2)\n{\n\tstruct clkdm_dep *cd;\n\tint ret = 0;\n\n\tif (!clkdm1 || !clkdm2)\n\t\treturn -EINVAL;\n\n\tcd = _clkdm_deps_lookup(clkdm2, clkdm1->sleepdep_srcs);\n\tif (IS_ERR(cd))\n\t\tret = PTR_ERR(cd);\n\n\tif (!arch_clkdm || !arch_clkdm->clkdm_read_sleepdep)\n\t\tret = -EINVAL;\n\n\tif (ret) {\n\t\tpr_debug(\"clockdomain: hardware cannot set/clear sleep dependency affecting %s from %s\\n\",\n\t\t\t clkdm1->name, clkdm2->name);\n\t\treturn ret;\n\t}\n\n\t/* XXX It's faster to return the sleepdep_usecount */\n\treturn arch_clkdm->clkdm_read_sleepdep(clkdm1, clkdm2);\n}"
+        ],
+        "sink": "return arch_clkdm->clkdm_read_sleepdep(clkdm1, clkdm2);",
+        "final_sink": "return arch_clkdm->clkdm_read_sleepdep(clkdm1, clkdm2);",
+        "source": [
+            "\t\ttun_info = skb_tunnel_info(skb);",
+            "\tstruct ip_tunnel_info *tun_info = NULL;"
+        ],
+        "index": 1
+    },
+    {
+        "prt": "name",
+        "function_call": [
+            "int omap_hwmod_parse_module_range(struct omap_hwmod *oh,\n\t\t\t\t  struct device_node *np,\n\t\t\t\t  struct resource *res)\n{\n\tstruct property *prop;\n\tconst char *name;\n\tint err;\n\n\tof_property_for_each_string(np, \"compatible\", prop, name)\n\t\tif (!strncmp(\"ti,sysc-\", name, 8))\n\t\t\tbreak;\n\n\tif (!name)\n\t\treturn -ENOENT;\n\n\terr = of_range_to_resource(np, 0, res);\n\tif (err)\n\t\treturn err;\n\n\tpr_debug(\"omap_hwmod: %s %pOFn at %pR\\n\",\n\t\t oh->name, np, res);\n\n\tif (oh && oh->mpu_rt_idx) {\n\t\tomap_hwmod_fix_mpu_rt_idx(oh, np, res);\n\n\t\treturn 0;\n\t}\n\n\treturn 0;\n}"
+        ],
+        "sink": "if (!strncmp(\"ti,sysc-\", name, 8))",
+        "final_sink": "if (!strncmp(\"ti,sysc-\", name, 8))",
+        "source": [
+            "\t\ttun_info = skb_tunnel_info(skb);",
+            "\tstruct ip_tunnel_info *tun_info = NULL;"
+        ],
+        "index": 2
+    },
+    {
+        "prt": "oh",
+        "function_call": [
+            "int omap_hwmod_parse_module_range(struct omap_hwmod *oh,\n\t\t\t\t  struct device_node *np,\n\t\t\t\t  struct resource *res)\n{\n\tstruct property *prop;\n\tconst char *name;\n\tint err;\n\n\tof_property_for_each_string(np, \"compatible\", prop, name)\n\t\tif (!strncmp(\"ti,sysc-\", name, 8))\n\t\t\tbreak;\n\n\tif (!name)\n\t\treturn -ENOENT;\n\n\terr = of_range_to_resource(np, 0, res);\n\tif (err)\n\t\treturn err;\n\n\tpr_debug(\"omap_hwmod: %s %pOFn at %pR\\n\",\n\t\t oh->name, np, res);\n\n\tif (oh && oh->mpu_rt_idx) {\n\t\tomap_hwmod_fix_mpu_rt_idx(oh, np, res);\n\n\t\treturn 0;\n\t}\n\n\treturn 0;\n}"
+        ],
+        "sink": "oh->name, np, res);",
+        "final_sink": "oh->name, np, res);",
+        "source": [
+            "\ttun_info = skb_tunnel_info(skb);"
+        ],
+        "index": 3
+    },
+    {
+        "prt": "svm",
+        "function_call": [
+            "void __init iotable_init(struct map_desc *io_desc, int nr)\n{\n\tstruct map_desc *md;\n\tstruct vm_struct *vm;\n\tstruct static_vm *svm;\n\n\tif (!nr)\n\t\treturn;\n\n\tsvm = memblock_alloc(sizeof(*svm) * nr, __alignof__(*svm));\n\tif (!svm)\n\t\tpanic(\"%s: Failed to allocate %zu bytes align=0x%zx\\n\",\n\t\t      __func__, sizeof(*svm) * nr, __alignof__(*svm));\n\n\tfor (md = io_desc; nr; md++, nr--) {\n\t\tcreate_mapping(md);\n\n\t\tvm = &svm->vm;\n\t\tvm->addr = (void *)(md->virtual & PAGE_MASK);\n\t\tvm->size = PAGE_ALIGN(md->length + (md->virtual & ~PAGE_MASK));\n\t\tvm->phys_addr = __pfn_to_phys(md->pfn);\n\t\tvm->flags = VM_IOREMAP | VM_ARM_STATIC_MAPPING;\n\t\tvm->flags |= VM_ARM_MTYPE(md->type);\n\t\tvm->caller = iotable_init;\n\t\tadd_static_vm_early(svm++);\n\t}\n}"
+        ],
+        "sink": "__func__, sizeof(*svm) * nr, __alignof__(*svm));",
+        "final_sink": "__func__, sizeof(*svm) * nr, __alignof__(*svm));",
+        "source": [
+            "\tskb = nlmsg_new(mroute_msgsize(false, mrt->maxvif), GFP_KERNEL);",
+            "\t\tskb = napi_skb_cache_get();",
+            "\t\tskb = kmem_cache_alloc_node(cache, gfp_mask & ~GFP_DMA, node);",
+            "\tskb = nc->skb_cache[--nc->skb_count];",
+            "\tstruct sk_buff *skb = NULL;"
+        ],
+        "index": 4
+    },
+    {
+        "prt": "svm",
+        "function_call": [
+            "void __init vm_reserve_area_early(unsigned long addr, unsigned long size,\n\t\t\t\t  void *caller)\n{\n\tstruct vm_struct *vm;\n\tstruct static_vm *svm;\n\n\tsvm = memblock_alloc(sizeof(*svm), __alignof__(*svm));\n\tif (!svm)\n\t\tpanic(\"%s: Failed to allocate %zu bytes align=0x%zx\\n\",\n\t\t      __func__, sizeof(*svm), __alignof__(*svm));\n\n\tvm = &svm->vm;\n\tvm->addr = (void *)addr;\n\tvm->size = size;\n\tvm->flags = VM_IOREMAP | VM_ARM_EMPTY_MAPPING;\n\tvm->caller = caller;\n\tadd_static_vm_early(svm);\n}"
+        ],
+        "sink": "__func__, sizeof(*svm), __alignof__(*svm));",
+        "final_sink": "__func__, sizeof(*svm), __alignof__(*svm));",
+        "source": [
+            "\tskb = nlmsg_new(igmpmsg_netlink_msgsize(payloadlen), GFP_ATOMIC);",
+            "\t\tskb = napi_skb_cache_get();",
+            "\t\tskb = kmem_cache_alloc_node(cache, gfp_mask & ~GFP_DMA, node);",
+            "\tskb = nc->skb_cache[--nc->skb_count];"
+        ],
+        "index": 5
+    },
+    {
+        "prt": "nan",
+        "function_call": [
+            "static u32\nvfp_propagate_nan(struct vfp_double *vdd, struct vfp_double *vdn,\n\t\t  struct vfp_double *vdm, u32 fpscr)\n{\n\tstruct vfp_double *nan;\n\tint tn, tm = 0;\n\n\ttn = vfp_double_type(vdn);\n\n\tif (vdm)\n\t\ttm = vfp_double_type(vdm);\n\n\tif (fpscr & FPSCR_DEFAULT_NAN)\n\t\t/*\n\t\t * Default NaN mode - always returns a quiet NaN\n\t\t */\n\t\tnan = &vfp_double_default_qnan;\n\telse {\n\t\t/*\n\t\t * Contemporary mode - select the first signalling\n\t\t * NAN, or if neither are signalling, the first\n\t\t * quiet NAN.\n\t\t */\n\t\tif (tn == VFP_SNAN || (tm != VFP_SNAN && tn == VFP_QNAN))\n\t\t\tnan = vdn;\n\t\telse\n\t\t\tnan = vdm;\n\t\t/*\n\t\t * Make the NaN quiet.\n\t\t */\n\t\tnan->significand |= VFP_DOUBLE_SIGNIFICAND_QNAN;\n\t}\n\n\t*vdd = *nan;\n\n\t/*\n\t * If one was a signalling NAN, raise invalid operation.\n\t */\n\treturn tn == VFP_SNAN || tm == VFP_SNAN ? FPSCR_IOC : VFP_NAN_FLAG;\n}"
+        ],
+        "sink": "nan->significand |= VFP_DOUBLE_SIGNIFICAND_QNAN;",
+        "final_sink": "nan->significand |= VFP_DOUBLE_SIGNIFICAND_QNAN;",
+        "source": [
+            "\tskb = nlmsg_new(mroute_msgsize(mfc->_c.mfc_parent >= MAXVIFS,",
+            "\t\tskb = napi_skb_cache_get();",
+            "\t\tskb = kmem_cache_alloc_node(cache, gfp_mask & ~GFP_DMA, node);",
+            "\tskb = nc->skb_cache[--nc->skb_count];"
+        ],
+        "index": 6
+    },
+    {
+        "prt": "nan",
+        "function_call": [
+            "static u32\nvfp_propagate_nan(struct vfp_double *vdd, struct vfp_double *vdn,\n\t\t  struct vfp_double *vdm, u32 fpscr)\n{\n\tstruct vfp_double *nan;\n\tint tn, tm = 0;\n\n\ttn = vfp_double_type(vdn);\n\n\tif (vdm)\n\t\ttm = vfp_double_type(vdm);\n\n\tif (fpscr & FPSCR_DEFAULT_NAN)\n\t\t/*\n\t\t * Default NaN mode - always returns a quiet NaN\n\t\t */\n\t\tnan = &vfp_double_default_qnan;\n\telse {\n\t\t/*\n\t\t * Contemporary mode - select the first signalling\n\t\t * NAN, or if neither are signalling, the first\n\t\t * quiet NAN.\n\t\t */\n\t\tif (tn == VFP_SNAN || (tm != VFP_SNAN && tn == VFP_QNAN))\n\t\t\tnan = vdn;\n\t\telse\n\t\t\tnan = vdm;\n\t\t/*\n\t\t * Make the NaN quiet.\n\t\t */\n\t\tnan->significand |= VFP_DOUBLE_SIGNIFICAND_QNAN;\n\t}\n\n\t*vdd = *nan;\n\n\t/*\n\t * If one was a signalling NAN, raise invalid operation.\n\t */\n\treturn tn == VFP_SNAN || tm == VFP_SNAN ? FPSCR_IOC : VFP_NAN_FLAG;\n}"
+        ],
+        "sink": "*vdd = *nan;",
+        "final_sink": "*vdd = *nan;",
+        "source": [
+            "\t\tnhe = nexthop_find_by_id(net, entry[i].id);"
+        ],
+        "index": 7
+    },
+    {
+        "prt": "nan",
+        "function_call": [
+            "static u32\nvfp_propagate_nan(struct vfp_single *vsd, struct vfp_single *vsn,\n\t\t  struct vfp_single *vsm, u32 fpscr)\n{\n\tstruct vfp_single *nan;\n\tint tn, tm = 0;\n\n\ttn = vfp_single_type(vsn);\n\n\tif (vsm)\n\t\ttm = vfp_single_type(vsm);\n\n\tif (fpscr & FPSCR_DEFAULT_NAN)\n\t\t/*\n\t\t * Default NaN mode - always returns a quiet NaN\n\t\t */\n\t\tnan = &vfp_single_default_qnan;\n\telse {\n\t\t/*\n\t\t * Contemporary mode - select the first signalling\n\t\t * NAN, or if neither are signalling, the first\n\t\t * quiet NAN.\n\t\t */\n\t\tif (tn == VFP_SNAN || (tm != VFP_SNAN && tn == VFP_QNAN))\n\t\t\tnan = vsn;\n\t\telse\n\t\t\tnan = vsm;\n\t\t/*\n\t\t * Make the NaN quiet.\n\t\t */\n\t\tnan->significand |= VFP_SINGLE_SIGNIFICAND_QNAN;\n\t}\n\n\t*vsd = *nan;\n\n\t/*\n\t * If one was a signalling NAN, raise invalid operation.\n\t */\n\treturn tn == VFP_SNAN || tm == VFP_SNAN ? FPSCR_IOC : VFP_NAN_FLAG;\n}"
+        ],
+        "sink": "nan->significand |= VFP_SINGLE_SIGNIFICAND_QNAN;",
+        "final_sink": "nan->significand |= VFP_SINGLE_SIGNIFICAND_QNAN;",
+        "source": [
+            "\trt = *rtp;",
+            "\trt = ip_route_output_flow(net, &fl4, sk);",
+            "\t\trt = NULL;",
+            "\t\trt = dst_rtable(xfrm_lookup_route(net, &rt->dst,",
+            "\trt = dst_alloc(&ipv4_dst_ops, dev, DST_OBSOLETE_FORCE_CHK,",
+            "\tstruct rtable *rt = __ip_route_output_key(net, flp4);"
+        ],
+        "index": 8
+    },
+    {
+        "prt": "nan",
+        "function_call": [
+            "static u32\nvfp_propagate_nan(struct vfp_single *vsd, struct vfp_single *vsn,\n\t\t  struct vfp_single *vsm, u32 fpscr)\n{\n\tstruct vfp_single *nan;\n\tint tn, tm = 0;\n\n\ttn = vfp_single_type(vsn);\n\n\tif (vsm)\n\t\ttm = vfp_single_type(vsm);\n\n\tif (fpscr & FPSCR_DEFAULT_NAN)\n\t\t/*\n\t\t * Default NaN mode - always returns a quiet NaN\n\t\t */\n\t\tnan = &vfp_single_default_qnan;\n\telse {\n\t\t/*\n\t\t * Contemporary mode - select the first signalling\n\t\t * NAN, or if neither are signalling, the first\n\t\t * quiet NAN.\n\t\t */\n\t\tif (tn == VFP_SNAN || (tm != VFP_SNAN && tn == VFP_QNAN))\n\t\t\tnan = vsn;\n\t\telse\n\t\t\tnan = vsm;\n\t\t/*\n\t\t * Make the NaN quiet.\n\t\t */\n\t\tnan->significand |= VFP_SINGLE_SIGNIFICAND_QNAN;\n\t}\n\n\t*vsd = *nan;\n\n\t/*\n\t * If one was a signalling NAN, raise invalid operation.\n\t */\n\treturn tn == VFP_SNAN || tm == VFP_SNAN ? FPSCR_IOC : VFP_NAN_FLAG;\n}"
+        ],
+        "sink": "*vsd = *nan;",
+        "final_sink": "*vsd = *nan;",
+        "source": [
+            "\trt = *rtp;",
+            "\trt = ip_route_output_flow(net, &fl4, sk);",
+            "\t\trt = NULL;",
+            "\t\trt = dst_rtable(xfrm_lookup_route(net, &rt->dst,",
+            "\trt = dst_alloc(&ipv4_dst_ops, dev, DST_OBSOLETE_FORCE_CHK,",
+            "\tstruct rtable *rt = NULL;",
+            "\tstruct rtable *rt = *rtp;",
+            "\tstruct rtable *rt = __ip_route_output_key(net, flp4);"
+        ],
+        "index": 9
+    },
+    {
+        "prt": "pgtable_alloc",
+        "function_call": [
+            "static void alloc_init_p4d(pgd_t *pgdp, unsigned long addr, unsigned long end,\n\t\t\t   phys_addr_t phys, pgprot_t prot,\n\t\t\t   phys_addr_t (*pgtable_alloc)(int),\n\t\t\t   int flags)\n{\n\tunsigned long next;\n\tpgd_t pgd = READ_ONCE(*pgdp);\n\tp4d_t *p4dp;\n\n\tif (pgd_none(pgd)) {\n\t\tpgdval_t pgdval = PGD_TYPE_TABLE | PGD_TABLE_UXN;\n\t\tphys_addr_t p4d_phys;\n\n\t\tif (flags & NO_EXEC_MAPPINGS)\n\t\t\tpgdval |= PGD_TABLE_PXN;\n\t\tBUG_ON(!pgtable_alloc);\n\t\tp4d_phys = pgtable_alloc(P4D_SHIFT);\n\t\t__pgd_populate(pgdp, p4d_phys, pgdval);\n\t\tpgd = READ_ONCE(*pgdp);\n\t}\n\tBUG_ON(pgd_bad(pgd));\n\n\tp4dp = p4d_set_fixmap_offset(pgdp, addr);\n\tdo {\n\t\tp4d_t old_p4d = READ_ONCE(*p4dp);\n\n\t\tnext = p4d_addr_end(addr, end);\n\n\t\talloc_init_pud(p4dp, addr, next, phys, prot,\n\t\t\t       pgtable_alloc, flags);\n\n\t\tBUG_ON(p4d_val(old_p4d) != 0 &&\n\t\t       p4d_val(old_p4d) != READ_ONCE(p4d_val(*p4dp)));\n\n\t\tphys += next - addr;\n\t} while (p4dp++, addr = next, addr != end);\n\n\tp4d_clear_fixmap();\n}"
+        ],
+        "sink": "p4d_phys = pgtable_alloc(P4D_SHIFT);",
+        "final_sink": "p4d_phys = pgtable_alloc(P4D_SHIFT);",
+        "source": [
+            "\t\tstruct fib_nh_common *nhc = fib_info_nhc(fi, nhsel);"
+        ],
+        "index": 10
+    },
+    {
+        "prt": "regs",
+        "function_call": [
+            "void show_registers(struct pt_regs *regs)\n{\n\tconst int field = 2 * sizeof(unsigned long);\n\n\t__show_regs(regs);\n\tprint_modules();\n\tprintk(\"Process %s (pid: %d, threadinfo=%p, task=%p, tls=%0*lx)\\n\",\n\t       current->comm, current->pid, current_thread_info(), current,\n\t      field, current_thread_info()->tp_value);\n\tif (cpu_has_userlocal) {\n\t\tunsigned long tls;\n\n\t\ttls = read_c0_userlocal();\n\t\tif (tls != current_thread_info()->tp_value)\n\t\t\tprintk(\"*HwTLS: %0*lx\\n\", field, tls);\n\t}\n\n\tshow_stacktrace(current, regs, KERN_DEFAULT, user_mode(regs));\n\tshow_code((void *)regs->cp0_epc, user_mode(regs));\n\tprintk(\"\\n\");\n}"
+        ],
+        "sink": "show_code((void *)regs->cp0_epc, user_mode(regs));",
+        "final_sink": "show_code((void *)regs->cp0_epc, user_mode(regs));",
+        "source": [
+            "\t\t\tdev_out = __ip_dev_find(net, fl4->saddr, false);",
+            "\t\tdev_out = dev_get_by_index_rcu(net, fl4->flowi4_oif);",
+            "\t\tdev_out = net->loopback_dev;",
+            "\t\tdev_out = l3mdev_master_dev_rcu(FIB_RES_DEV(*res)) ? :",
+            "\tdev_out = FIB_RES_DEV(*res);",
+            "\tstruct net_device *dev_out = NULL;"
+        ],
+        "index": 11
+    },
+    {
+        "prt": "cache",
+        "function_call": [
+            "static struct cache *cache_lookup_or_instantiate(struct device_node *node,\n\t\t\t\t\t\t int group_id,\n\t\t\t\t\t\t int level)\n{\n\tstruct cache *cache;\n\n\tcache = cache_lookup_by_node_group(node, group_id);\n\n\tWARN_ONCE(cache && cache->level != level,\n\t\t  \"cache level mismatch on lookup (got %d, expected %d)\\n\",\n\t\t  cache->level, level);\n\n\tif (!cache)\n\t\tcache = cache_do_one_devnode(node, group_id, level);\n\n\treturn cache;\n}"
+        ],
+        "sink": "cache->level, level);",
+        "final_sink": "cache->level, level);",
+        "source": [
+            "\t\t\toldest = fnhe;",
+            "\tstruct fib_nh_exception *fnhe, *oldest = NULL;"
+        ],
+        "index": 12
+    },
+    {
+        "prt": "tbl",
+        "function_call": [
+            "void *iommu_alloc_coherent(struct device *dev, struct iommu_table *tbl,\n\t\t\t   size_t size,\tdma_addr_t *dma_handle,\n\t\t\t   unsigned long mask, gfp_t flag, int node)\n{\n\tvoid *ret = NULL;\n\tdma_addr_t mapping;\n\tunsigned int order;\n\tunsigned int nio_pages, io_order;\n\tstruct page *page;\n\tint tcesize = (1 << tbl->it_page_shift);\n\n\tsize = PAGE_ALIGN(size);\n\torder = get_order(size);\n\n \t/*\n\t * Client asked for way too much space.  This is checked later\n\t * anyway.  It is easier to debug here for the drivers than in\n\t * the tce tables.\n\t */\n\tif (order >= IOMAP_MAX_ORDER) {\n\t\tdev_info(dev, \"iommu_alloc_consistent size too large: 0x%lx\\n\",\n\t\t\t size);\n\t\treturn NULL;\n\t}\n\n\tif (!tbl)\n\t\treturn NULL;\n\n\t/* Alloc enough pages (and possibly more) */\n\tpage = alloc_pages_node(node, flag, order);\n\tif (!page)\n\t\treturn NULL;\n\tret = page_address(page);\n\tmemset(ret, 0, size);\n\n\t/* Set up tces to cover the allocated range */\n\tnio_pages = IOMMU_PAGE_ALIGN(size, tbl) >> tbl->it_page_shift;\n\n\tio_order = get_iommu_order(size, tbl);\n\tmapping = iommu_alloc(dev, tbl, ret, nio_pages, DMA_BIDIRECTIONAL,\n\t\t\t      mask >> tbl->it_page_shift, io_order, 0);\n\tif (mapping == DMA_MAPPING_ERROR) {\n\t\tfree_pages((unsigned long)ret, order);\n\t\treturn NULL;\n\t}\n\n\t*dma_handle = mapping | ((u64)ret & (tcesize - 1));\n\treturn ret;\n}"
+        ],
+        "sink": "int tcesize = (1 << tbl->it_page_shift);",
+        "final_sink": "int tcesize = (1 << tbl->it_page_shift);",
+        "source": [
+            "\t\t\t\tskb = skb->next;",
+            "\t\t\t\tskb = tcp_recv_skb(sk, seq, &offset);",
+            "\twhile ((skb = skb_peek(&sk->sk_receive_queue)) != NULL) {",
+            "\t\tskb = NULL;",
+            "\tstruct sk_buff *skb = list_->next;"
+        ],
+        "index": 13
+    },
+    {
+        "prt": "irq_data",
+        "function_call": [
+            "irq_hw_number_t virq_to_hw(unsigned int virq)\n{\n\tstruct irq_data *irq_data = irq_get_irq_data(virq);\n\treturn WARN_ON(!irq_data) ? 0 : irq_data->hwirq;\n}"
+        ],
+        "sink": "return WARN_ON(!irq_data) ? 0 : irq_data->hwirq;",
+        "final_sink": "return WARN_ON(!irq_data) ? 0 : irq_data->hwirq;",
+        "source": [
+            "\t\t\t\tskb = skb->next;",
+            "\t\t\t\tskb = tcp_recv_skb(sk, seq, &offset);",
+            "\twhile ((skb = skb_peek(&sk->sk_receive_queue)) != NULL) {",
+            "\t\tskb = NULL;",
+            "\tstruct sk_buff *skb = NULL;",
+            "\tstruct sk_buff *skb = list_->next;"
+        ],
+        "index": 14
+    },
+    {
+        "prt": "res",
+        "function_call": [
+            "static void __init pcibios_reserve_legacy_regions(struct pci_bus *bus)\n{\n\tstruct pci_controller *hose = pci_bus_to_host(bus);\n\tresource_size_t\toffset;\n\tstruct resource *res, *pres;\n\tint i;\n\n\tpr_debug(\"Reserving legacy ranges for domain %04x\\n\", pci_domain_nr(bus));\n\n\t/* Check for IO */\n\tif (!(hose->io_resource.flags & IORESOURCE_IO))\n\t\tgoto no_io;\n\toffset = (unsigned long)hose->io_base_virt - _IO_BASE;\n\tres = kzalloc(sizeof(struct resource), GFP_KERNEL);\n\tBUG_ON(res == NULL);\n\tres->name = \"Legacy IO\";\n\tres->flags = IORESOURCE_IO;\n\tres->start = offset;\n\tres->end = (offset + 0xfff) & 0xfffffffful;\n\tpr_debug(\"Candidate legacy IO: %pR\\n\", res);\n\tif (request_resource(&hose->io_resource, res)) {\n\t\tprintk(KERN_DEBUG\n\t\t       \"PCI %04x:%02x Cannot reserve Legacy IO %pR\\n\",\n\t\t       pci_domain_nr(bus), bus->number, res);\n\t\tkfree(res);\n\t}\n\n no_io:\n\t/* Check for memory */\n\tfor (i = 0; i < 3; i++) {\n\t\tpres = &hose->mem_resources[i];\n\t\toffset = hose->mem_offset[i];\n\t\tif (!(pres->flags & IORESOURCE_MEM))\n\t\t\tcontinue;\n\t\tpr_debug(\"hose mem res: %pR\\n\", pres);\n\t\tif ((pres->start - offset) <= 0xa0000 &&\n\t\t    (pres->end - offset) >= 0xbffff)\n\t\t\tbreak;\n\t}\n\tif (i >= 3)\n\t\treturn;\n\tres = kzalloc(sizeof(struct resource), GFP_KERNEL);\n\tBUG_ON(res == NULL);\n\tres->name = \"Legacy VGA memory\";\n\tres->flags = IORESOURCE_MEM;\n\tres->start = 0xa0000 + offset;\n\tres->end = 0xbffff + offset;\n\tpr_debug(\"Candidate VGA memory: %pR\\n\", res);\n\tif (request_resource(pres, res)) {\n\t\tprintk(KERN_DEBUG\n\t\t       \"PCI %04x:%02x Cannot reserve VGA memory %pR\\n\",\n\t\t       pci_domain_nr(bus), bus->number, res);\n\t\tkfree(res);\n\t}\n}"
+        ],
+        "sink": "res->name = \"Legacy IO\";",
+        "final_sink": "res->name = \"Legacy IO\";",
+        "source": [
+            "\t\tskb = tcp_recv_skb(sk, *seq, &offset);",
+            "\twhile ((skb = skb_peek(&sk->sk_receive_queue)) != NULL) {",
+            "\t\tskb = NULL;",
+            "\tstruct sk_buff *skb = list_->next;"
+        ],
+        "index": 15
+    },
+    {
+        "prt": "res",
+        "function_call": [
+            "static void __init pcibios_reserve_legacy_regions(struct pci_bus *bus)\n{\n\tstruct pci_controller *hose = pci_bus_to_host(bus);\n\tresource_size_t\toffset;\n\tstruct resource *res, *pres;\n\tint i;\n\n\tpr_debug(\"Reserving legacy ranges for domain %04x\\n\", pci_domain_nr(bus));\n\n\t/* Check for IO */\n\tif (!(hose->io_resource.flags & IORESOURCE_IO))\n\t\tgoto no_io;\n\toffset = (unsigned long)hose->io_base_virt - _IO_BASE;\n\tres = kzalloc(sizeof(struct resource), GFP_KERNEL);\n\tBUG_ON(res == NULL);\n\tres->name = \"Legacy IO\";\n\tres->flags = IORESOURCE_IO;\n\tres->start = offset;\n\tres->end = (offset + 0xfff) & 0xfffffffful;\n\tpr_debug(\"Candidate legacy IO: %pR\\n\", res);\n\tif (request_resource(&hose->io_resource, res)) {\n\t\tprintk(KERN_DEBUG\n\t\t       \"PCI %04x:%02x Cannot reserve Legacy IO %pR\\n\",\n\t\t       pci_domain_nr(bus), bus->number, res);\n\t\tkfree(res);\n\t}\n\n no_io:\n\t/* Check for memory */\n\tfor (i = 0; i < 3; i++) {\n\t\tpres = &hose->mem_resources[i];\n\t\toffset = hose->mem_offset[i];\n\t\tif (!(pres->flags & IORESOURCE_MEM))\n\t\t\tcontinue;\n\t\tpr_debug(\"hose mem res: %pR\\n\", pres);\n\t\tif ((pres->start - offset) <= 0xa0000 &&\n\t\t    (pres->end - offset) >= 0xbffff)\n\t\t\tbreak;\n\t}\n\tif (i >= 3)\n\t\treturn;\n\tres = kzalloc(sizeof(struct resource), GFP_KERNEL);\n\tBUG_ON(res == NULL);\n\tres->name = \"Legacy VGA memory\";\n\tres->flags = IORESOURCE_MEM;\n\tres->start = 0xa0000 + offset;\n\tres->end = 0xbffff + offset;\n\tpr_debug(\"Candidate VGA memory: %pR\\n\", res);\n\tif (request_resource(pres, res)) {\n\t\tprintk(KERN_DEBUG\n\t\t       \"PCI %04x:%02x Cannot reserve VGA memory %pR\\n\",\n\t\t       pci_domain_nr(bus), bus->number, res);\n\t\tkfree(res);\n\t}\n}"
+        ],
+        "sink": "res->flags = IORESOURCE_IO;",
+        "final_sink": "res->flags = IORESOURCE_IO;",
+        "source": [
+            "\t\tskb = NULL;",
+            "\tstruct sk_buff *skb = skb_peek(&sk->sk_receive_queue);",
+            "\tstruct sk_buff *skb = list_->next;"
+        ],
+        "index": 16
+    },
+    {
+        "prt": "res",
+        "function_call": [
+            "static void __init pcibios_reserve_legacy_regions(struct pci_bus *bus)\n{\n\tstruct pci_controller *hose = pci_bus_to_host(bus);\n\tresource_size_t\toffset;\n\tstruct resource *res, *pres;\n\tint i;\n\n\tpr_debug(\"Reserving legacy ranges for domain %04x\\n\", pci_domain_nr(bus));\n\n\t/* Check for IO */\n\tif (!(hose->io_resource.flags & IORESOURCE_IO))\n\t\tgoto no_io;\n\toffset = (unsigned long)hose->io_base_virt - _IO_BASE;\n\tres = kzalloc(sizeof(struct resource), GFP_KERNEL);\n\tBUG_ON(res == NULL);\n\tres->name = \"Legacy IO\";\n\tres->flags = IORESOURCE_IO;\n\tres->start = offset;\n\tres->end = (offset + 0xfff) & 0xfffffffful;\n\tpr_debug(\"Candidate legacy IO: %pR\\n\", res);\n\tif (request_resource(&hose->io_resource, res)) {\n\t\tprintk(KERN_DEBUG\n\t\t       \"PCI %04x:%02x Cannot reserve Legacy IO %pR\\n\",\n\t\t       pci_domain_nr(bus), bus->number, res);\n\t\tkfree(res);\n\t}\n\n no_io:\n\t/* Check for memory */\n\tfor (i = 0; i < 3; i++) {\n\t\tpres = &hose->mem_resources[i];\n\t\toffset = hose->mem_offset[i];\n\t\tif (!(pres->flags & IORESOURCE_MEM))\n\t\t\tcontinue;\n\t\tpr_debug(\"hose mem res: %pR\\n\", pres);\n\t\tif ((pres->start - offset) <= 0xa0000 &&\n\t\t    (pres->end - offset) >= 0xbffff)\n\t\t\tbreak;\n\t}\n\tif (i >= 3)\n\t\treturn;\n\tres = kzalloc(sizeof(struct resource), GFP_KERNEL);\n\tBUG_ON(res == NULL);\n\tres->name = \"Legacy VGA memory\";\n\tres->flags = IORESOURCE_MEM;\n\tres->start = 0xa0000 + offset;\n\tres->end = 0xbffff + offset;\n\tpr_debug(\"Candidate VGA memory: %pR\\n\", res);\n\tif (request_resource(pres, res)) {\n\t\tprintk(KERN_DEBUG\n\t\t       \"PCI %04x:%02x Cannot reserve VGA memory %pR\\n\",\n\t\t       pci_domain_nr(bus), bus->number, res);\n\t\tkfree(res);\n\t}\n}"
+        ],
+        "sink": "res->start = offset;",
+        "final_sink": "res->start = offset;",
+        "source": [
+            "\t\tskb = tcp_write_queue_tail(sk);",
+            "\t\t\tskb = tcp_stream_alloc_skb(sk, sk->sk_allocation,",
+            "\tskb = alloc_skb_fclone(MAX_TCP_HEADER, gfp);",
+            "\t\tskb = napi_skb_cache_get();",
+            "\t\tskb = kmem_cache_alloc_node(cache, gfp_mask & ~GFP_DMA, node);",
+            "\tskb = nc->skb_cache[--nc->skb_count];",
+            "\t\tskb = NULL;",
+            "\tstruct sk_buff *skb = READ_ONCE(list_->prev);"
+        ],
+        "index": 17
+    },
+    {
+        "prt": "res",
+        "function_call": [
+            "static void __init pcibios_reserve_legacy_regions(struct pci_bus *bus)\n{\n\tstruct pci_controller *hose = pci_bus_to_host(bus);\n\tresource_size_t\toffset;\n\tstruct resource *res, *pres;\n\tint i;\n\n\tpr_debug(\"Reserving legacy ranges for domain %04x\\n\", pci_domain_nr(bus));\n\n\t/* Check for IO */\n\tif (!(hose->io_resource.flags & IORESOURCE_IO))\n\t\tgoto no_io;\n\toffset = (unsigned long)hose->io_base_virt - _IO_BASE;\n\tres = kzalloc(sizeof(struct resource), GFP_KERNEL);\n\tBUG_ON(res == NULL);\n\tres->name = \"Legacy IO\";\n\tres->flags = IORESOURCE_IO;\n\tres->start = offset;\n\tres->end = (offset + 0xfff) & 0xfffffffful;\n\tpr_debug(\"Candidate legacy IO: %pR\\n\", res);\n\tif (request_resource(&hose->io_resource, res)) {\n\t\tprintk(KERN_DEBUG\n\t\t       \"PCI %04x:%02x Cannot reserve Legacy IO %pR\\n\",\n\t\t       pci_domain_nr(bus), bus->number, res);\n\t\tkfree(res);\n\t}\n\n no_io:\n\t/* Check for memory */\n\tfor (i = 0; i < 3; i++) {\n\t\tpres = &hose->mem_resources[i];\n\t\toffset = hose->mem_offset[i];\n\t\tif (!(pres->flags & IORESOURCE_MEM))\n\t\t\tcontinue;\n\t\tpr_debug(\"hose mem res: %pR\\n\", pres);\n\t\tif ((pres->start - offset) <= 0xa0000 &&\n\t\t    (pres->end - offset) >= 0xbffff)\n\t\t\tbreak;\n\t}\n\tif (i >= 3)\n\t\treturn;\n\tres = kzalloc(sizeof(struct resource), GFP_KERNEL);\n\tBUG_ON(res == NULL);\n\tres->name = \"Legacy VGA memory\";\n\tres->flags = IORESOURCE_MEM;\n\tres->start = 0xa0000 + offset;\n\tres->end = 0xbffff + offset;\n\tpr_debug(\"Candidate VGA memory: %pR\\n\", res);\n\tif (request_resource(pres, res)) {\n\t\tprintk(KERN_DEBUG\n\t\t       \"PCI %04x:%02x Cannot reserve VGA memory %pR\\n\",\n\t\t       pci_domain_nr(bus), bus->number, res);\n\t\tkfree(res);\n\t}\n}"
+        ],
+        "sink": "res->end = (offset + 0xfff) & 0xfffffffful;",
+        "final_sink": "res->end = (offset + 0xfff) & 0xfffffffful;",
+        "source": [
+            "\t\tskb = tcp_write_queue_tail(sk);",
+            "\t\t\tskb = tcp_stream_alloc_skb(sk, sk->sk_allocation,",
+            "\tskb = alloc_skb_fclone(MAX_TCP_HEADER, gfp);",
+            "\t\tskb = napi_skb_cache_get();",
+            "\t\tskb = kmem_cache_alloc_node(cache, gfp_mask & ~GFP_DMA, node);",
+            "\tskb = nc->skb_cache[--nc->skb_count];",
+            "\t\tskb = NULL;",
+            "\tstruct sk_buff *skb = READ_ONCE(list_->prev);"
+        ],
+        "index": 18
+    },
+    {
+        "prt": "res",
+        "function_call": [
+            "static void __init pcibios_reserve_legacy_regions(struct pci_bus *bus)\n{\n\tstruct pci_controller *hose = pci_bus_to_host(bus);\n\tresource_size_t\toffset;\n\tstruct resource *res, *pres;\n\tint i;\n\n\tpr_debug(\"Reserving legacy ranges for domain %04x\\n\", pci_domain_nr(bus));\n\n\t/* Check for IO */\n\tif (!(hose->io_resource.flags & IORESOURCE_IO))\n\t\tgoto no_io;\n\toffset = (unsigned long)hose->io_base_virt - _IO_BASE;\n\tres = kzalloc(sizeof(struct resource), GFP_KERNEL);\n\tBUG_ON(res == NULL);\n\tres->name = \"Legacy IO\";\n\tres->flags = IORESOURCE_IO;\n\tres->start = offset;\n\tres->end = (offset + 0xfff) & 0xfffffffful;\n\tpr_debug(\"Candidate legacy IO: %pR\\n\", res);\n\tif (request_resource(&hose->io_resource, res)) {\n\t\tprintk(KERN_DEBUG\n\t\t       \"PCI %04x:%02x Cannot reserve Legacy IO %pR\\n\",\n\t\t       pci_domain_nr(bus), bus->number, res);\n\t\tkfree(res);\n\t}\n\n no_io:\n\t/* Check for memory */\n\tfor (i = 0; i < 3; i++) {\n\t\tpres = &hose->mem_resources[i];\n\t\toffset = hose->mem_offset[i];\n\t\tif (!(pres->flags & IORESOURCE_MEM))\n\t\t\tcontinue;\n\t\tpr_debug(\"hose mem res: %pR\\n\", pres);\n\t\tif ((pres->start - offset) <= 0xa0000 &&\n\t\t    (pres->end - offset) >= 0xbffff)\n\t\t\tbreak;\n\t}\n\tif (i >= 3)\n\t\treturn;\n\tres = kzalloc(sizeof(struct resource), GFP_KERNEL);\n\tBUG_ON(res == NULL);\n\tres->name = \"Legacy VGA memory\";\n\tres->flags = IORESOURCE_MEM;\n\tres->start = 0xa0000 + offset;\n\tres->end = 0xbffff + offset;\n\tpr_debug(\"Candidate VGA memory: %pR\\n\", res);\n\tif (request_resource(pres, res)) {\n\t\tprintk(KERN_DEBUG\n\t\t       \"PCI %04x:%02x Cannot reserve VGA memory %pR\\n\",\n\t\t       pci_domain_nr(bus), bus->number, res);\n\t\tkfree(res);\n\t}\n}"
+        ],
+        "sink": "res->name = \"Legacy VGA memory\";",
+        "final_sink": "res->name = \"Legacy VGA memory\";",
+        "source": [
+            "\t\tskb = tcp_write_queue_tail(sk);",
+            "\t\t\tskb = tcp_stream_alloc_skb(sk, sk->sk_allocation,",
+            "\tskb = alloc_skb_fclone(MAX_TCP_HEADER, gfp);",
+            "\t\tskb = napi_skb_cache_get();",
+            "\t\tskb = kmem_cache_alloc_node(cache, gfp_mask & ~GFP_DMA, node);",
+            "\tskb = nc->skb_cache[--nc->skb_count];",
+            "\t\tskb = NULL;",
+            "\tstruct sk_buff *skb = READ_ONCE(list_->prev);"
+        ],
+        "index": 19
+    },
+    {
+        "prt": "res",
+        "function_call": [
+            "static void __init pcibios_reserve_legacy_regions(struct pci_bus *bus)\n{\n\tstruct pci_controller *hose = pci_bus_to_host(bus);\n\tresource_size_t\toffset;\n\tstruct resource *res, *pres;\n\tint i;\n\n\tpr_debug(\"Reserving legacy ranges for domain %04x\\n\", pci_domain_nr(bus));\n\n\t/* Check for IO */\n\tif (!(hose->io_resource.flags & IORESOURCE_IO))\n\t\tgoto no_io;\n\toffset = (unsigned long)hose->io_base_virt - _IO_BASE;\n\tres = kzalloc(sizeof(struct resource), GFP_KERNEL);\n\tBUG_ON(res == NULL);\n\tres->name = \"Legacy IO\";\n\tres->flags = IORESOURCE_IO;\n\tres->start = offset;\n\tres->end = (offset + 0xfff) & 0xfffffffful;\n\tpr_debug(\"Candidate legacy IO: %pR\\n\", res);\n\tif (request_resource(&hose->io_resource, res)) {\n\t\tprintk(KERN_DEBUG\n\t\t       \"PCI %04x:%02x Cannot reserve Legacy IO %pR\\n\",\n\t\t       pci_domain_nr(bus), bus->number, res);\n\t\tkfree(res);\n\t}\n\n no_io:\n\t/* Check for memory */\n\tfor (i = 0; i < 3; i++) {\n\t\tpres = &hose->mem_resources[i];\n\t\toffset = hose->mem_offset[i];\n\t\tif (!(pres->flags & IORESOURCE_MEM))\n\t\t\tcontinue;\n\t\tpr_debug(\"hose mem res: %pR\\n\", pres);\n\t\tif ((pres->start - offset) <= 0xa0000 &&\n\t\t    (pres->end - offset) >= 0xbffff)\n\t\t\tbreak;\n\t}\n\tif (i >= 3)\n\t\treturn;\n\tres = kzalloc(sizeof(struct resource), GFP_KERNEL);\n\tBUG_ON(res == NULL);\n\tres->name = \"Legacy VGA memory\";\n\tres->flags = IORESOURCE_MEM;\n\tres->start = 0xa0000 + offset;\n\tres->end = 0xbffff + offset;\n\tpr_debug(\"Candidate VGA memory: %pR\\n\", res);\n\tif (request_resource(pres, res)) {\n\t\tprintk(KERN_DEBUG\n\t\t       \"PCI %04x:%02x Cannot reserve VGA memory %pR\\n\",\n\t\t       pci_domain_nr(bus), bus->number, res);\n\t\tkfree(res);\n\t}\n}"
+        ],
+        "sink": "res->flags = IORESOURCE_MEM;",
+        "final_sink": "res->flags = IORESOURCE_MEM;",
+        "source": [
+            "\t\tskb = tcp_write_queue_tail(sk);",
+            "\t\t\tskb = tcp_stream_alloc_skb(sk, sk->sk_allocation,",
+            "\tskb = alloc_skb_fclone(MAX_TCP_HEADER, gfp);",
+            "\t\tskb = napi_skb_cache_get();",
+            "\t\tskb = kmem_cache_alloc_node(cache, gfp_mask & ~GFP_DMA, node);",
+            "\tskb = nc->skb_cache[--nc->skb_count];",
+            "\t\tskb = NULL;",
+            "\tstruct sk_buff *skb = READ_ONCE(list_->prev);"
+        ],
+        "index": 20
+    },
+    {
+        "prt": "res",
+        "function_call": [
+            "static void __init pcibios_reserve_legacy_regions(struct pci_bus *bus)\n{\n\tstruct pci_controller *hose = pci_bus_to_host(bus);\n\tresource_size_t\toffset;\n\tstruct resource *res, *pres;\n\tint i;\n\n\tpr_debug(\"Reserving legacy ranges for domain %04x\\n\", pci_domain_nr(bus));\n\n\t/* Check for IO */\n\tif (!(hose->io_resource.flags & IORESOURCE_IO))\n\t\tgoto no_io;\n\toffset = (unsigned long)hose->io_base_virt - _IO_BASE;\n\tres = kzalloc(sizeof(struct resource), GFP_KERNEL);\n\tBUG_ON(res == NULL);\n\tres->name = \"Legacy IO\";\n\tres->flags = IORESOURCE_IO;\n\tres->start = offset;\n\tres->end = (offset + 0xfff) & 0xfffffffful;\n\tpr_debug(\"Candidate legacy IO: %pR\\n\", res);\n\tif (request_resource(&hose->io_resource, res)) {\n\t\tprintk(KERN_DEBUG\n\t\t       \"PCI %04x:%02x Cannot reserve Legacy IO %pR\\n\",\n\t\t       pci_domain_nr(bus), bus->number, res);\n\t\tkfree(res);\n\t}\n\n no_io:\n\t/* Check for memory */\n\tfor (i = 0; i < 3; i++) {\n\t\tpres = &hose->mem_resources[i];\n\t\toffset = hose->mem_offset[i];\n\t\tif (!(pres->flags & IORESOURCE_MEM))\n\t\t\tcontinue;\n\t\tpr_debug(\"hose mem res: %pR\\n\", pres);\n\t\tif ((pres->start - offset) <= 0xa0000 &&\n\t\t    (pres->end - offset) >= 0xbffff)\n\t\t\tbreak;\n\t}\n\tif (i >= 3)\n\t\treturn;\n\tres = kzalloc(sizeof(struct resource), GFP_KERNEL);\n\tBUG_ON(res == NULL);\n\tres->name = \"Legacy VGA memory\";\n\tres->flags = IORESOURCE_MEM;\n\tres->start = 0xa0000 + offset;\n\tres->end = 0xbffff + offset;\n\tpr_debug(\"Candidate VGA memory: %pR\\n\", res);\n\tif (request_resource(pres, res)) {\n\t\tprintk(KERN_DEBUG\n\t\t       \"PCI %04x:%02x Cannot reserve VGA memory %pR\\n\",\n\t\t       pci_domain_nr(bus), bus->number, res);\n\t\tkfree(res);\n\t}\n}"
+        ],
+        "sink": "res->start = 0xa0000 + offset;",
+        "final_sink": "res->start = 0xa0000 + offset;",
+        "source": [
+            "\t\tskb = tcp_write_queue_tail(sk);",
+            "\t\t\tskb = tcp_stream_alloc_skb(sk, sk->sk_allocation,",
+            "\tskb = alloc_skb_fclone(MAX_TCP_HEADER, gfp);",
+            "\t\tskb = napi_skb_cache_get();",
+            "\t\tskb = kmem_cache_alloc_node(cache, gfp_mask & ~GFP_DMA, node);",
+            "\tskb = nc->skb_cache[--nc->skb_count];",
+            "\t\tskb = NULL;",
+            "\tstruct sk_buff *skb = READ_ONCE(list_->prev);"
+        ],
+        "index": 21
+    },
+    {
+        "prt": "res",
+        "function_call": [
+            "static void __init pcibios_reserve_legacy_regions(struct pci_bus *bus)\n{\n\tstruct pci_controller *hose = pci_bus_to_host(bus);\n\tresource_size_t\toffset;\n\tstruct resource *res, *pres;\n\tint i;\n\n\tpr_debug(\"Reserving legacy ranges for domain %04x\\n\", pci_domain_nr(bus));\n\n\t/* Check for IO */\n\tif (!(hose->io_resource.flags & IORESOURCE_IO))\n\t\tgoto no_io;\n\toffset = (unsigned long)hose->io_base_virt - _IO_BASE;\n\tres = kzalloc(sizeof(struct resource), GFP_KERNEL);\n\tBUG_ON(res == NULL);\n\tres->name = \"Legacy IO\";\n\tres->flags = IORESOURCE_IO;\n\tres->start = offset;\n\tres->end = (offset + 0xfff) & 0xfffffffful;\n\tpr_debug(\"Candidate legacy IO: %pR\\n\", res);\n\tif (request_resource(&hose->io_resource, res)) {\n\t\tprintk(KERN_DEBUG\n\t\t       \"PCI %04x:%02x Cannot reserve Legacy IO %pR\\n\",\n\t\t       pci_domain_nr(bus), bus->number, res);\n\t\tkfree(res);\n\t}\n\n no_io:\n\t/* Check for memory */\n\tfor (i = 0; i < 3; i++) {\n\t\tpres = &hose->mem_resources[i];\n\t\toffset = hose->mem_offset[i];\n\t\tif (!(pres->flags & IORESOURCE_MEM))\n\t\t\tcontinue;\n\t\tpr_debug(\"hose mem res: %pR\\n\", pres);\n\t\tif ((pres->start - offset) <= 0xa0000 &&\n\t\t    (pres->end - offset) >= 0xbffff)\n\t\t\tbreak;\n\t}\n\tif (i >= 3)\n\t\treturn;\n\tres = kzalloc(sizeof(struct resource), GFP_KERNEL);\n\tBUG_ON(res == NULL);\n\tres->name = \"Legacy VGA memory\";\n\tres->flags = IORESOURCE_MEM;\n\tres->start = 0xa0000 + offset;\n\tres->end = 0xbffff + offset;\n\tpr_debug(\"Candidate VGA memory: %pR\\n\", res);\n\tif (request_resource(pres, res)) {\n\t\tprintk(KERN_DEBUG\n\t\t       \"PCI %04x:%02x Cannot reserve VGA memory %pR\\n\",\n\t\t       pci_domain_nr(bus), bus->number, res);\n\t\tkfree(res);\n\t}\n}"
+        ],
+        "sink": "res->end = 0xbffff + offset;",
+        "final_sink": "res->end = 0xbffff + offset;",
+        "source": [
+            "\t\tskb = tcp_write_queue_tail(sk);",
+            "\t\t\tskb = tcp_stream_alloc_skb(sk, sk->sk_allocation,",
+            "\tskb = alloc_skb_fclone(MAX_TCP_HEADER, gfp);",
+            "\t\tskb = napi_skb_cache_get();",
+            "\t\tskb = kmem_cache_alloc_node(cache, gfp_mask & ~GFP_DMA, node);",
+            "\tskb = nc->skb_cache[--nc->skb_count];",
+            "\t\tskb = NULL;",
+            "\tstruct sk_buff *skb = READ_ONCE(list_->prev);"
+        ],
+        "index": 22
+    },
+    {
+        "prt": "dev",
+        "function_call": [
+            "int pci_device_from_OF_node(struct device_node *node, u8 *bus, u8 *devfn)\n{\n#ifdef CONFIG_PPC_PCI_OF_BUS_MAP\n\tstruct pci_dev *dev = NULL;\n#endif\n\tconst __be32 *reg;\n\tint size;\n\n\t/* Check if it might have a chance to be a PCI device */\n\tif (!pci_find_hose_for_OF_device(node))\n\t\treturn -ENODEV;\n\n\treg = of_get_property(node, \"reg\", &size);\n\tif (!reg || size < 5 * sizeof(u32))\n\t\treturn -ENODEV;\n\n\t*bus = (be32_to_cpup(&reg[0]) >> 16) & 0xff;\n\t*devfn = (be32_to_cpup(&reg[0]) >> 8) & 0xff;\n\n#ifndef CONFIG_PPC_PCI_OF_BUS_MAP\n\treturn 0;\n#else\n\t/* Ok, here we need some tweak. If we have already renumbered\n\t * all busses, we can't rely on the OF bus number any more.\n\t * the pci_to_OF_bus_map is not enough as several PCI busses\n\t * may match the same OF bus number.\n\t */\n\tif (!pci_to_OF_bus_map)\n\t\treturn 0;\n\n\tfor_each_pci_dev(dev)\n\t\tif (pci_to_OF_bus_map[dev->bus->number] == *bus &&\n\t\t\t\tdev->devfn == *devfn) {\n\t\t\t*bus = dev->bus->number;\n\t\t\tpci_dev_put(dev);\n\t\t\treturn 0;\n\t\t}\n\n\treturn -ENODEV;\n#endif // CONFIG_PPC_PCI_OF_BUS_MAP\n}"
+        ],
+        "sink": "if (pci_to_OF_bus_map[dev->bus->number] == *bus &&",
+        "final_sink": "if (pci_to_OF_bus_map[dev->bus->number] == *bus &&",
+        "source": [
+            "\t\tskb = tcp_write_queue_tail(sk);",
+            "\t\t\tskb = tcp_stream_alloc_skb(sk, sk->sk_allocation,",
+            "\tskb = alloc_skb_fclone(MAX_TCP_HEADER, gfp);",
+            "\t\tskb = napi_skb_cache_get();",
+            "\t\tskb = kmem_cache_alloc_node(cache, gfp_mask & ~GFP_DMA, node);",
+            "\tskb = nc->skb_cache[--nc->skb_count];",
+            "\t\tskb = NULL;",
+            "\tstruct sk_buff *skb = READ_ONCE(list_->prev);"
+        ],
+        "index": 23
+    },
+    {
+        "prt": "vcpu",
+        "function_call": [
+            "static inline struct kvmppc_icp *kvmppc_xics_find_server(struct kvm *kvm,\n\t\t\t\t\t\t\t u32 nr)\n{\n\tstruct kvm_vcpu *vcpu = NULL;\n\tunsigned long i;\n\n\tkvm_for_each_vcpu(i, vcpu, kvm) {\n\t\tif (vcpu->arch.icp && nr == vcpu->arch.icp->server_num)\n\t\t\treturn vcpu->arch.icp;\n\t}\n\treturn NULL;\n}"
+        ],
+        "sink": "if (vcpu->arch.icp && nr == vcpu->arch.icp->server_num)",
+        "final_sink": "if (vcpu->arch.icp && nr == vcpu->arch.icp->server_num)",
+        "source": [
+            "\tsaved_clone = clone = kstrdup(val, GFP_USER);"
+        ],
+        "index": 24
+    },
+    {
+        "prt": "vcpu",
+        "function_call": [
+            "static inline struct kvm_vcpu *kvmppc_xive_find_server(struct kvm *kvm, u32 nr)\n{\n\tstruct kvm_vcpu *vcpu = NULL;\n\tunsigned long i;\n\n\tkvm_for_each_vcpu(i, vcpu, kvm) {\n\t\tif (vcpu->arch.xive_vcpu && nr == vcpu->arch.xive_vcpu->server_num)\n\t\t\treturn vcpu;\n\t}\n\treturn NULL;\n}"
+        ],
+        "sink": "if (vcpu->arch.xive_vcpu && nr == vcpu->arch.xive_vcpu->server_num)",
+        "final_sink": "if (vcpu->arch.xive_vcpu && nr == vcpu->arch.xive_vcpu->server_num)",
+        "source": [
+            "\t\trt = dst_rtable(xfrm_lookup_route(net, &rt->dst,",
+            "\trt = dst_alloc(&ipv4_dst_ops, dev, DST_OBSOLETE_FORCE_CHK,",
+            "\trt = ip_route_connect(fl4, nexthop, inet->inet_saddr,",
+            "\t\trt = NULL;",
+            "\trt = NULL;",
+            "\t\trt = __ip_route_output_key(net, fl4);",
+            "\tstruct rtable *rt = __ip_route_output_key(net, flp4);"
+        ],
+        "index": 25
+    },
+    {
+        "prt": "vcpu",
+        "function_call": [
+            "static inline bool kvmppc_xive_vp_in_use(struct kvm *kvm, u32 vp_id)\n{\n\tstruct kvm_vcpu *vcpu = NULL;\n\tunsigned long i;\n\n\tkvm_for_each_vcpu(i, vcpu, kvm) {\n\t\tif (vcpu->arch.xive_vcpu && vp_id == vcpu->arch.xive_vcpu->vp_id)\n\t\t\treturn true;\n\t}\n\treturn false;\n}"
+        ],
+        "sink": "if (vcpu->arch.xive_vcpu && vp_id == vcpu->arch.xive_vcpu->vp_id)",
+        "final_sink": "if (vcpu->arch.xive_vcpu && vp_id == vcpu->arch.xive_vcpu->vp_id)",
+        "source": [
+            "\ttm = __tcp_get_metrics(&saddr, &daddr, net, hash);",
+            "\t\ttm = NULL;",
+            "\tfor (tm = rcu_dereference(tcp_metrics_hash[hash].chain); tm;",
+            "\t     tm = rcu_dereference(tm->tcpm_next)) {"
+        ],
+        "index": 26
+    },
+    {
+        "prt": "vcpu",
+        "function_call": [
+            "static inline struct kvmppc_icp *kvmppc_xics_find_server(struct kvm *kvm,\n\t\t\t\t\t\t\t u32 nr)\n{\n\tstruct kvm_vcpu *vcpu = NULL;\n\tunsigned long i;\n\n\tkvm_for_each_vcpu(i, vcpu, kvm) {\n\t\tif (vcpu->arch.icp && nr == vcpu->arch.icp->server_num)\n\t\t\treturn vcpu->arch.icp;\n\t}\n\treturn NULL;\n}"
+        ],
+        "sink": "if (vcpu->arch.icp && nr == vcpu->arch.icp->server_num)",
+        "final_sink": "if (vcpu->arch.icp && nr == vcpu->arch.icp->server_num)",
+        "source": [
+            "\tskb = tcp_send_head(sk);",
+            "\t\tskb = NULL;",
+            "\tstruct sk_buff *skb = list_->next;"
+        ],
+        "index": 27
+    },
+    {
+        "prt": "vcpu",
+        "function_call": [
+            "static inline struct kvmppc_icp *kvmppc_xics_find_server(struct kvm *kvm,\n\t\t\t\t\t\t\t u32 nr)\n{\n\tstruct kvm_vcpu *vcpu = NULL;\n\tunsigned long i;\n\n\tkvm_for_each_vcpu(i, vcpu, kvm) {\n\t\tif (vcpu->arch.icp && nr == vcpu->arch.icp->server_num)\n\t\t\treturn vcpu->arch.icp;\n\t}\n\treturn NULL;\n}"
+        ],
+        "sink": "if (vcpu->arch.icp && nr == vcpu->arch.icp->server_num)",
+        "final_sink": "if (vcpu->arch.icp && nr == vcpu->arch.icp->server_num)",
+        "source": [
+            "\tskb = tcp_send_head(sk);",
+            "\ttcp_for_write_queue_from_safe(skb, next, sk) {",
+            "\t\tskb = NULL;",
+            "\tstruct sk_buff *skb = list_->next;"
+        ],
+        "index": 28
+    },
+    {
+        "prt": "vcpu",
+        "function_call": [
+            "static void xive_pre_save_scan(struct kvmppc_xive *xive)\n{\n\tstruct kvm_vcpu *vcpu = NULL;\n\tunsigned long i;\n\tint j;\n\n\t/*\n\t * See comment in xive_get_source() about how this\n\t * work. Collect a stable state for all interrupts\n\t */\n\tfor (i = 0; i <= xive->max_sbid; i++) {\n\t\tstruct kvmppc_xive_src_block *sb = xive->src_blocks[i];\n\t\tif (!sb)\n\t\t\tcontinue;\n\t\tfor (j = 0;  j < KVMPPC_XICS_IRQ_PER_ICS; j++)\n\t\t\txive_pre_save_mask_irq(xive, sb, j);\n\t}\n\n\t/* Then scan the queues and update the \"in_queue\" flag */\n\tkvm_for_each_vcpu(i, vcpu, xive->kvm) {\n\t\tstruct kvmppc_xive_vcpu *xc = vcpu->arch.xive_vcpu;\n\t\tif (!xc)\n\t\t\tcontinue;\n\t\tfor (j = 0; j < KVMPPC_XIVE_Q_COUNT; j++) {\n\t\t\tif (xc->queues[j].qpage)\n\t\t\t\txive_pre_save_queue(xive, &xc->queues[j]);\n\t\t}\n\t}\n\n\t/* Finally restore interrupt states */\n\tfor (i = 0; i <= xive->max_sbid; i++) {\n\t\tstruct kvmppc_xive_src_block *sb = xive->src_blocks[i];\n\t\tif (!sb)\n\t\t\tcontinue;\n\t\tfor (j = 0;  j < KVMPPC_XICS_IRQ_PER_ICS; j++)\n\t\t\txive_pre_save_unmask_irq(xive, sb, j);\n\t}\n}"
+        ],
+        "sink": "struct kvmppc_xive_vcpu *xc = vcpu->arch.xive_vcpu;",
+        "final_sink": "struct kvmppc_xive_vcpu *xc = vcpu->arch.xive_vcpu;",
+        "source": [
+            "\tskb = __skb_dequeue(queue);",
+            "\t\tskb = ip_make_skb(sk, fl4, getfrag, msg, ulen,",
+            "\t\tskb = NULL;",
+            "\tstruct sk_buff *skb = skb_peek(list);",
+            "\tstruct sk_buff *skb = list_->next;"
+        ],
+        "index": 29
+    },
+    {
+        "prt": "vcpu",
+        "function_call": [
+            "static bool xive_check_delayed_irq(struct kvmppc_xive *xive, u32 irq)\n{\n\tstruct kvm *kvm = xive->kvm;\n\tstruct kvm_vcpu *vcpu = NULL;\n\tunsigned long i;\n\n\tkvm_for_each_vcpu(i, vcpu, kvm) {\n\t\tstruct kvmppc_xive_vcpu *xc = vcpu->arch.xive_vcpu;\n\n\t\tif (!xc)\n\t\t\tcontinue;\n\n\t\tif (xc->delayed_irq == irq) {\n\t\t\txc->delayed_irq = 0;\n\t\t\txive->delayed_irqs--;\n\t\t\treturn true;\n\t\t}\n\t}\n\treturn false;\n}"
+        ],
+        "sink": "struct kvmppc_xive_vcpu *xc = vcpu->arch.xive_vcpu;",
+        "final_sink": "struct kvmppc_xive_vcpu *xc = vcpu->arch.xive_vcpu;",
+        "source": [
+            "\trt = *rtp;",
+            "\t\trt = dst_rtable(xfrm_lookup_route(net, &rt->dst,",
+            "\trt = dst_alloc(&ipv4_dst_ops, dev, DST_OBSOLETE_FORCE_CHK,",
+            "\t\trt = dst_rtable(sk_dst_check(sk, 0));",
+            "\t\trt = ip_route_output_flow(net, fl4, sk);",
+            "\t\t\trt = NULL;",
+            "\tstruct rtable *rt = __ip_route_output_key(net, flp4);",
+            "\tstruct rtable *rt = NULL;"
+        ],
+        "index": 30
+    },
+    {
+        "prt": "vcpu",
+        "function_call": [
+            "static inline struct kvmppc_icp *kvmppc_xics_find_server(struct kvm *kvm,\n\t\t\t\t\t\t\t u32 nr)\n{\n\tstruct kvm_vcpu *vcpu = NULL;\n\tunsigned long i;\n\n\tkvm_for_each_vcpu(i, vcpu, kvm) {\n\t\tif (vcpu->arch.icp && nr == vcpu->arch.icp->server_num)\n\t\t\treturn vcpu->arch.icp;\n\t}\n\treturn NULL;\n}"
+        ],
+        "sink": "if (vcpu->arch.icp && nr == vcpu->arch.icp->server_num)",
+        "final_sink": "if (vcpu->arch.icp && nr == vcpu->arch.icp->server_num)",
+        "source": [
+            "\tuh   = skb_gro_header(skb, hlen, off);",
+            "\tstruct udphdr *uh = udp_gro_udphdr(skb);"
+        ],
+        "index": 31
+    },
+    {
+        "prt": "vcpu",
+        "function_call": [
+            "static inline struct kvm_vcpu *kvmppc_xive_find_server(struct kvm *kvm, u32 nr)\n{\n\tstruct kvm_vcpu *vcpu = NULL;\n\tunsigned long i;\n\n\tkvm_for_each_vcpu(i, vcpu, kvm) {\n\t\tif (vcpu->arch.xive_vcpu && nr == vcpu->arch.xive_vcpu->server_num)\n\t\t\treturn vcpu;\n\t}\n\treturn NULL;\n}"
+        ],
+        "sink": "if (vcpu->arch.xive_vcpu && nr == vcpu->arch.xive_vcpu->server_num)",
+        "final_sink": "if (vcpu->arch.xive_vcpu && nr == vcpu->arch.xive_vcpu->server_num)",
+        "source": [
+            "\tfor (pprev = proto_handlers(protocol);",
+            "\t     pprev = &t->next) {"
+        ],
+        "index": 32
+    },
+    {
+        "prt": "vcpu",
+        "function_call": [
+            "static inline bool kvmppc_xive_vp_in_use(struct kvm *kvm, u32 vp_id)\n{\n\tstruct kvm_vcpu *vcpu = NULL;\n\tunsigned long i;\n\n\tkvm_for_each_vcpu(i, vcpu, kvm) {\n\t\tif (vcpu->arch.xive_vcpu && vp_id == vcpu->arch.xive_vcpu->vp_id)\n\t\t\treturn true;\n\t}\n\treturn false;\n}"
+        ],
+        "sink": "if (vcpu->arch.xive_vcpu && vp_id == vcpu->arch.xive_vcpu->vp_id)",
+        "final_sink": "if (vcpu->arch.xive_vcpu && vp_id == vcpu->arch.xive_vcpu->vp_id)",
+        "source": [
+            "\tfor (pprev = proto_handlers(protocol);",
+            "\t     pprev = &t->next) {"
+        ],
+        "index": 33
+    },
+    {
+        "prt": "vcpu",
+        "function_call": [
+            "static inline struct kvmppc_icp *kvmppc_xics_find_server(struct kvm *kvm,\n\t\t\t\t\t\t\t u32 nr)\n{\n\tstruct kvm_vcpu *vcpu = NULL;\n\tunsigned long i;\n\n\tkvm_for_each_vcpu(i, vcpu, kvm) {\n\t\tif (vcpu->arch.icp && nr == vcpu->arch.icp->server_num)\n\t\t\treturn vcpu->arch.icp;\n\t}\n\treturn NULL;\n}"
+        ],
+        "sink": "if (vcpu->arch.icp && nr == vcpu->arch.icp->server_num)",
+        "final_sink": "if (vcpu->arch.icp && nr == vcpu->arch.icp->server_num)",
+        "source": [
+            "\t\tidev = __in6_dev_get(dev);",
+            "\tstruct inet6_dev *idev = NULL;"
+        ],
+        "index": 34
+    },
+    {
+        "prt": "vcpu",
+        "function_call": [
+            "static inline struct kvm_vcpu *kvmppc_xive_find_server(struct kvm *kvm, u32 nr)\n{\n\tstruct kvm_vcpu *vcpu = NULL;\n\tunsigned long i;\n\n\tkvm_for_each_vcpu(i, vcpu, kvm) {\n\t\tif (vcpu->arch.xive_vcpu && nr == vcpu->arch.xive_vcpu->server_num)\n\t\t\treturn vcpu;\n\t}\n\treturn NULL;\n}"
+        ],
+        "sink": "if (vcpu->arch.xive_vcpu && nr == vcpu->arch.xive_vcpu->server_num)",
+        "final_sink": "if (vcpu->arch.xive_vcpu && nr == vcpu->arch.xive_vcpu->server_num)",
+        "source": [
+            "\t\tstruct sec_path *sp = skb_sec_path(skb);"
+        ],
+        "index": 35
+    },
+    {
+        "prt": "vcpu",
+        "function_call": [
+            "static inline bool kvmppc_xive_vp_in_use(struct kvm *kvm, u32 vp_id)\n{\n\tstruct kvm_vcpu *vcpu = NULL;\n\tunsigned long i;\n\n\tkvm_for_each_vcpu(i, vcpu, kvm) {\n\t\tif (vcpu->arch.xive_vcpu && vp_id == vcpu->arch.xive_vcpu->vp_id)\n\t\t\treturn true;\n\t}\n\treturn false;\n}"
+        ],
+        "sink": "if (vcpu->arch.xive_vcpu && vp_id == vcpu->arch.xive_vcpu->vp_id)",
+        "final_sink": "if (vcpu->arch.xive_vcpu && vp_id == vcpu->arch.xive_vcpu->vp_id)",
+        "source": [
+            "\t\tfib6_nh = nexthop_fib6_nh(rt->nh);",
+            "\tstruct fib6_nh *fib6_nh = rt->fib6_nh;"
+        ],
+        "index": 36
+    },
+    {
+        "prt": "window",
+        "function_call": [
+            "static struct iommu_window * __init\ncell_iommu_setup_window(struct cbe_iommu *iommu, struct device_node *np,\n\t\t\tunsigned long offset, unsigned long size,\n\t\t\tunsigned long pte_offset)\n{\n\tstruct iommu_window *window;\n\tstruct page *page;\n\tu32 ioid;\n\n\tioid = cell_iommu_get_ioid(np);\n\n\twindow = kzalloc_node(sizeof(*window), GFP_KERNEL, iommu->nid);\n\tBUG_ON(window == NULL);\n\n\twindow->offset = offset;\n\twindow->size = size;\n\twindow->ioid = ioid;\n\twindow->iommu = iommu;\n\n\twindow->table.it_blocksize = 16;\n\twindow->table.it_base = (unsigned long)iommu->ptab;\n\twindow->table.it_index = iommu->nid;\n\twindow->table.it_page_shift = IOMMU_PAGE_SHIFT_4K;\n\twindow->table.it_offset =\n\t\t(offset >> window->table.it_page_shift) + pte_offset;\n\twindow->table.it_size = size >> window->table.it_page_shift;\n\twindow->table.it_ops = &cell_iommu_ops;\n\n\tif (!iommu_init_table(&window->table, iommu->nid, 0, 0))\n\t\tpanic(\"Failed to initialize iommu table\");\n\n\tpr_debug(\"\\tioid      %d\\n\", window->ioid);\n\tpr_debug(\"\\tblocksize %ld\\n\", window->table.it_blocksize);\n\tpr_debug(\"\\tbase      0x%016lx\\n\", window->table.it_base);\n\tpr_debug(\"\\toffset    0x%lx\\n\", window->table.it_offset);\n\tpr_debug(\"\\tsize      %ld\\n\", window->table.it_size);\n\n\tlist_add(&window->list, &iommu->windows);\n\n\tif (offset != 0)\n\t\treturn window;\n\n\t/* We need to map and reserve the first IOMMU page since it's used\n\t * by the spider workaround. In theory, we only need to do that when\n\t * running on spider but it doesn't really matter.\n\t *\n\t * This code also assumes that we have a window that starts at 0,\n\t * which is the case on all spider based blades.\n\t */\n\tpage = alloc_pages_node(iommu->nid, GFP_KERNEL, 0);\n\tBUG_ON(!page);\n\tiommu->pad_page = page_address(page);\n\tclear_page(iommu->pad_page);\n\n\t__set_bit(0, window->table.it_map);\n\ttce_build_cell(&window->table, window->table.it_offset, 1,\n\t\t       (unsigned long)iommu->pad_page, DMA_TO_DEVICE, 0);\n\n\treturn window;\n}"
+        ],
+        "sink": "window->offset = offset;",
+        "final_sink": "window->offset = offset;",
+        "source": [
+            "\t\t\t\tnew_leaf = fib6_find_prefix(net, table, fn);"
+        ],
+        "index": 37
+    },
+    {
+        "prt": "window",
+        "function_call": [
+            "static struct iommu_window * __init\ncell_iommu_setup_window(struct cbe_iommu *iommu, struct device_node *np,\n\t\t\tunsigned long offset, unsigned long size,\n\t\t\tunsigned long pte_offset)\n{\n\tstruct iommu_window *window;\n\tstruct page *page;\n\tu32 ioid;\n\n\tioid = cell_iommu_get_ioid(np);\n\n\twindow = kzalloc_node(sizeof(*window), GFP_KERNEL, iommu->nid);\n\tBUG_ON(window == NULL);\n\n\twindow->offset = offset;\n\twindow->size = size;\n\twindow->ioid = ioid;\n\twindow->iommu = iommu;\n\n\twindow->table.it_blocksize = 16;\n\twindow->table.it_base = (unsigned long)iommu->ptab;\n\twindow->table.it_index = iommu->nid;\n\twindow->table.it_page_shift = IOMMU_PAGE_SHIFT_4K;\n\twindow->table.it_offset =\n\t\t(offset >> window->table.it_page_shift) + pte_offset;\n\twindow->table.it_size = size >> window->table.it_page_shift;\n\twindow->table.it_ops = &cell_iommu_ops;\n\n\tif (!iommu_init_table(&window->table, iommu->nid, 0, 0))\n\t\tpanic(\"Failed to initialize iommu table\");\n\n\tpr_debug(\"\\tioid      %d\\n\", window->ioid);\n\tpr_debug(\"\\tblocksize %ld\\n\", window->table.it_blocksize);\n\tpr_debug(\"\\tbase      0x%016lx\\n\", window->table.it_base);\n\tpr_debug(\"\\toffset    0x%lx\\n\", window->table.it_offset);\n\tpr_debug(\"\\tsize      %ld\\n\", window->table.it_size);\n\n\tlist_add(&window->list, &iommu->windows);\n\n\tif (offset != 0)\n\t\treturn window;\n\n\t/* We need to map and reserve the first IOMMU page since it's used\n\t * by the spider workaround. In theory, we only need to do that when\n\t * running on spider but it doesn't really matter.\n\t *\n\t * This code also assumes that we have a window that starts at 0,\n\t * which is the case on all spider based blades.\n\t */\n\tpage = alloc_pages_node(iommu->nid, GFP_KERNEL, 0);\n\tBUG_ON(!page);\n\tiommu->pad_page = page_address(page);\n\tclear_page(iommu->pad_page);\n\n\t__set_bit(0, window->table.it_map);\n\ttce_build_cell(&window->table, window->table.it_offset, 1,\n\t\t       (unsigned long)iommu->pad_page, DMA_TO_DEVICE, 0);\n\n\treturn window;\n}"
+        ],
+        "sink": "window->size = size;",
+        "final_sink": "window->size = size;",
+        "source": [
+            "\t\tskb_in = cloned_skb = skb_clone(skb_in, GFP_ATOMIC);"
+        ],
+        "index": 38
+    },
+    {
+        "prt": "window",
+        "function_call": [
+            "static struct iommu_window * __init\ncell_iommu_setup_window(struct cbe_iommu *iommu, struct device_node *np,\n\t\t\tunsigned long offset, unsigned long size,\n\t\t\tunsigned long pte_offset)\n{\n\tstruct iommu_window *window;\n\tstruct page *page;\n\tu32 ioid;\n\n\tioid = cell_iommu_get_ioid(np);\n\n\twindow = kzalloc_node(sizeof(*window), GFP_KERNEL, iommu->nid);\n\tBUG_ON(window == NULL);\n\n\twindow->offset = offset;\n\twindow->size = size;\n\twindow->ioid = ioid;\n\twindow->iommu = iommu;\n\n\twindow->table.it_blocksize = 16;\n\twindow->table.it_base = (unsigned long)iommu->ptab;\n\twindow->table.it_index = iommu->nid;\n\twindow->table.it_page_shift = IOMMU_PAGE_SHIFT_4K;\n\twindow->table.it_offset =\n\t\t(offset >> window->table.it_page_shift) + pte_offset;\n\twindow->table.it_size = size >> window->table.it_page_shift;\n\twindow->table.it_ops = &cell_iommu_ops;\n\n\tif (!iommu_init_table(&window->table, iommu->nid, 0, 0))\n\t\tpanic(\"Failed to initialize iommu table\");\n\n\tpr_debug(\"\\tioid      %d\\n\", window->ioid);\n\tpr_debug(\"\\tblocksize %ld\\n\", window->table.it_blocksize);\n\tpr_debug(\"\\tbase      0x%016lx\\n\", window->table.it_base);\n\tpr_debug(\"\\toffset    0x%lx\\n\", window->table.it_offset);\n\tpr_debug(\"\\tsize      %ld\\n\", window->table.it_size);\n\n\tlist_add(&window->list, &iommu->windows);\n\n\tif (offset != 0)\n\t\treturn window;\n\n\t/* We need to map and reserve the first IOMMU page since it's used\n\t * by the spider workaround. In theory, we only need to do that when\n\t * running on spider but it doesn't really matter.\n\t *\n\t * This code also assumes that we have a window that starts at 0,\n\t * which is the case on all spider based blades.\n\t */\n\tpage = alloc_pages_node(iommu->nid, GFP_KERNEL, 0);\n\tBUG_ON(!page);\n\tiommu->pad_page = page_address(page);\n\tclear_page(iommu->pad_page);\n\n\t__set_bit(0, window->table.it_map);\n\ttce_build_cell(&window->table, window->table.it_offset, 1,\n\t\t       (unsigned long)iommu->pad_page, DMA_TO_DEVICE, 0);\n\n\treturn window;\n}"
+        ],
+        "sink": "window->ioid = ioid;",
+        "final_sink": "window->ioid = ioid;",
+        "source": [
+            "\t\tskb_in = cloned_skb = skb_clone(skb_in, GFP_ATOMIC);",
+            "\tstruct sk_buff *cloned_skb = NULL;"
+        ],
+        "index": 39
+    },
+    {
+        "prt": "window",
+        "function_call": [
+            "static struct iommu_window * __init\ncell_iommu_setup_window(struct cbe_iommu *iommu, struct device_node *np,\n\t\t\tunsigned long offset, unsigned long size,\n\t\t\tunsigned long pte_offset)\n{\n\tstruct iommu_window *window;\n\tstruct page *page;\n\tu32 ioid;\n\n\tioid = cell_iommu_get_ioid(np);\n\n\twindow = kzalloc_node(sizeof(*window), GFP_KERNEL, iommu->nid);\n\tBUG_ON(window == NULL);\n\n\twindow->offset = offset;\n\twindow->size = size;\n\twindow->ioid = ioid;\n\twindow->iommu = iommu;\n\n\twindow->table.it_blocksize = 16;\n\twindow->table.it_base = (unsigned long)iommu->ptab;\n\twindow->table.it_index = iommu->nid;\n\twindow->table.it_page_shift = IOMMU_PAGE_SHIFT_4K;\n\twindow->table.it_offset =\n\t\t(offset >> window->table.it_page_shift) + pte_offset;\n\twindow->table.it_size = size >> window->table.it_page_shift;\n\twindow->table.it_ops = &cell_iommu_ops;\n\n\tif (!iommu_init_table(&window->table, iommu->nid, 0, 0))\n\t\tpanic(\"Failed to initialize iommu table\");\n\n\tpr_debug(\"\\tioid      %d\\n\", window->ioid);\n\tpr_debug(\"\\tblocksize %ld\\n\", window->table.it_blocksize);\n\tpr_debug(\"\\tbase      0x%016lx\\n\", window->table.it_base);\n\tpr_debug(\"\\toffset    0x%lx\\n\", window->table.it_offset);\n\tpr_debug(\"\\tsize      %ld\\n\", window->table.it_size);\n\n\tlist_add(&window->list, &iommu->windows);\n\n\tif (offset != 0)\n\t\treturn window;\n\n\t/* We need to map and reserve the first IOMMU page since it's used\n\t * by the spider workaround. In theory, we only need to do that when\n\t * running on spider but it doesn't really matter.\n\t *\n\t * This code also assumes that we have a window that starts at 0,\n\t * which is the case on all spider based blades.\n\t */\n\tpage = alloc_pages_node(iommu->nid, GFP_KERNEL, 0);\n\tBUG_ON(!page);\n\tiommu->pad_page = page_address(page);\n\tclear_page(iommu->pad_page);\n\n\t__set_bit(0, window->table.it_map);\n\ttce_build_cell(&window->table, window->table.it_offset, 1,\n\t\t       (unsigned long)iommu->pad_page, DMA_TO_DEVICE, 0);\n\n\treturn window;\n}"
+        ],
+        "sink": "window->iommu = iommu;",
+        "final_sink": "window->iommu = iommu;",
+        "source": [
+            "\t\t\tcurr_net = net;",
+            "\tstruct net *curr_net = NULL;"
+        ],
+        "index": 40
+    },
+    {
+        "prt": "window",
+        "function_call": [
+            "static struct iommu_window * __init\ncell_iommu_setup_window(struct cbe_iommu *iommu, struct device_node *np,\n\t\t\tunsigned long offset, unsigned long size,\n\t\t\tunsigned long pte_offset)\n{\n\tstruct iommu_window *window;\n\tstruct page *page;\n\tu32 ioid;\n\n\tioid = cell_iommu_get_ioid(np);\n\n\twindow = kzalloc_node(sizeof(*window), GFP_KERNEL, iommu->nid);\n\tBUG_ON(window == NULL);\n\n\twindow->offset = offset;\n\twindow->size = size;\n\twindow->ioid = ioid;\n\twindow->iommu = iommu;\n\n\twindow->table.it_blocksize = 16;\n\twindow->table.it_base = (unsigned long)iommu->ptab;\n\twindow->table.it_index = iommu->nid;\n\twindow->table.it_page_shift = IOMMU_PAGE_SHIFT_4K;\n\twindow->table.it_offset =\n\t\t(offset >> window->table.it_page_shift) + pte_offset;\n\twindow->table.it_size = size >> window->table.it_page_shift;\n\twindow->table.it_ops = &cell_iommu_ops;\n\n\tif (!iommu_init_table(&window->table, iommu->nid, 0, 0))\n\t\tpanic(\"Failed to initialize iommu table\");\n\n\tpr_debug(\"\\tioid      %d\\n\", window->ioid);\n\tpr_debug(\"\\tblocksize %ld\\n\", window->table.it_blocksize);\n\tpr_debug(\"\\tbase      0x%016lx\\n\", window->table.it_base);\n\tpr_debug(\"\\toffset    0x%lx\\n\", window->table.it_offset);\n\tpr_debug(\"\\tsize      %ld\\n\", window->table.it_size);\n\n\tlist_add(&window->list, &iommu->windows);\n\n\tif (offset != 0)\n\t\treturn window;\n\n\t/* We need to map and reserve the first IOMMU page since it's used\n\t * by the spider workaround. In theory, we only need to do that when\n\t * running on spider but it doesn't really matter.\n\t *\n\t * This code also assumes that we have a window that starts at 0,\n\t * which is the case on all spider based blades.\n\t */\n\tpage = alloc_pages_node(iommu->nid, GFP_KERNEL, 0);\n\tBUG_ON(!page);\n\tiommu->pad_page = page_address(page);\n\tclear_page(iommu->pad_page);\n\n\t__set_bit(0, window->table.it_map);\n\ttce_build_cell(&window->table, window->table.it_offset, 1,\n\t\t       (unsigned long)iommu->pad_page, DMA_TO_DEVICE, 0);\n\n\treturn window;\n}"
+        ],
+        "sink": "window->table.it_blocksize = 16;",
+        "final_sink": "window->table.it_blocksize = 16;",
+        "source": [
+            "\t\t\tcurr_net = net;",
+            "\tstruct net *curr_net = NULL;"
+        ],
+        "index": 41
+    },
+    {
+        "prt": "window",
+        "function_call": [
+            "static struct iommu_window * __init\ncell_iommu_setup_window(struct cbe_iommu *iommu, struct device_node *np,\n\t\t\tunsigned long offset, unsigned long size,\n\t\t\tunsigned long pte_offset)\n{\n\tstruct iommu_window *window;\n\tstruct page *page;\n\tu32 ioid;\n\n\tioid = cell_iommu_get_ioid(np);\n\n\twindow = kzalloc_node(sizeof(*window), GFP_KERNEL, iommu->nid);\n\tBUG_ON(window == NULL);\n\n\twindow->offset = offset;\n\twindow->size = size;\n\twindow->ioid = ioid;\n\twindow->iommu = iommu;\n\n\twindow->table.it_blocksize = 16;\n\twindow->table.it_base = (unsigned long)iommu->ptab;\n\twindow->table.it_index = iommu->nid;\n\twindow->table.it_page_shift = IOMMU_PAGE_SHIFT_4K;\n\twindow->table.it_offset =\n\t\t(offset >> window->table.it_page_shift) + pte_offset;\n\twindow->table.it_size = size >> window->table.it_page_shift;\n\twindow->table.it_ops = &cell_iommu_ops;\n\n\tif (!iommu_init_table(&window->table, iommu->nid, 0, 0))\n\t\tpanic(\"Failed to initialize iommu table\");\n\n\tpr_debug(\"\\tioid      %d\\n\", window->ioid);\n\tpr_debug(\"\\tblocksize %ld\\n\", window->table.it_blocksize);\n\tpr_debug(\"\\tbase      0x%016lx\\n\", window->table.it_base);\n\tpr_debug(\"\\toffset    0x%lx\\n\", window->table.it_offset);\n\tpr_debug(\"\\tsize      %ld\\n\", window->table.it_size);\n\n\tlist_add(&window->list, &iommu->windows);\n\n\tif (offset != 0)\n\t\treturn window;\n\n\t/* We need to map and reserve the first IOMMU page since it's used\n\t * by the spider workaround. In theory, we only need to do that when\n\t * running on spider but it doesn't really matter.\n\t *\n\t * This code also assumes that we have a window that starts at 0,\n\t * which is the case on all spider based blades.\n\t */\n\tpage = alloc_pages_node(iommu->nid, GFP_KERNEL, 0);\n\tBUG_ON(!page);\n\tiommu->pad_page = page_address(page);\n\tclear_page(iommu->pad_page);\n\n\t__set_bit(0, window->table.it_map);\n\ttce_build_cell(&window->table, window->table.it_offset, 1,\n\t\t       (unsigned long)iommu->pad_page, DMA_TO_DEVICE, 0);\n\n\treturn window;\n}"
+        ],
+        "sink": "window->table.it_base = (unsigned long)iommu->ptab;",
+        "final_sink": "window->table.it_base = (unsigned long)iommu->ptab;",
+        "source": [
+            "\t\t\tskb_prev = skb;"
+        ],
+        "index": 42
+    },
+    {
+        "prt": "window",
+        "function_call": [
+            "static struct iommu_window * __init\ncell_iommu_setup_window(struct cbe_iommu *iommu, struct device_node *np,\n\t\t\tunsigned long offset, unsigned long size,\n\t\t\tunsigned long pte_offset)\n{\n\tstruct iommu_window *window;\n\tstruct page *page;\n\tu32 ioid;\n\n\tioid = cell_iommu_get_ioid(np);\n\n\twindow = kzalloc_node(sizeof(*window), GFP_KERNEL, iommu->nid);\n\tBUG_ON(window == NULL);\n\n\twindow->offset = offset;\n\twindow->size = size;\n\twindow->ioid = ioid;\n\twindow->iommu = iommu;\n\n\twindow->table.it_blocksize = 16;\n\twindow->table.it_base = (unsigned long)iommu->ptab;\n\twindow->table.it_index = iommu->nid;\n\twindow->table.it_page_shift = IOMMU_PAGE_SHIFT_4K;\n\twindow->table.it_offset =\n\t\t(offset >> window->table.it_page_shift) + pte_offset;\n\twindow->table.it_size = size >> window->table.it_page_shift;\n\twindow->table.it_ops = &cell_iommu_ops;\n\n\tif (!iommu_init_table(&window->table, iommu->nid, 0, 0))\n\t\tpanic(\"Failed to initialize iommu table\");\n\n\tpr_debug(\"\\tioid      %d\\n\", window->ioid);\n\tpr_debug(\"\\tblocksize %ld\\n\", window->table.it_blocksize);\n\tpr_debug(\"\\tbase      0x%016lx\\n\", window->table.it_base);\n\tpr_debug(\"\\toffset    0x%lx\\n\", window->table.it_offset);\n\tpr_debug(\"\\tsize      %ld\\n\", window->table.it_size);\n\n\tlist_add(&window->list, &iommu->windows);\n\n\tif (offset != 0)\n\t\treturn window;\n\n\t/* We need to map and reserve the first IOMMU page since it's used\n\t * by the spider workaround. In theory, we only need to do that when\n\t * running on spider but it doesn't really matter.\n\t *\n\t * This code also assumes that we have a window that starts at 0,\n\t * which is the case on all spider based blades.\n\t */\n\tpage = alloc_pages_node(iommu->nid, GFP_KERNEL, 0);\n\tBUG_ON(!page);\n\tiommu->pad_page = page_address(page);\n\tclear_page(iommu->pad_page);\n\n\t__set_bit(0, window->table.it_map);\n\ttce_build_cell(&window->table, window->table.it_offset, 1,\n\t\t       (unsigned long)iommu->pad_page, DMA_TO_DEVICE, 0);\n\n\treturn window;\n}"
+        ],
+        "sink": "window->table.it_index = iommu->nid;",
+        "final_sink": "window->table.it_index = iommu->nid;",
+        "source": [
+            "\tneigh = __ipv6_neigh_lookup_noref(dev, nexthop);",
+            "\t\t\tneigh = __neigh_create(&nd_tbl, nexthop, dev, false);"
+        ],
+        "index": 43
+    },
+    {
+        "prt": "window",
+        "function_call": [
+            "static struct iommu_window * __init\ncell_iommu_setup_window(struct cbe_iommu *iommu, struct device_node *np,\n\t\t\tunsigned long offset, unsigned long size,\n\t\t\tunsigned long pte_offset)\n{\n\tstruct iommu_window *window;\n\tstruct page *page;\n\tu32 ioid;\n\n\tioid = cell_iommu_get_ioid(np);\n\n\twindow = kzalloc_node(sizeof(*window), GFP_KERNEL, iommu->nid);\n\tBUG_ON(window == NULL);\n\n\twindow->offset = offset;\n\twindow->size = size;\n\twindow->ioid = ioid;\n\twindow->iommu = iommu;\n\n\twindow->table.it_blocksize = 16;\n\twindow->table.it_base = (unsigned long)iommu->ptab;\n\twindow->table.it_index = iommu->nid;\n\twindow->table.it_page_shift = IOMMU_PAGE_SHIFT_4K;\n\twindow->table.it_offset =\n\t\t(offset >> window->table.it_page_shift) + pte_offset;\n\twindow->table.it_size = size >> window->table.it_page_shift;\n\twindow->table.it_ops = &cell_iommu_ops;\n\n\tif (!iommu_init_table(&window->table, iommu->nid, 0, 0))\n\t\tpanic(\"Failed to initialize iommu table\");\n\n\tpr_debug(\"\\tioid      %d\\n\", window->ioid);\n\tpr_debug(\"\\tblocksize %ld\\n\", window->table.it_blocksize);\n\tpr_debug(\"\\tbase      0x%016lx\\n\", window->table.it_base);\n\tpr_debug(\"\\toffset    0x%lx\\n\", window->table.it_offset);\n\tpr_debug(\"\\tsize      %ld\\n\", window->table.it_size);\n\n\tlist_add(&window->list, &iommu->windows);\n\n\tif (offset != 0)\n\t\treturn window;\n\n\t/* We need to map and reserve the first IOMMU page since it's used\n\t * by the spider workaround. In theory, we only need to do that when\n\t * running on spider but it doesn't really matter.\n\t *\n\t * This code also assumes that we have a window that starts at 0,\n\t * which is the case on all spider based blades.\n\t */\n\tpage = alloc_pages_node(iommu->nid, GFP_KERNEL, 0);\n\tBUG_ON(!page);\n\tiommu->pad_page = page_address(page);\n\tclear_page(iommu->pad_page);\n\n\t__set_bit(0, window->table.it_map);\n\ttce_build_cell(&window->table, window->table.it_offset, 1,\n\t\t       (unsigned long)iommu->pad_page, DMA_TO_DEVICE, 0);\n\n\treturn window;\n}"
+        ],
+        "sink": "window->table.it_page_shift = IOMMU_PAGE_SHIFT_4K;",
+        "final_sink": "window->table.it_page_shift = IOMMU_PAGE_SHIFT_4K;",
+        "source": [
+            "\t\tnew = memdup_sockptr(optval, optlen);",
+            "\tstruct ipv6_opt_hdr *new = NULL;"
+        ],
+        "index": 44
+    },
+    {
+        "prt": "window",
+        "function_call": [
+            "static struct iommu_window * __init\ncell_iommu_setup_window(struct cbe_iommu *iommu, struct device_node *np,\n\t\t\tunsigned long offset, unsigned long size,\n\t\t\tunsigned long pte_offset)\n{\n\tstruct iommu_window *window;\n\tstruct page *page;\n\tu32 ioid;\n\n\tioid = cell_iommu_get_ioid(np);\n\n\twindow = kzalloc_node(sizeof(*window), GFP_KERNEL, iommu->nid);\n\tBUG_ON(window == NULL);\n\n\twindow->offset = offset;\n\twindow->size = size;\n\twindow->ioid = ioid;\n\twindow->iommu = iommu;\n\n\twindow->table.it_blocksize = 16;\n\twindow->table.it_base = (unsigned long)iommu->ptab;\n\twindow->table.it_index = iommu->nid;\n\twindow->table.it_page_shift = IOMMU_PAGE_SHIFT_4K;\n\twindow->table.it_offset =\n\t\t(offset >> window->table.it_page_shift) + pte_offset;\n\twindow->table.it_size = size >> window->table.it_page_shift;\n\twindow->table.it_ops = &cell_iommu_ops;\n\n\tif (!iommu_init_table(&window->table, iommu->nid, 0, 0))\n\t\tpanic(\"Failed to initialize iommu table\");\n\n\tpr_debug(\"\\tioid      %d\\n\", window->ioid);\n\tpr_debug(\"\\tblocksize %ld\\n\", window->table.it_blocksize);\n\tpr_debug(\"\\tbase      0x%016lx\\n\", window->table.it_base);\n\tpr_debug(\"\\toffset    0x%lx\\n\", window->table.it_offset);\n\tpr_debug(\"\\tsize      %ld\\n\", window->table.it_size);\n\n\tlist_add(&window->list, &iommu->windows);\n\n\tif (offset != 0)\n\t\treturn window;\n\n\t/* We need to map and reserve the first IOMMU page since it's used\n\t * by the spider workaround. In theory, we only need to do that when\n\t * running on spider but it doesn't really matter.\n\t *\n\t * This code also assumes that we have a window that starts at 0,\n\t * which is the case on all spider based blades.\n\t */\n\tpage = alloc_pages_node(iommu->nid, GFP_KERNEL, 0);\n\tBUG_ON(!page);\n\tiommu->pad_page = page_address(page);\n\tclear_page(iommu->pad_page);\n\n\t__set_bit(0, window->table.it_map);\n\ttce_build_cell(&window->table, window->table.it_offset, 1,\n\t\t       (unsigned long)iommu->pad_page, DMA_TO_DEVICE, 0);\n\n\treturn window;\n}"
+        ],
+        "sink": "window->table.it_offset =",
+        "final_sink": "window->table.it_offset =",
+        "source": [
+            "\t\tskb = NULL;"
+        ],
+        "index": 45
+    },
+    {
+        "prt": "window",
+        "function_call": [
+            "static struct iommu_window * __init\ncell_iommu_setup_window(struct cbe_iommu *iommu, struct device_node *np,\n\t\t\tunsigned long offset, unsigned long size,\n\t\t\tunsigned long pte_offset)\n{\n\tstruct iommu_window *window;\n\tstruct page *page;\n\tu32 ioid;\n\n\tioid = cell_iommu_get_ioid(np);\n\n\twindow = kzalloc_node(sizeof(*window), GFP_KERNEL, iommu->nid);\n\tBUG_ON(window == NULL);\n\n\twindow->offset = offset;\n\twindow->size = size;\n\twindow->ioid = ioid;\n\twindow->iommu = iommu;\n\n\twindow->table.it_blocksize = 16;\n\twindow->table.it_base = (unsigned long)iommu->ptab;\n\twindow->table.it_index = iommu->nid;\n\twindow->table.it_page_shift = IOMMU_PAGE_SHIFT_4K;\n\twindow->table.it_offset =\n\t\t(offset >> window->table.it_page_shift) + pte_offset;\n\twindow->table.it_size = size >> window->table.it_page_shift;\n\twindow->table.it_ops = &cell_iommu_ops;\n\n\tif (!iommu_init_table(&window->table, iommu->nid, 0, 0))\n\t\tpanic(\"Failed to initialize iommu table\");\n\n\tpr_debug(\"\\tioid      %d\\n\", window->ioid);\n\tpr_debug(\"\\tblocksize %ld\\n\", window->table.it_blocksize);\n\tpr_debug(\"\\tbase      0x%016lx\\n\", window->table.it_base);\n\tpr_debug(\"\\toffset    0x%lx\\n\", window->table.it_offset);\n\tpr_debug(\"\\tsize      %ld\\n\", window->table.it_size);\n\n\tlist_add(&window->list, &iommu->windows);\n\n\tif (offset != 0)\n\t\treturn window;\n\n\t/* We need to map and reserve the first IOMMU page since it's used\n\t * by the spider workaround. In theory, we only need to do that when\n\t * running on spider but it doesn't really matter.\n\t *\n\t * This code also assumes that we have a window that starts at 0,\n\t * which is the case on all spider based blades.\n\t */\n\tpage = alloc_pages_node(iommu->nid, GFP_KERNEL, 0);\n\tBUG_ON(!page);\n\tiommu->pad_page = page_address(page);\n\tclear_page(iommu->pad_page);\n\n\t__set_bit(0, window->table.it_map);\n\ttce_build_cell(&window->table, window->table.it_offset, 1,\n\t\t       (unsigned long)iommu->pad_page, DMA_TO_DEVICE, 0);\n\n\treturn window;\n}"
+        ],
+        "sink": "(offset >> window->table.it_page_shift) + pte_offset;",
+        "final_sink": "(offset >> window->table.it_page_shift) + pte_offset;",
+        "source": [
+            "\t\tmlh2 = (struct mld2_query *)skb_transport_header(skb);",
+            "\t\t\tmlh2 = (struct mld2_query *)skb_transport_header(skb);",
+            "\tstruct mld2_query *mlh2 = NULL;"
+        ],
+        "index": 46
+    },
+    {
+        "prt": "window",
+        "function_call": [
+            "static struct iommu_window * __init\ncell_iommu_setup_window(struct cbe_iommu *iommu, struct device_node *np,\n\t\t\tunsigned long offset, unsigned long size,\n\t\t\tunsigned long pte_offset)\n{\n\tstruct iommu_window *window;\n\tstruct page *page;\n\tu32 ioid;\n\n\tioid = cell_iommu_get_ioid(np);\n\n\twindow = kzalloc_node(sizeof(*window), GFP_KERNEL, iommu->nid);\n\tBUG_ON(window == NULL);\n\n\twindow->offset = offset;\n\twindow->size = size;\n\twindow->ioid = ioid;\n\twindow->iommu = iommu;\n\n\twindow->table.it_blocksize = 16;\n\twindow->table.it_base = (unsigned long)iommu->ptab;\n\twindow->table.it_index = iommu->nid;\n\twindow->table.it_page_shift = IOMMU_PAGE_SHIFT_4K;\n\twindow->table.it_offset =\n\t\t(offset >> window->table.it_page_shift) + pte_offset;\n\twindow->table.it_size = size >> window->table.it_page_shift;\n\twindow->table.it_ops = &cell_iommu_ops;\n\n\tif (!iommu_init_table(&window->table, iommu->nid, 0, 0))\n\t\tpanic(\"Failed to initialize iommu table\");\n\n\tpr_debug(\"\\tioid      %d\\n\", window->ioid);\n\tpr_debug(\"\\tblocksize %ld\\n\", window->table.it_blocksize);\n\tpr_debug(\"\\tbase      0x%016lx\\n\", window->table.it_base);\n\tpr_debug(\"\\toffset    0x%lx\\n\", window->table.it_offset);\n\tpr_debug(\"\\tsize      %ld\\n\", window->table.it_size);\n\n\tlist_add(&window->list, &iommu->windows);\n\n\tif (offset != 0)\n\t\treturn window;\n\n\t/* We need to map and reserve the first IOMMU page since it's used\n\t * by the spider workaround. In theory, we only need to do that when\n\t * running on spider but it doesn't really matter.\n\t *\n\t * This code also assumes that we have a window that starts at 0,\n\t * which is the case on all spider based blades.\n\t */\n\tpage = alloc_pages_node(iommu->nid, GFP_KERNEL, 0);\n\tBUG_ON(!page);\n\tiommu->pad_page = page_address(page);\n\tclear_page(iommu->pad_page);\n\n\t__set_bit(0, window->table.it_map);\n\ttce_build_cell(&window->table, window->table.it_offset, 1,\n\t\t       (unsigned long)iommu->pad_page, DMA_TO_DEVICE, 0);\n\n\treturn window;\n}"
+        ],
+        "sink": "window->table.it_size = size >> window->table.it_page_shift;",
+        "final_sink": "window->table.it_size = size >> window->table.it_page_shift;",
+        "source": [
+            "\t\tskb = NULL;"
+        ],
+        "index": 47
+    },
+    {
+        "prt": "window",
+        "function_call": [
+            "static struct iommu_window * __init\ncell_iommu_setup_window(struct cbe_iommu *iommu, struct device_node *np,\n\t\t\tunsigned long offset, unsigned long size,\n\t\t\tunsigned long pte_offset)\n{\n\tstruct iommu_window *window;\n\tstruct page *page;\n\tu32 ioid;\n\n\tioid = cell_iommu_get_ioid(np);\n\n\twindow = kzalloc_node(sizeof(*window), GFP_KERNEL, iommu->nid);\n\tBUG_ON(window == NULL);\n\n\twindow->offset = offset;\n\twindow->size = size;\n\twindow->ioid = ioid;\n\twindow->iommu = iommu;\n\n\twindow->table.it_blocksize = 16;\n\twindow->table.it_base = (unsigned long)iommu->ptab;\n\twindow->table.it_index = iommu->nid;\n\twindow->table.it_page_shift = IOMMU_PAGE_SHIFT_4K;\n\twindow->table.it_offset =\n\t\t(offset >> window->table.it_page_shift) + pte_offset;\n\twindow->table.it_size = size >> window->table.it_page_shift;\n\twindow->table.it_ops = &cell_iommu_ops;\n\n\tif (!iommu_init_table(&window->table, iommu->nid, 0, 0))\n\t\tpanic(\"Failed to initialize iommu table\");\n\n\tpr_debug(\"\\tioid      %d\\n\", window->ioid);\n\tpr_debug(\"\\tblocksize %ld\\n\", window->table.it_blocksize);\n\tpr_debug(\"\\tbase      0x%016lx\\n\", window->table.it_base);\n\tpr_debug(\"\\toffset    0x%lx\\n\", window->table.it_offset);\n\tpr_debug(\"\\tsize      %ld\\n\", window->table.it_size);\n\n\tlist_add(&window->list, &iommu->windows);\n\n\tif (offset != 0)\n\t\treturn window;\n\n\t/* We need to map and reserve the first IOMMU page since it's used\n\t * by the spider workaround. In theory, we only need to do that when\n\t * running on spider but it doesn't really matter.\n\t *\n\t * This code also assumes that we have a window that starts at 0,\n\t * which is the case on all spider based blades.\n\t */\n\tpage = alloc_pages_node(iommu->nid, GFP_KERNEL, 0);\n\tBUG_ON(!page);\n\tiommu->pad_page = page_address(page);\n\tclear_page(iommu->pad_page);\n\n\t__set_bit(0, window->table.it_map);\n\ttce_build_cell(&window->table, window->table.it_offset, 1,\n\t\t       (unsigned long)iommu->pad_page, DMA_TO_DEVICE, 0);\n\n\treturn window;\n}"
+        ],
+        "sink": "window->table.it_ops = &cell_iommu_ops;",
+        "final_sink": "window->table.it_ops = &cell_iommu_ops;",
+        "source": [
+            "\t\tidev = ifp->idev;",
+            "\t\tidev = in6_dev_get(dev);",
+            "\tidev = rcu_dereference(dev->ip6_ptr);",
+            "\tstruct inet6_dev *idev = NULL;"
+        ],
+        "index": 48
+    },
+    {
+        "prt": "np",
+        "function_call": [
+            "static int __init cell_iommu_init_disabled(void)\n{\n\tstruct device_node *np = NULL;\n\tunsigned long base = 0, size;\n\n\t/* When no iommu is present, we use direct DMA ops */\n\n\t/* First make sure all IOC translation is turned off */\n\tcell_disable_iommus();\n\n\t/* If we have no Axon, we set up the spider DMA magic offset */\n\tnp = of_find_node_by_name(NULL, \"axon\");\n\tif (!np)\n\t\tcell_dma_nommu_offset = SPIDER_DMA_OFFSET;\n\tof_node_put(np);\n\n\t/* Now we need to check to see where the memory is mapped\n\t * in PCI space. We assume that all busses use the same dma\n\t * window which is always the case so far on Cell, thus we\n\t * pick up the first pci-internal node we can find and check\n\t * the DMA window from there.\n\t */\n\tfor_each_node_by_name(np, \"axon\") {\n\t\tif (np->parent == NULL || np->parent->parent != NULL)\n\t\t\tcontinue;\n\t\tif (cell_iommu_get_window(np, &base, &size) == 0)\n\t\t\tbreak;\n\t}\n\tif (np == NULL) {\n\t\tfor_each_node_by_name(np, \"pci-internal\") {\n\t\t\tif (np->parent == NULL || np->parent->parent != NULL)\n\t\t\t\tcontinue;\n\t\t\tif (cell_iommu_get_window(np, &base, &size) == 0)\n\t\t\t\tbreak;\n\t\t}\n\t}\n\tof_node_put(np);\n\n\t/* If we found a DMA window, we check if it's big enough to enclose\n\t * all of physical memory. If not, we force enable IOMMU\n\t */\n\tif (np && size < memblock_end_of_DRAM()) {\n\t\tprintk(KERN_WARNING \"iommu: force-enabled, dma window\"\n\t\t       \" (%ldMB) smaller than total memory (%lldMB)\\n\",\n\t\t       size >> 20, memblock_end_of_DRAM() >> 20);\n\t\treturn -ENODEV;\n\t}\n\n\tcell_dma_nommu_offset += base;\n\n\tif (cell_dma_nommu_offset != 0)\n\t\tcell_pci_controller_ops.dma_dev_setup = cell_pci_dma_dev_setup;\n\n\tprintk(\"iommu: disabled, direct DMA offset is 0x%lx\\n\",\n\t       cell_dma_nommu_offset);\n\n\treturn 0;\n}"
+        ],
+        "sink": "if (np->parent == NULL || np->parent->parent != NULL)",
+        "final_sink": "if (np->parent == NULL || np->parent->parent != NULL)",
+        "source": [
+            "\tskb = skb_peek(&sk->sk_write_queue);",
+            "\t\tskb_queue_walk(&sk->sk_write_queue, skb) {",
+            "\t\tskb = csum_skb;",
+            "\t\tskb = NULL;",
+            "\tstruct sk_buff *skb = list_->next;"
+        ],
+        "index": 49
+    },
+    {
+        "prt": "iommu",
+        "function_call": [
+            "static int __init cell_iommu_fixed_mapping_init(void)\n{\n\tunsigned long dbase, dsize, fbase, fsize, hbase, hend;\n\tstruct cbe_iommu *iommu;\n\tstruct device_node *np;\n\n\t/* The fixed mapping is only supported on axon machines */\n\tnp = of_find_node_by_name(NULL, \"axon\");\n\tof_node_put(np);\n\n\tif (!np) {\n\t\tpr_debug(\"iommu: fixed mapping disabled, no axons found\\n\");\n\t\treturn -1;\n\t}\n\n\t/* We must have dma-ranges properties for fixed mapping to work */\n\tnp = of_find_node_with_property(NULL, \"dma-ranges\");\n\tof_node_put(np);\n\n\tif (!np) {\n\t\tpr_debug(\"iommu: no dma-ranges found, no fixed mapping\\n\");\n\t\treturn -1;\n\t}\n\n\t/* The default setup is to have the fixed mapping sit after the\n\t * dynamic region, so find the top of the largest IOMMU window\n\t * on any axon, then add the size of RAM and that's our max value.\n\t * If that is > 32GB we have to do other shennanigans.\n\t */\n\tfbase = 0;\n\tfor_each_node_by_name(np, \"axon\") {\n\t\tcell_iommu_get_window(np, &dbase, &dsize);\n\t\tfbase = max(fbase, dbase + dsize);\n\t}\n\n\tfbase = ALIGN(fbase, 1 << IO_SEGMENT_SHIFT);\n\tfsize = memblock_phys_mem_size();\n\n\tif ((fbase + fsize) <= 0x800000000ul)\n\t\thbase = 0; /* use the device tree window */\n\telse {\n\t\t/* If we're over 32 GB we need to cheat. We can't map all of\n\t\t * RAM with the fixed mapping, and also fit the dynamic\n\t\t * region. So try to place the dynamic region where the hash\n\t\t * table sits, drivers never need to DMA to it, we don't\n\t\t * need a fixed mapping for that area.\n\t\t */\n\t\tif (!htab_address) {\n\t\t\tpr_debug(\"iommu: htab is NULL, on LPAR? Huh?\\n\");\n\t\t\treturn -1;\n\t\t}\n\t\thbase = __pa(htab_address);\n\t\thend  = hbase + htab_size_bytes;\n\n\t\t/* The window must start and end on a segment boundary */\n\t\tif ((hbase != ALIGN(hbase, 1 << IO_SEGMENT_SHIFT)) ||\n\t\t    (hend != ALIGN(hend, 1 << IO_SEGMENT_SHIFT))) {\n\t\t\tpr_debug(\"iommu: hash window not segment aligned\\n\");\n\t\t\treturn -1;\n\t\t}\n\n\t\t/* Check the hash window fits inside the real DMA window */\n\t\tfor_each_node_by_name(np, \"axon\") {\n\t\t\tcell_iommu_get_window(np, &dbase, &dsize);\n\n\t\t\tif (hbase < dbase || (hend > (dbase + dsize))) {\n\t\t\t\tpr_debug(\"iommu: hash window doesn't fit in\"\n\t\t\t\t\t \"real DMA window\\n\");\n\t\t\t\tof_node_put(np);\n\t\t\t\treturn -1;\n\t\t\t}\n\t\t}\n\n\t\tfbase = 0;\n\t}\n\n\t/* Setup the dynamic regions */\n\tfor_each_node_by_name(np, \"axon\") {\n\t\tiommu = cell_iommu_alloc(np);\n\t\tBUG_ON(!iommu);\n\n\t\tif (hbase == 0)\n\t\t\tcell_iommu_get_window(np, &dbase, &dsize);\n\t\telse {\n\t\t\tdbase = hbase;\n\t\t\tdsize = htab_size_bytes;\n\t\t}\n\n\t\tprintk(KERN_DEBUG \"iommu: node %d, dynamic window 0x%lx-0x%lx \"\n\t\t\t\"fixed window 0x%lx-0x%lx\\n\", iommu->nid, dbase,\n\t\t\t dbase + dsize, fbase, fbase + fsize);\n\n\t\tcell_iommu_setup_stab(iommu, dbase, dsize, fbase, fsize);\n\t\tiommu->ptab = cell_iommu_alloc_ptab(iommu, dbase, dsize, 0, 0,\n\t\t\t\t\t\t    IOMMU_PAGE_SHIFT_4K);\n\t\tcell_iommu_setup_fixed_ptab(iommu, np, dbase, dsize,\n\t\t\t\t\t     fbase, fsize);\n\t\tcell_iommu_enable_hardware(iommu);\n\t\tcell_iommu_setup_window(iommu, np, dbase, dsize, 0);\n\t}\n\n\tcell_pci_controller_ops.iommu_bypass_supported =\n\t\tcell_pci_iommu_bypass_supported;\n\treturn 0;\n}"
+        ],
+        "sink": "\"fixed window 0x%lx-0x%lx\\n\", iommu->nid, dbase,",
+        "final_sink": "\"fixed window 0x%lx-0x%lx\\n\", iommu->nid, dbase,",
+        "source": [
+            "\t\tfib6_nh = nexthop_fib6_nh(nh);"
+        ],
+        "index": 50
+    },
+    {
+        "prt": "iommu",
+        "function_call": [
+            "static int __init cell_iommu_fixed_mapping_init(void)\n{\n\tunsigned long dbase, dsize, fbase, fsize, hbase, hend;\n\tstruct cbe_iommu *iommu;\n\tstruct device_node *np;\n\n\t/* The fixed mapping is only supported on axon machines */\n\tnp = of_find_node_by_name(NULL, \"axon\");\n\tof_node_put(np);\n\n\tif (!np) {\n\t\tpr_debug(\"iommu: fixed mapping disabled, no axons found\\n\");\n\t\treturn -1;\n\t}\n\n\t/* We must have dma-ranges properties for fixed mapping to work */\n\tnp = of_find_node_with_property(NULL, \"dma-ranges\");\n\tof_node_put(np);\n\n\tif (!np) {\n\t\tpr_debug(\"iommu: no dma-ranges found, no fixed mapping\\n\");\n\t\treturn -1;\n\t}\n\n\t/* The default setup is to have the fixed mapping sit after the\n\t * dynamic region, so find the top of the largest IOMMU window\n\t * on any axon, then add the size of RAM and that's our max value.\n\t * If that is > 32GB we have to do other shennanigans.\n\t */\n\tfbase = 0;\n\tfor_each_node_by_name(np, \"axon\") {\n\t\tcell_iommu_get_window(np, &dbase, &dsize);\n\t\tfbase = max(fbase, dbase + dsize);\n\t}\n\n\tfbase = ALIGN(fbase, 1 << IO_SEGMENT_SHIFT);\n\tfsize = memblock_phys_mem_size();\n\n\tif ((fbase + fsize) <= 0x800000000ul)\n\t\thbase = 0; /* use the device tree window */\n\telse {\n\t\t/* If we're over 32 GB we need to cheat. We can't map all of\n\t\t * RAM with the fixed mapping, and also fit the dynamic\n\t\t * region. So try to place the dynamic region where the hash\n\t\t * table sits, drivers never need to DMA to it, we don't\n\t\t * need a fixed mapping for that area.\n\t\t */\n\t\tif (!htab_address) {\n\t\t\tpr_debug(\"iommu: htab is NULL, on LPAR? Huh?\\n\");\n\t\t\treturn -1;\n\t\t}\n\t\thbase = __pa(htab_address);\n\t\thend  = hbase + htab_size_bytes;\n\n\t\t/* The window must start and end on a segment boundary */\n\t\tif ((hbase != ALIGN(hbase, 1 << IO_SEGMENT_SHIFT)) ||\n\t\t    (hend != ALIGN(hend, 1 << IO_SEGMENT_SHIFT))) {\n\t\t\tpr_debug(\"iommu: hash window not segment aligned\\n\");\n\t\t\treturn -1;\n\t\t}\n\n\t\t/* Check the hash window fits inside the real DMA window */\n\t\tfor_each_node_by_name(np, \"axon\") {\n\t\t\tcell_iommu_get_window(np, &dbase, &dsize);\n\n\t\t\tif (hbase < dbase || (hend > (dbase + dsize))) {\n\t\t\t\tpr_debug(\"iommu: hash window doesn't fit in\"\n\t\t\t\t\t \"real DMA window\\n\");\n\t\t\t\tof_node_put(np);\n\t\t\t\treturn -1;\n\t\t\t}\n\t\t}\n\n\t\tfbase = 0;\n\t}\n\n\t/* Setup the dynamic regions */\n\tfor_each_node_by_name(np, \"axon\") {\n\t\tiommu = cell_iommu_alloc(np);\n\t\tBUG_ON(!iommu);\n\n\t\tif (hbase == 0)\n\t\t\tcell_iommu_get_window(np, &dbase, &dsize);\n\t\telse {\n\t\t\tdbase = hbase;\n\t\t\tdsize = htab_size_bytes;\n\t\t}\n\n\t\tprintk(KERN_DEBUG \"iommu: node %d, dynamic window 0x%lx-0x%lx \"\n\t\t\t\"fixed window 0x%lx-0x%lx\\n\", iommu->nid, dbase,\n\t\t\t dbase + dsize, fbase, fbase + fsize);\n\n\t\tcell_iommu_setup_stab(iommu, dbase, dsize, fbase, fsize);\n\t\tiommu->ptab = cell_iommu_alloc_ptab(iommu, dbase, dsize, 0, 0,\n\t\t\t\t\t\t    IOMMU_PAGE_SHIFT_4K);\n\t\tcell_iommu_setup_fixed_ptab(iommu, np, dbase, dsize,\n\t\t\t\t\t     fbase, fsize);\n\t\tcell_iommu_enable_hardware(iommu);\n\t\tcell_iommu_setup_window(iommu, np, dbase, dsize, 0);\n\t}\n\n\tcell_pci_controller_ops.iommu_bypass_supported =\n\t\tcell_pci_iommu_bypass_supported;\n\treturn 0;\n}"
+        ],
+        "sink": "iommu->ptab = cell_iommu_alloc_ptab(iommu, dbase, dsize, 0, 0,",
+        "final_sink": "iommu->ptab = cell_iommu_alloc_ptab(iommu, dbase, dsize, 0, 0,",
+        "source": [
+            "\t\t\trt_notif = nh->fib6_info;",
+            "\tstruct fib6_info *rt_notif = NULL, *rt_last = NULL;"
+        ],
+        "index": 51
+    },
+    {
+        "prt": "spu",
+        "function_call": [
+            "static struct spu *ctx_location(struct spu *ref, int offset, int node)\n{\n\tstruct spu *spu;\n\n\tspu = NULL;\n\tif (offset >= 0) {\n\t\tlist_for_each_entry(spu, ref->aff_list.prev, aff_list) {\n\t\t\tBUG_ON(spu->node != node);\n\t\t\tif (offset == 0)\n\t\t\t\tbreak;\n\t\t\tif (sched_spu(spu))\n\t\t\t\toffset--;\n\t\t}\n\t} else {\n\t\tlist_for_each_entry_reverse(spu, ref->aff_list.next, aff_list) {\n\t\t\tBUG_ON(spu->node != node);\n\t\t\tif (offset == 0)\n\t\t\t\tbreak;\n\t\t\tif (sched_spu(spu))\n\t\t\t\toffset++;\n\t\t}\n\t}\n\n\treturn spu;\n}"
+        ],
+        "sink": "BUG_ON(spu->node != node);",
+        "final_sink": "BUG_ON(spu->node != node);",
+        "source": [
+            "\tfirst = rt6_multipath_first_sibling(rt);"
+        ],
+        "index": 52
+    },
+    {
+        "prt": "spu",
+        "function_call": [
+            "static struct spu *ctx_location(struct spu *ref, int offset, int node)\n{\n\tstruct spu *spu;\n\n\tspu = NULL;\n\tif (offset >= 0) {\n\t\tlist_for_each_entry(spu, ref->aff_list.prev, aff_list) {\n\t\t\tBUG_ON(spu->node != node);\n\t\t\tif (offset == 0)\n\t\t\t\tbreak;\n\t\t\tif (sched_spu(spu))\n\t\t\t\toffset--;\n\t\t}\n\t} else {\n\t\tlist_for_each_entry_reverse(spu, ref->aff_list.next, aff_list) {\n\t\t\tBUG_ON(spu->node != node);\n\t\t\tif (offset == 0)\n\t\t\t\tbreak;\n\t\t\tif (sched_spu(spu))\n\t\t\t\toffset++;\n\t\t}\n\t}\n\n\treturn spu;\n}"
+        ],
+        "sink": "BUG_ON(spu->node != node);",
+        "final_sink": "BUG_ON(spu->node != node);",
+        "source": [
+            "\t\tfib6_nh = nexthop_fib6_nh(rt->nh);",
+            "\t\tfib6_nh = rt->fib6_nh;"
+        ],
+        "index": 53
+    },
+    {
+        "prt": "kbd",
+        "function_call": [
+            "static void __init chrp_init_IRQ(void)\n{\n#if defined(CONFIG_VT) && defined(CONFIG_INPUT_ADBHID) && defined(CONFIG_XMON)\n\tstruct device_node *kbd;\n#endif\n\tchrp_find_openpic();\n\tchrp_find_8259();\n\n#ifdef CONFIG_SMP\n\t/* Pegasos has no MPIC, those ops would make it crash. It might be an\n\t * option to move setting them to after we probe the PIC though\n\t */\n\tif (chrp_mpic != NULL)\n\t\tsmp_ops = &chrp_smp_ops;\n#endif /* CONFIG_SMP */\n\n\tif (_chrp_type == _CHRP_Pegasos)\n\t\tppc_md.get_irq        = i8259_irq;\n\n#if defined(CONFIG_VT) && defined(CONFIG_INPUT_ADBHID) && defined(CONFIG_XMON)\n\t/* see if there is a keyboard in the device tree\n\t   with a parent of type \"adb\" */\n\tfor_each_node_by_name(kbd, \"keyboard\")\n\t\tif (of_node_is_type(kbd->parent, \"adb\"))\n\t\t\tbreak;\n\tof_node_put(kbd);\n\tif (kbd) {\n\t\tif (request_irq(HYDRA_INT_ADB_NMI, xmon_irq, 0, \"XMON break\",\n\t\t\t\tNULL))\n\t\t\tpr_err(\"Failed to register XMON break interrupt\\n\");\n\t}\n#endif\n}"
+        ],
+        "sink": "if (of_node_is_type(kbd->parent, \"adb\"))",
+        "final_sink": "if (of_node_is_type(kbd->parent, \"adb\"))",
+        "source": [
+            "\t\tidev = in6_dev_get(dev);",
+            "\tidev = rcu_dereference(dev->ip6_ptr);",
+            "\tstruct inet6_dev *idev = NULL;"
+        ],
+        "index": 54
+    },
+    {
+        "prt": "mpic",
+        "function_call": [
+            "static void __init holly_init_IRQ(void)\n{\n\tstruct mpic *mpic;\n#ifdef CONFIG_PCI\n\tunsigned int cascade_pci_irq;\n\tstruct device_node *tsi_pci;\n\tstruct device_node *cascade_node = NULL;\n#endif\n\n\tmpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN |\n\t\t\tMPIC_SPV_EOI | MPIC_NO_PTHROU_DIS | MPIC_REGSET_TSI108,\n\t\t\t24, 0,\n\t\t\t\"Tsi108_PIC\");\n\n\tBUG_ON(mpic == NULL);\n\n\tmpic_assign_isu(mpic, 0, mpic->paddr + 0x100);\n\n\tmpic_init(mpic);\n\n#ifdef CONFIG_PCI\n\ttsi_pci = of_find_node_by_type(NULL, \"pci\");\n\tif (tsi_pci == NULL) {\n\t\tprintk(KERN_ERR \"%s: No tsi108 pci node found !\\n\", __func__);\n\t\treturn;\n\t}\n\n\tcascade_node = of_find_node_by_type(NULL, \"pic-router\");\n\tif (cascade_node == NULL) {\n\t\tprintk(KERN_ERR \"%s: No tsi108 pci cascade node found !\\n\", __func__);\n\t\treturn;\n\t}\n\n\tcascade_pci_irq = irq_of_parse_and_map(tsi_pci, 0);\n\tpr_debug(\"%s: tsi108 cascade_pci_irq = 0x%x\\n\", __func__, (u32) cascade_pci_irq);\n\ttsi108_pci_int_init(cascade_node);\n\tirq_set_handler_data(cascade_pci_irq, mpic);\n\tirq_set_chained_handler(cascade_pci_irq, tsi108_irq_cascade);\n\n\tof_node_put(tsi_pci);\n\tof_node_put(cascade_node);\n#endif\n\t/* Configure MPIC outputs to CPU0 */\n\ttsi108_write_reg(TSI108_MPIC_OFFSET + 0x30c, 0);\n}"
+        ],
+        "sink": "mpic_assign_isu(mpic, 0, mpic->paddr + 0x100);",
+        "final_sink": "mpic_assign_isu(mpic, 0, mpic->paddr + 0x100);",
+        "source": [
+            "\t\tidev = in6_dev_get(dev);",
+            "\tidev = rcu_dereference(dev->ip6_ptr);",
+            "\tstruct inet6_dev *idev = NULL;"
+        ],
+        "index": 55
+    },
+    {
+        "prt": "mpic",
+        "function_call": [
+            "static void __init linkstation_init_IRQ(void)\n{\n\tstruct mpic *mpic;\n\n\tmpic = mpic_alloc(NULL, 0, 0, 4, 0, \" EPIC     \");\n\tBUG_ON(mpic == NULL);\n\n\t/* PCI IRQs */\n\tmpic_assign_isu(mpic, 0, mpic->paddr + 0x10200);\n\n\t/* I2C */\n\tmpic_assign_isu(mpic, 1, mpic->paddr + 0x11000);\n\n\t/* ttyS0, ttyS1 */\n\tmpic_assign_isu(mpic, 2, mpic->paddr + 0x11100);\n\n\tmpic_init(mpic);\n}"
+        ],
+        "sink": "mpic_assign_isu(mpic, 0, mpic->paddr + 0x10200);",
+        "final_sink": "mpic_assign_isu(mpic, 0, mpic->paddr + 0x10200);",
+        "source": [
+            "\t\tdev = netdev_get_by_index(net, cfg->fc_ifindex,",
+            "\t\t\tdev = net->loopback_dev;",
+            "\tdev = *_dev;",
+            "\t\t*_dev = dev = res.nh->fib_nh_dev;",
+            "\tdev = dev_get_by_index(net, ifindex);",
+            "\tdev = dev_get_by_index_rcu(net, ifindex);",
+            "\thlist_for_each_entry_rcu(dev, head, index_hlist)",
+            "\tstruct net_device *dev = NULL;",
+            "\tconst struct net_device *dev = *_dev;"
+        ],
+        "index": 56
+    },
+    {
+        "prt": "mpic",
+        "function_call": [
+            "static void __init linkstation_init_IRQ(void)\n{\n\tstruct mpic *mpic;\n\n\tmpic = mpic_alloc(NULL, 0, 0, 4, 0, \" EPIC     \");\n\tBUG_ON(mpic == NULL);\n\n\t/* PCI IRQs */\n\tmpic_assign_isu(mpic, 0, mpic->paddr + 0x10200);\n\n\t/* I2C */\n\tmpic_assign_isu(mpic, 1, mpic->paddr + 0x11000);\n\n\t/* ttyS0, ttyS1 */\n\tmpic_assign_isu(mpic, 2, mpic->paddr + 0x11100);\n\n\tmpic_init(mpic);\n}"
+        ],
+        "sink": "mpic_assign_isu(mpic, 1, mpic->paddr + 0x11000);",
+        "final_sink": "mpic_assign_isu(mpic, 1, mpic->paddr + 0x11000);",
+        "source": [
+            "\t\t\tnh = nexthop_fib6_nh(f6i->nh);",
+            "\t\t\tnh = f6i->fib6_nh;"
+        ],
+        "index": 57
+    },
+    {
+        "prt": "mpic",
+        "function_call": [
+            "static void __init linkstation_init_IRQ(void)\n{\n\tstruct mpic *mpic;\n\n\tmpic = mpic_alloc(NULL, 0, 0, 4, 0, \" EPIC     \");\n\tBUG_ON(mpic == NULL);\n\n\t/* PCI IRQs */\n\tmpic_assign_isu(mpic, 0, mpic->paddr + 0x10200);\n\n\t/* I2C */\n\tmpic_assign_isu(mpic, 1, mpic->paddr + 0x11000);\n\n\t/* ttyS0, ttyS1 */\n\tmpic_assign_isu(mpic, 2, mpic->paddr + 0x11100);\n\n\tmpic_init(mpic);\n}"
+        ],
+        "sink": "mpic_assign_isu(mpic, 2, mpic->paddr + 0x11100);",
+        "final_sink": "mpic_assign_isu(mpic, 2, mpic->paddr + 0x11100);",
+        "source": [
+            "\t\tnh = nexthop_fib6_nh(f6i->nh);",
+            "\t\tnh = f6i->fib6_nh;"
+        ],
+        "index": 58
+    },
+    {
+        "prt": "mpic",
+        "function_call": [
+            "static void __init storcenter_init_IRQ(void)\n{\n\tstruct mpic *mpic;\n\n\tmpic = mpic_alloc(NULL, 0, 0, 16, 0, \" OpenPIC  \");\n\tBUG_ON(mpic == NULL);\n\n\t/*\n\t * 16 Serial Interrupts followed by 16 Internal Interrupts.\n\t * I2C is the second internal, so it is at 17, 0x11020.\n\t */\n\tmpic_assign_isu(mpic, 0, mpic->paddr + 0x10200);\n\tmpic_assign_isu(mpic, 1, mpic->paddr + 0x11000);\n\n\tmpic_init(mpic);\n}"
+        ],
+        "sink": "mpic_assign_isu(mpic, 0, mpic->paddr + 0x10200);",
+        "final_sink": "mpic_assign_isu(mpic, 0, mpic->paddr + 0x10200);",
+        "source": [
+            "\tskb = __skb_dequeue(queue);",
+            "\t\tskb = ip6_make_skb(sk, getfrag, msg, ulen,",
+            "\t\tskb = NULL;",
+            "\tstruct sk_buff *skb = skb_peek(list);",
+            "\tstruct sk_buff *skb = list_->next;"
+        ],
+        "index": 59
+    },
+    {
+        "prt": "mpic",
+        "function_call": [
+            "static void __init storcenter_init_IRQ(void)\n{\n\tstruct mpic *mpic;\n\n\tmpic = mpic_alloc(NULL, 0, 0, 16, 0, \" OpenPIC  \");\n\tBUG_ON(mpic == NULL);\n\n\t/*\n\t * 16 Serial Interrupts followed by 16 Internal Interrupts.\n\t * I2C is the second internal, so it is at 17, 0x11020.\n\t */\n\tmpic_assign_isu(mpic, 0, mpic->paddr + 0x10200);\n\tmpic_assign_isu(mpic, 1, mpic->paddr + 0x11000);\n\n\tmpic_init(mpic);\n}"
+        ],
+        "sink": "mpic_assign_isu(mpic, 1, mpic->paddr + 0x11000);",
+        "final_sink": "mpic_assign_isu(mpic, 1, mpic->paddr + 0x11000);",
+        "source": [
+            "\t\t\txdst = (struct xfrm_dst *)xfrm_dst_child(&xdst->u.dst);"
+        ],
+        "index": 60
+    },
+    {
+        "prt": "hose",
+        "function_call": [
+            "static void hpcd_final_uli5288(struct pci_dev *dev)\n{\n\tstruct pci_controller *hose = pci_bus_to_host(dev->bus);\n\tstruct device_node *hosenode = hose ? hose->dn : NULL;\n\tstruct of_phandle_args oirq;\n\tu32 laddr[3];\n\n\tif (!machine_is(mpc86xx_hpcd))\n\t\treturn;\n\n\tif (!hosenode)\n\t\treturn;\n\n\toirq.np = hosenode;\n\toirq.args[0] = 2;\n\toirq.args_count = 1;\n\tladdr[0] = (hose->first_busno << 16) | (PCI_DEVFN(31, 0) << 8);\n\tladdr[1] = laddr[2] = 0;\n\tof_irq_parse_raw(laddr, &oirq);\n\tdev->irq = irq_create_of_mapping(&oirq);\n}"
+        ],
+        "sink": "laddr[0] = (hose->first_busno << 16) | (PCI_DEVFN(31, 0) << 8);",
+        "final_sink": "laddr[0] = (hose->first_busno << 16) | (PCI_DEVFN(31, 0) << 8);",
+        "source": [
+            "\tfor (pprev = proto_handlers(protocol);",
+            "\t     pprev = &t->next) {"
+        ],
+        "index": 61
+    },
+    {
+        "prt": "mpic",
+        "function_call": [
+            "static __init void pas_init_IRQ(void)\n{\n\tstruct device_node *np;\n\tstruct device_node *root, *mpic_node;\n\tunsigned long openpic_addr;\n\tconst unsigned int *opprop;\n\tint naddr, opplen;\n\tint mpic_flags;\n\tconst unsigned int *nmiprop;\n\tstruct mpic *mpic;\n\n\tmpic_node = NULL;\n\n\tfor_each_node_by_type(np, \"interrupt-controller\")\n\t\tif (of_device_is_compatible(np, \"open-pic\")) {\n\t\t\tmpic_node = np;\n\t\t\tbreak;\n\t\t}\n\tif (!mpic_node)\n\t\tfor_each_node_by_type(np, \"open-pic\") {\n\t\t\tmpic_node = np;\n\t\t\tbreak;\n\t\t}\n\tif (!mpic_node) {\n\t\tpr_err(\"Failed to locate the MPIC interrupt controller\\n\");\n\t\treturn;\n\t}\n\n\t/* Find address list in /platform-open-pic */\n\troot = of_find_node_by_path(\"/\");\n\tnaddr = of_n_addr_cells(root);\n\topprop = of_get_property(root, \"platform-open-pic\", &opplen);\n\tif (!opprop) {\n\t\tpr_err(\"No platform-open-pic property.\\n\");\n\t\tof_node_put(root);\n\t\treturn;\n\t}\n\topenpic_addr = of_read_number(opprop, naddr);\n\tpr_debug(\"OpenPIC addr: %lx\\n\", openpic_addr);\n\n\tmpic_flags = MPIC_LARGE_VECTORS | MPIC_NO_BIAS | MPIC_NO_RESET;\n\n\tnmiprop = of_get_property(mpic_node, \"nmi-source\", NULL);\n\tif (nmiprop)\n\t\tmpic_flags |= MPIC_ENABLE_MCK;\n\n\tmpic = mpic_alloc(mpic_node, openpic_addr,\n\t\t\t  mpic_flags, 0, 0, \"PASEMI-OPIC\");\n\tBUG_ON(!mpic);\n\n\tmpic_assign_isu(mpic, 0, mpic->paddr + 0x10000);\n\tmpic_init(mpic);\n\t/* The NMI/MCK source needs to be prio 15 */\n\tif (nmiprop) {\n\t\tnmi_virq = irq_create_mapping(NULL, *nmiprop);\n\t\tmpic_irq_set_priority(nmi_virq, 15);\n\t\tirq_set_irq_type(nmi_virq, IRQ_TYPE_EDGE_RISING);\n\t\tmpic_unmask_irq(irq_get_irq_data(nmi_virq));\n\t}\n\n\tnemo_init_IRQ(mpic);\n\n\tof_node_put(mpic_node);\n\tof_node_put(root);\n}"
+        ],
+        "sink": "mpic_assign_isu(mpic, 0, mpic->paddr + 0x10000);",
+        "final_sink": "mpic_assign_isu(mpic, 0, mpic->paddr + 0x10000);",
+        "source": [
+            "\tfor (pprev = proto_handlers(protocol);",
+            "\t     pprev = &t->next) {"
+        ],
+        "index": 62
+    },
+    {
+        "prt": "w",
+        "function_call": [
+            "static void pnv_pci_fixup_bridge_resources(struct pci_bus *bus,\n\t\t\t\t\t   unsigned long type)\n{\n\tstruct pci_controller *hose = pci_bus_to_host(bus);\n\tstruct pnv_phb *phb = hose->private_data;\n\tstruct pci_dev *bridge = bus->self;\n\tstruct resource *r, *w;\n\tbool msi_region = false;\n\tint i;\n\n\t/* Check if we need apply fixup to the bridge's windows */\n\tif (!pci_is_root_bus(bridge->bus) &&\n\t    !pci_is_root_bus(bridge->bus->self->bus))\n\t\treturn;\n\n\t/* Fixup the resources */\n\tfor (i = 0; i < PCI_BRIDGE_RESOURCE_NUM; i++) {\n\t\tr = &bridge->resource[PCI_BRIDGE_RESOURCES + i];\n\t\tif (!r->flags || !r->parent)\n\t\t\tcontinue;\n\n\t\tw = NULL;\n\t\tif (r->flags & type & IORESOURCE_IO)\n\t\t\tw = &hose->io_resource;\n\t\telse if (pnv_pci_is_m64(phb, r) &&\n\t\t\t (type & IORESOURCE_PREFETCH) &&\n\t\t\t phb->ioda.m64_segsize)\n\t\t\tw = &hose->mem_resources[1];\n\t\telse if (r->flags & type & IORESOURCE_MEM) {\n\t\t\tw = &hose->mem_resources[0];\n\t\t\tmsi_region = true;\n\t\t}\n\n\t\tr->start = w->start;\n\t\tr->end = w->end;\n\n\t\t/* The 64KB 32-bits MSI region shouldn't be included in\n\t\t * the 32-bits bridge window. Otherwise, we can see strange\n\t\t * issues. One of them is EEH error observed on Garrison.\n\t\t *\n\t\t * Exclude top 1MB region which is the minimal alignment of\n\t\t * 32-bits bridge window.\n\t\t */\n\t\tif (msi_region) {\n\t\t\tr->end += 0x10000;\n\t\t\tr->end -= 0x100000;\n\t\t}\n\t}\n}"
+        ],
+        "sink": "r->start = w->start;",
+        "final_sink": "r->start = w->start;",
+        "source": [
+            "\t\telems = ieee802_11_parse_elems(mgmt->u.action.u.addba_req.variable,",
+            "\telems = &elems_parse->elems;",
+            "\tstruct ieee802_11_elems *elems = NULL;"
+        ],
+        "index": 63
+    },
+    {
+        "prt": "w",
+        "function_call": [
+            "static void pnv_pci_fixup_bridge_resources(struct pci_bus *bus,\n\t\t\t\t\t   unsigned long type)\n{\n\tstruct pci_controller *hose = pci_bus_to_host(bus);\n\tstruct pnv_phb *phb = hose->private_data;\n\tstruct pci_dev *bridge = bus->self;\n\tstruct resource *r, *w;\n\tbool msi_region = false;\n\tint i;\n\n\t/* Check if we need apply fixup to the bridge's windows */\n\tif (!pci_is_root_bus(bridge->bus) &&\n\t    !pci_is_root_bus(bridge->bus->self->bus))\n\t\treturn;\n\n\t/* Fixup the resources */\n\tfor (i = 0; i < PCI_BRIDGE_RESOURCE_NUM; i++) {\n\t\tr = &bridge->resource[PCI_BRIDGE_RESOURCES + i];\n\t\tif (!r->flags || !r->parent)\n\t\t\tcontinue;\n\n\t\tw = NULL;\n\t\tif (r->flags & type & IORESOURCE_IO)\n\t\t\tw = &hose->io_resource;\n\t\telse if (pnv_pci_is_m64(phb, r) &&\n\t\t\t (type & IORESOURCE_PREFETCH) &&\n\t\t\t phb->ioda.m64_segsize)\n\t\t\tw = &hose->mem_resources[1];\n\t\telse if (r->flags & type & IORESOURCE_MEM) {\n\t\t\tw = &hose->mem_resources[0];\n\t\t\tmsi_region = true;\n\t\t}\n\n\t\tr->start = w->start;\n\t\tr->end = w->end;\n\n\t\t/* The 64KB 32-bits MSI region shouldn't be included in\n\t\t * the 32-bits bridge window. Otherwise, we can see strange\n\t\t * issues. One of them is EEH error observed on Garrison.\n\t\t *\n\t\t * Exclude top 1MB region which is the minimal alignment of\n\t\t * 32-bits bridge window.\n\t\t */\n\t\tif (msi_region) {\n\t\t\tr->end += 0x10000;\n\t\t\tr->end -= 0x100000;\n\t\t}\n\t}\n}"
+        ],
+        "sink": "r->end = w->end;",
+        "final_sink": "r->end = w->end;",
+        "source": [
+            "\tfunc = idr_find(&sdata->u.nan.function_inst_ids,  match->inst_id);"
+        ],
+        "index": 64
+    },
+    {
+        "prt": "drv",
+        "function_call": [
+            "static int ps3_system_bus_probe(struct device *_dev)\n{\n\tint result = 0;\n\tstruct ps3_system_bus_device *dev = ps3_dev_to_system_bus_dev(_dev);\n\tstruct ps3_system_bus_driver *drv;\n\n\tBUG_ON(!dev);\n\tdev_dbg(_dev, \"%s:%d\\n\", __func__, __LINE__);\n\n\tdrv = ps3_system_bus_dev_to_system_bus_drv(dev);\n\tBUG_ON(!drv);\n\n\tif (drv->probe)\n\t\tresult = drv->probe(dev);\n\telse\n\t\tpr_debug(\"%s:%d: %s no probe method\\n\", __func__, __LINE__,\n\t\t\tdev_name(&dev->core));\n\n\tpr_debug(\" <- %s:%d: %s\\n\", __func__, __LINE__, dev_name(&dev->core));\n\treturn result;\n}"
+        ],
+        "sink": "if (drv->probe)",
+        "final_sink": "if (drv->probe)",
+        "source": [
+            "\tfunc = idr_find(&sdata->u.nan.function_inst_ids, inst_id);"
+        ],
+        "index": 65
+    },
+    {
+        "prt": "drv",
+        "function_call": [
+            "static void ps3_system_bus_remove(struct device *_dev)\n{\n\tstruct ps3_system_bus_device *dev = ps3_dev_to_system_bus_dev(_dev);\n\tstruct ps3_system_bus_driver *drv;\n\n\tBUG_ON(!dev);\n\tdev_dbg(_dev, \"%s:%d\\n\", __func__, __LINE__);\n\n\tdrv = ps3_system_bus_dev_to_system_bus_drv(dev);\n\tBUG_ON(!drv);\n\n\tif (drv->remove)\n\t\tdrv->remove(dev);\n\telse\n\t\tdev_dbg(&dev->core, \"%s:%d %s: no remove method\\n\",\n\t\t\t__func__, __LINE__, drv->core.name);\n\n\tpr_debug(\" <- %s:%d: %s\\n\", __func__, __LINE__, dev_name(&dev->core));\n}"
+        ],
+        "sink": "if (drv->remove)",
+        "final_sink": "if (drv->remove)",
+        "source": [
+            "\t\tsta = sta_info_get_bss(sdata, mac_addr);",
+            "\tfor_each_sta_info(local, addr, sta, tmp) {",
+            "\tstruct sta_info *sta = NULL;"
+        ],
+        "index": 66
+    },
+    {
+        "prt": "dev",
+        "function_call": [
+            "static void ps3_system_bus_shutdown(struct device *_dev)\n{\n\tstruct ps3_system_bus_device *dev = ps3_dev_to_system_bus_dev(_dev);\n\tstruct ps3_system_bus_driver *drv;\n\n\tBUG_ON(!dev);\n\n\tdev_dbg(&dev->core, \" -> %s:%d: match_id %d\\n\", __func__, __LINE__,\n\t\tdev->match_id);\n\n\tif (!dev->core.driver) {\n\t\tdev_dbg(&dev->core, \"%s:%d: no driver bound\\n\", __func__,\n\t\t\t__LINE__);\n\t\treturn;\n\t}\n\n\tdrv = ps3_system_bus_dev_to_system_bus_drv(dev);\n\n\tBUG_ON(!drv);\n\n\tdev_dbg(&dev->core, \"%s:%d: %s -> %s\\n\", __func__, __LINE__,\n\t\tdev_name(&dev->core), drv->core.name);\n\n\tif (drv->shutdown)\n\t\tdrv->shutdown(dev);\n\telse if (drv->remove) {\n\t\tdev_dbg(&dev->core, \"%s:%d %s: no shutdown, calling remove\\n\",\n\t\t\t__func__, __LINE__, drv->core.name);\n\t\tdrv->remove(dev);\n\t} else {\n\t\tdev_dbg(&dev->core, \"%s:%d %s: no shutdown method\\n\",\n\t\t\t__func__, __LINE__, drv->core.name);\n\t\tBUG();\n\t}\n\n\tdev_dbg(&dev->core, \" <- %s:%d\\n\", __func__, __LINE__);\n}"
+        ],
+        "sink": "dev->match_id);",
+        "final_sink": "dev->match_id);",
+        "source": [
+            "\t\t\told_ctx = ieee80211_link_get_chanctx(link);"
+        ],
+        "index": 67
+    },
+    {
+        "prt": "dev",
+        "function_call": [
+            "static void ps3_system_bus_shutdown(struct device *_dev)\n{\n\tstruct ps3_system_bus_device *dev = ps3_dev_to_system_bus_dev(_dev);\n\tstruct ps3_system_bus_driver *drv;\n\n\tBUG_ON(!dev);\n\n\tdev_dbg(&dev->core, \" -> %s:%d: match_id %d\\n\", __func__, __LINE__,\n\t\tdev->match_id);\n\n\tif (!dev->core.driver) {\n\t\tdev_dbg(&dev->core, \"%s:%d: no driver bound\\n\", __func__,\n\t\t\t__LINE__);\n\t\treturn;\n\t}\n\n\tdrv = ps3_system_bus_dev_to_system_bus_drv(dev);\n\n\tBUG_ON(!drv);\n\n\tdev_dbg(&dev->core, \"%s:%d: %s -> %s\\n\", __func__, __LINE__,\n\t\tdev_name(&dev->core), drv->core.name);\n\n\tif (drv->shutdown)\n\t\tdrv->shutdown(dev);\n\telse if (drv->remove) {\n\t\tdev_dbg(&dev->core, \"%s:%d %s: no shutdown, calling remove\\n\",\n\t\t\t__func__, __LINE__, drv->core.name);\n\t\tdrv->remove(dev);\n\t} else {\n\t\tdev_dbg(&dev->core, \"%s:%d %s: no shutdown method\\n\",\n\t\t\t__func__, __LINE__, drv->core.name);\n\t\tBUG();\n\t}\n\n\tdev_dbg(&dev->core, \" <- %s:%d\\n\", __func__, __LINE__);\n}"
+        ],
+        "sink": "if (!dev->core.driver) {",
+        "final_sink": "if (!dev->core.driver) {",
+        "source": [
+            "\told_ctx = ieee80211_link_get_chanctx(link);"
+        ],
+        "index": 68
+    },
+    {
+        "prt": "drv",
+        "function_call": [
+            "static void ps3_system_bus_shutdown(struct device *_dev)\n{\n\tstruct ps3_system_bus_device *dev = ps3_dev_to_system_bus_dev(_dev);\n\tstruct ps3_system_bus_driver *drv;\n\n\tBUG_ON(!dev);\n\n\tdev_dbg(&dev->core, \" -> %s:%d: match_id %d\\n\", __func__, __LINE__,\n\t\tdev->match_id);\n\n\tif (!dev->core.driver) {\n\t\tdev_dbg(&dev->core, \"%s:%d: no driver bound\\n\", __func__,\n\t\t\t__LINE__);\n\t\treturn;\n\t}\n\n\tdrv = ps3_system_bus_dev_to_system_bus_drv(dev);\n\n\tBUG_ON(!drv);\n\n\tdev_dbg(&dev->core, \"%s:%d: %s -> %s\\n\", __func__, __LINE__,\n\t\tdev_name(&dev->core), drv->core.name);\n\n\tif (drv->shutdown)\n\t\tdrv->shutdown(dev);\n\telse if (drv->remove) {\n\t\tdev_dbg(&dev->core, \"%s:%d %s: no shutdown, calling remove\\n\",\n\t\t\t__func__, __LINE__, drv->core.name);\n\t\tdrv->remove(dev);\n\t} else {\n\t\tdev_dbg(&dev->core, \"%s:%d %s: no shutdown method\\n\",\n\t\t\t__func__, __LINE__, drv->core.name);\n\t\tBUG();\n\t}\n\n\tdev_dbg(&dev->core, \" <- %s:%d\\n\", __func__, __LINE__);\n}"
+        ],
+        "sink": "dev_name(&dev->core), drv->core.name);",
+        "final_sink": "dev_name(&dev->core), drv->core.name);",
+        "source": [
+            "\t\t\telems = ieee802_11_parse_elems(",
+            "\telems = &elems_parse->elems;"
+        ],
+        "index": 69
+    },
+    {
+        "prt": "drv",
+        "function_call": [
+            "static void ps3_system_bus_shutdown(struct device *_dev)\n{\n\tstruct ps3_system_bus_device *dev = ps3_dev_to_system_bus_dev(_dev);\n\tstruct ps3_system_bus_driver *drv;\n\n\tBUG_ON(!dev);\n\n\tdev_dbg(&dev->core, \" -> %s:%d: match_id %d\\n\", __func__, __LINE__,\n\t\tdev->match_id);\n\n\tif (!dev->core.driver) {\n\t\tdev_dbg(&dev->core, \"%s:%d: no driver bound\\n\", __func__,\n\t\t\t__LINE__);\n\t\treturn;\n\t}\n\n\tdrv = ps3_system_bus_dev_to_system_bus_drv(dev);\n\n\tBUG_ON(!drv);\n\n\tdev_dbg(&dev->core, \"%s:%d: %s -> %s\\n\", __func__, __LINE__,\n\t\tdev_name(&dev->core), drv->core.name);\n\n\tif (drv->shutdown)\n\t\tdrv->shutdown(dev);\n\telse if (drv->remove) {\n\t\tdev_dbg(&dev->core, \"%s:%d %s: no shutdown, calling remove\\n\",\n\t\t\t__func__, __LINE__, drv->core.name);\n\t\tdrv->remove(dev);\n\t} else {\n\t\tdev_dbg(&dev->core, \"%s:%d %s: no shutdown method\\n\",\n\t\t\t__func__, __LINE__, drv->core.name);\n\t\tBUG();\n\t}\n\n\tdev_dbg(&dev->core, \" <- %s:%d\\n\", __func__, __LINE__);\n}"
+        ],
+        "sink": "if (drv->shutdown)",
+        "final_sink": "if (drv->shutdown)",
+        "source": [
+            "\t\tbssid = ifibss->bssid;",
+            "\t\tbssid = ifibss->bssid;",
+            "\tconst u8 *bssid = NULL;"
+        ],
+        "index": 70
+    },
+    {
+        "prt": "buff_stats",
+        "function_call": [
+            "static ssize_t drc_pmem_query_stats(struct papr_scm_priv *p,\n\t\t\t\t    struct papr_scm_perf_stats *buff_stats,\n\t\t\t\t    unsigned int num_stats)\n{\n\tunsigned long ret[PLPAR_HCALL_BUFSIZE];\n\tsize_t size;\n\ts64 rc;\n\n\t/* Setup the out buffer */\n\tif (buff_stats) {\n\t\tmemcpy(buff_stats->eye_catcher,\n\t\t       PAPR_SCM_PERF_STATS_EYECATCHER, 8);\n\t\tbuff_stats->stats_version =\n\t\t\tcpu_to_be32(PAPR_SCM_PERF_STATS_VERSION);\n\t\tbuff_stats->num_statistics =\n\t\t\tcpu_to_be32(num_stats);\n\n\t\t/*\n\t\t * Calculate the buffer size based on num-stats provided\n\t\t * or use the prefetched max buffer length\n\t\t */\n\t\tif (num_stats)\n\t\t\t/* Calculate size from the num_stats */\n\t\t\tsize = sizeof(struct papr_scm_perf_stats) +\n\t\t\t\tnum_stats * sizeof(struct papr_scm_perf_stat);\n\t\telse\n\t\t\tsize = p->stat_buffer_len;\n\t} else {\n\t\t/* In case of no out buffer ignore the size */\n\t\tsize = 0;\n\t}\n\n\t/* Do the HCALL asking PHYP for info */\n\trc = plpar_hcall(H_SCM_PERFORMANCE_STATS, ret, p->drc_index,\n\t\t\t buff_stats ? virt_to_phys(buff_stats) : 0,\n\t\t\t size);\n\n\t/* Check if the error was due to an unknown stat-id */\n\tif (rc == H_PARTIAL) {\n\t\tdev_err(&p->pdev->dev,\n\t\t\t\"Unknown performance stats, Err:0x%016lX\\n\", ret[0]);\n\t\treturn -ENOENT;\n\t} else if (rc == H_AUTHORITY) {\n\t\tdev_info(&p->pdev->dev,\n\t\t\t \"Permission denied while accessing performance stats\");\n\t\treturn -EPERM;\n\t} else if (rc == H_UNSUPPORTED) {\n\t\tdev_dbg(&p->pdev->dev, \"Performance stats unsupported\\n\");\n\t\treturn -EOPNOTSUPP;\n\t} else if (rc != H_SUCCESS) {\n\t\tdev_err(&p->pdev->dev,\n\t\t\t\"Failed to query performance stats, Err:%lld\\n\", rc);\n\t\treturn -EIO;\n\n\t} else if (!size) {\n\t\t/* Handle case where stat buffer size was requested */\n\t\tdev_dbg(&p->pdev->dev,\n\t\t\t\"Performance stats size %ld\\n\", ret[0]);\n\t\treturn ret[0];\n\t}\n\n\t/* Successfully fetched the requested stats from phyp */\n\tdev_dbg(&p->pdev->dev,\n\t\t\"Performance stats returned %d stats\\n\",\n\t\tbe32_to_cpu(buff_stats->num_statistics));\n\treturn 0;\n}"
+        ],
+        "sink": "be32_to_cpu(buff_stats->num_statistics));",
+        "final_sink": "be32_to_cpu(buff_stats->num_statistics));",
+        "source": [
+            "\t\t\telems = ieee802_11_parse_elems(",
+            "\telems = &elems_parse->elems;"
+        ],
+        "index": 71
+    },
+    {
+        "prt": "mpic",
+        "function_call": [
+            "static inline u32 _mpic_cpu_read(struct mpic *mpic, unsigned int reg)\n{\n\tunsigned int cpu = mpic_processor_id(mpic);\n\n\treturn _mpic_read(mpic->reg_type, &mpic->cpuregs[cpu], reg);\n}"
+        ],
+        "sink": "return _mpic_read(mpic->reg_type, &mpic->cpuregs[cpu], reg);",
+        "final_sink": "return _mpic_read(mpic->reg_type, &mpic->cpuregs[cpu], reg);",
+        "source": [
+            "\t\t\telems = ieee802_11_parse_elems(",
+            "\telems = &elems_parse->elems;"
+        ],
+        "index": 72
+    },
+    {
+        "prt": "mpic",
+        "function_call": [
+            "unsigned int mpic_get_coreint_irq(void)\n{\n#ifdef CONFIG_BOOKE\n\tstruct mpic *mpic = mpic_primary;\n\tu32 src;\n\n\tBUG_ON(mpic == NULL);\n\n\tsrc = mfspr(SPRN_EPR);\n\n\tif (unlikely(src == mpic->spurious_vec)) {\n\t\tif (mpic->flags & MPIC_SPV_EOI)\n\t\t\tmpic_eoi(mpic);\n\t\treturn 0;\n\t}\n\tif (unlikely(mpic->protected && test_bit(src, mpic->protected))) {\n\t\tprintk_ratelimited(KERN_WARNING \"%s: Got protected source %d !\\n\",\n\t\t\t\t   mpic->name, (int)src);\n\t\treturn 0;\n\t}\n\n\treturn irq_linear_revmap(mpic->irqhost, src);\n#else\n\treturn 0;\n#endif\n}"
+        ],
+        "sink": "if (unlikely(src == mpic->spurious_vec)) {",
+        "final_sink": "if (unlikely(src == mpic->spurious_vec)) {",
+        "source": [],
+        "index": 73
+    },
+    {
+        "prt": "mpic",
+        "function_call": [
+            "unsigned int mpic_get_mcirq(void)\n{\n\tstruct mpic *mpic = mpic_primary;\n\n\tBUG_ON(mpic == NULL);\n\n\treturn _mpic_get_one_irq(mpic, MPIC_INFO(CPU_MCACK));\n}"
+        ],
+        "sink": "return _mpic_get_one_irq(mpic, MPIC_INFO(CPU_MCACK));",
+        "final_sink": "return _mpic_get_one_irq(mpic, MPIC_INFO(CPU_MCACK));",
+        "source": [
+            "\telems = ieee802_11_parse_elems(mgmt->u.action.u.ttlm_req.variable,",
+            "\telems = &elems_parse->elems;"
+        ],
+        "index": 74
+    },
+    {
+        "prt": "tsk",
+        "function_call": [
+            "static void show_task(struct task_struct *volatile tsk)\n{\n\tunsigned int p_state = READ_ONCE(tsk->__state);\n\tchar state;\n\n\t/*\n\t * Cloned from kdb_task_state_char(), which is not entirely\n\t * appropriate for calling from xmon. This could be moved\n\t * to a common, generic, routine used by both.\n\t */\n\tstate = (p_state == TASK_RUNNING) ? 'R' :\n\t\t(p_state & TASK_UNINTERRUPTIBLE) ? 'D' :\n\t\t(p_state & TASK_STOPPED) ? 'T' :\n\t\t(p_state & TASK_TRACED) ? 'C' :\n\t\t(tsk->exit_state & EXIT_ZOMBIE) ? 'Z' :\n\t\t(tsk->exit_state & EXIT_DEAD) ? 'E' :\n\t\t(p_state & TASK_INTERRUPTIBLE) ? 'S' : '?';\n\n\tprintf(\"%16px %16lx %16px %6d %6d %c %2d %s\\n\", tsk,\n\t\ttsk->thread.ksp, tsk->thread.regs,\n\t\ttsk->pid, rcu_dereference(tsk->parent)->pid,\n\t\tstate, task_cpu(tsk),\n\t\ttsk->comm);\n}"
+        ],
+        "sink": "tsk->thread.ksp, tsk->thread.regs,",
+        "final_sink": "tsk->thread.ksp, tsk->thread.regs,",
+        "source": [
+            "\tbssid = ieee80211_get_bssid(hdr, len, sdata->vif.type);"
+        ],
+        "index": 75
+    },
+    {
+        "prt": "tsk",
+        "function_call": [
+            "static void show_task(struct task_struct *volatile tsk)\n{\n\tunsigned int p_state = READ_ONCE(tsk->__state);\n\tchar state;\n\n\t/*\n\t * Cloned from kdb_task_state_char(), which is not entirely\n\t * appropriate for calling from xmon. This could be moved\n\t * to a common, generic, routine used by both.\n\t */\n\tstate = (p_state == TASK_RUNNING) ? 'R' :\n\t\t(p_state & TASK_UNINTERRUPTIBLE) ? 'D' :\n\t\t(p_state & TASK_STOPPED) ? 'T' :\n\t\t(p_state & TASK_TRACED) ? 'C' :\n\t\t(tsk->exit_state & EXIT_ZOMBIE) ? 'Z' :\n\t\t(tsk->exit_state & EXIT_DEAD) ? 'E' :\n\t\t(p_state & TASK_INTERRUPTIBLE) ? 'S' : '?';\n\n\tprintf(\"%16px %16lx %16px %6d %6d %c %2d %s\\n\", tsk,\n\t\ttsk->thread.ksp, tsk->thread.regs,\n\t\ttsk->pid, rcu_dereference(tsk->parent)->pid,\n\t\tstate, task_cpu(tsk),\n\t\ttsk->comm);\n}"
+        ],
+        "sink": "tsk->pid, rcu_dereference(tsk->parent)->pid,",
+        "final_sink": "tsk->pid, rcu_dereference(tsk->parent)->pid,",
+        "source": [
+            "\tbssid = ieee80211_get_bssid(hdr, len, sdata->vif.type);"
+        ],
+        "index": 76
+    },
+    {
+        "prt": "tsk",
+        "function_call": [
+            "static void show_task(struct task_struct *volatile tsk)\n{\n\tunsigned int p_state = READ_ONCE(tsk->__state);\n\tchar state;\n\n\t/*\n\t * Cloned from kdb_task_state_char(), which is not entirely\n\t * appropriate for calling from xmon. This could be moved\n\t * to a common, generic, routine used by both.\n\t */\n\tstate = (p_state == TASK_RUNNING) ? 'R' :\n\t\t(p_state & TASK_UNINTERRUPTIBLE) ? 'D' :\n\t\t(p_state & TASK_STOPPED) ? 'T' :\n\t\t(p_state & TASK_TRACED) ? 'C' :\n\t\t(tsk->exit_state & EXIT_ZOMBIE) ? 'Z' :\n\t\t(tsk->exit_state & EXIT_DEAD) ? 'E' :\n\t\t(p_state & TASK_INTERRUPTIBLE) ? 'S' : '?';\n\n\tprintf(\"%16px %16lx %16px %6d %6d %c %2d %s\\n\", tsk,\n\t\ttsk->thread.ksp, tsk->thread.regs,\n\t\ttsk->pid, rcu_dereference(tsk->parent)->pid,\n\t\tstate, task_cpu(tsk),\n\t\ttsk->comm);\n}"
+        ],
+        "sink": "tsk->comm);",
+        "final_sink": "tsk->comm);",
+        "source": [
+            "\tsta = sta_info_get(sdata, sdata->vif.cfg.ap_addr);",
+            "\tfor_each_sta_info(local, addr, sta, tmp) {"
+        ],
+        "index": 77
+    },
+    {
+        "prt": "cie_tmp",
+        "function_call": [
+            "static struct dwarf_cie *dwarf_lookup_cie(unsigned long cie_ptr)\n{\n\tstruct rb_node **rb_node = &cie_root.rb_node;\n\tstruct dwarf_cie *cie = NULL;\n\tunsigned long flags;\n\n\tspin_lock_irqsave(&dwarf_cie_lock, flags);\n\n\t/*\n\t * We've cached the last CIE we looked up because chances are\n\t * that the FDE wants this CIE.\n\t */\n\tif (cached_cie && cached_cie->cie_pointer == cie_ptr) {\n\t\tcie = cached_cie;\n\t\tgoto out;\n\t}\n\n\twhile (*rb_node) {\n\t\tstruct dwarf_cie *cie_tmp;\n\n\t\tcie_tmp = rb_entry(*rb_node, struct dwarf_cie, node);\n\t\tBUG_ON(!cie_tmp);\n\n\t\tif (cie_ptr == cie_tmp->cie_pointer) {\n\t\t\tcie = cie_tmp;\n\t\t\tcached_cie = cie_tmp;\n\t\t\tgoto out;\n\t\t} else {\n\t\t\tif (cie_ptr < cie_tmp->cie_pointer)\n\t\t\t\trb_node = &(*rb_node)->rb_left;\n\t\t\telse\n\t\t\t\trb_node = &(*rb_node)->rb_right;\n\t\t}\n\t}\n\nout:\n\tspin_unlock_irqrestore(&dwarf_cie_lock, flags);\n\treturn cie;\n}"
+        ],
+        "sink": "if (cie_ptr == cie_tmp->cie_pointer) {",
+        "final_sink": "if (cie_ptr == cie_tmp->cie_pointer) {",
+        "source": [
+            "\telems = ieee802_11_parse_elems_full(&parse_params);",
+            "\telems = &elems_parse->elems;"
+        ],
+        "index": 78
+    },
+    {
+        "prt": "fde_tmp",
+        "function_call": [
+            "struct dwarf_fde *dwarf_lookup_fde(unsigned long pc)\n{\n\tstruct rb_node **rb_node = &fde_root.rb_node;\n\tstruct dwarf_fde *fde = NULL;\n\tunsigned long flags;\n\n\tspin_lock_irqsave(&dwarf_fde_lock, flags);\n\n\twhile (*rb_node) {\n\t\tstruct dwarf_fde *fde_tmp;\n\t\tunsigned long tmp_start, tmp_end;\n\n\t\tfde_tmp = rb_entry(*rb_node, struct dwarf_fde, node);\n\t\tBUG_ON(!fde_tmp);\n\n\t\ttmp_start = fde_tmp->initial_location;\n\t\ttmp_end = fde_tmp->initial_location + fde_tmp->address_range;\n\n\t\tif (pc < tmp_start) {\n\t\t\trb_node = &(*rb_node)->rb_left;\n\t\t} else {\n\t\t\tif (pc < tmp_end) {\n\t\t\t\tfde = fde_tmp;\n\t\t\t\tgoto out;\n\t\t\t} else\n\t\t\t\trb_node = &(*rb_node)->rb_right;\n\t\t}\n\t}\n\nout:\n\tspin_unlock_irqrestore(&dwarf_fde_lock, flags);\n\n\treturn fde;\n}"
+        ],
+        "sink": "tmp_start = fde_tmp->initial_location;",
+        "final_sink": "tmp_start = fde_tmp->initial_location;",
+        "source": [
+            "\tsta = sta_info_get(sdata, assoc_data->ap_addr);",
+            "\tfor_each_sta_info(local, addr, sta, tmp) {"
+        ],
+        "index": 79
+    },
+    {
+        "prt": "fde_tmp",
+        "function_call": [
+            "struct dwarf_fde *dwarf_lookup_fde(unsigned long pc)\n{\n\tstruct rb_node **rb_node = &fde_root.rb_node;\n\tstruct dwarf_fde *fde = NULL;\n\tunsigned long flags;\n\n\tspin_lock_irqsave(&dwarf_fde_lock, flags);\n\n\twhile (*rb_node) {\n\t\tstruct dwarf_fde *fde_tmp;\n\t\tunsigned long tmp_start, tmp_end;\n\n\t\tfde_tmp = rb_entry(*rb_node, struct dwarf_fde, node);\n\t\tBUG_ON(!fde_tmp);\n\n\t\ttmp_start = fde_tmp->initial_location;\n\t\ttmp_end = fde_tmp->initial_location + fde_tmp->address_range;\n\n\t\tif (pc < tmp_start) {\n\t\t\trb_node = &(*rb_node)->rb_left;\n\t\t} else {\n\t\t\tif (pc < tmp_end) {\n\t\t\t\tfde = fde_tmp;\n\t\t\t\tgoto out;\n\t\t\t} else\n\t\t\t\trb_node = &(*rb_node)->rb_right;\n\t\t}\n\t}\n\nout:\n\tspin_unlock_irqrestore(&dwarf_fde_lock, flags);\n\n\treturn fde;\n}"
+        ],
+        "sink": "tmp_end = fde_tmp->initial_location + fde_tmp->address_range;",
+        "final_sink": "tmp_end = fde_tmp->initial_location + fde_tmp->address_range;",
+        "source": [
+            "\t\t\tbss_ies = kmemdup(ies, sizeof(*ies) + ies->len,",
+            "\tconst struct cfg80211_bss_ies *bss_ies = NULL;"
+        ],
+        "index": 80
+    },
+    {
+        "prt": "reg",
+        "function_call": [
+            "struct dwarf_frame *dwarf_unwind_stack(unsigned long pc,\n\t\t\t\t       struct dwarf_frame *prev)\n{\n\tstruct dwarf_frame *frame;\n\tstruct dwarf_cie *cie;\n\tstruct dwarf_fde *fde;\n\tstruct dwarf_reg *reg;\n\tunsigned long addr;\n\n\t/*\n\t * If we've been called in to before initialization has\n\t * completed, bail out immediately.\n\t */\n\tif (!dwarf_unwinder_ready)\n\t\treturn NULL;\n\n\t/*\n\t * If we're starting at the top of the stack we need get the\n\t * contents of a physical register to get the CFA in order to\n\t * begin the virtual unwinding of the stack.\n\t *\n\t * NOTE: the return address is guaranteed to be setup by the\n\t * time this function makes its first function call.\n\t */\n\tif (!pc || !prev)\n\t\tpc = _THIS_IP_;\n\n#ifdef CONFIG_FUNCTION_GRAPH_TRACER\n\t/*\n\t * If our stack has been patched by the function graph tracer\n\t * then we might see the address of return_to_handler() where we\n\t * expected to find the real return address.\n\t */\n\tif (pc == (unsigned long)&return_to_handler) {\n\t\tstruct ftrace_ret_stack *ret_stack;\n\n\t\tret_stack = ftrace_graph_get_ret_stack(current, 0);\n\t\tif (ret_stack)\n\t\t\tpc = ret_stack->ret;\n\t\t/*\n\t\t * We currently have no way of tracking how many\n\t\t * return_to_handler()'s we've seen. If there is more\n\t\t * than one patched return address on our stack,\n\t\t * complain loudly.\n\t\t */\n\t\tWARN_ON(ftrace_graph_get_ret_stack(current, 1));\n\t}\n#endif\n\n\tframe = mempool_alloc(dwarf_frame_pool, GFP_ATOMIC);\n\tif (!frame) {\n\t\tprintk(KERN_ERR \"Unable to allocate a dwarf frame\\n\");\n\t\tUNWINDER_BUG();\n\t}\n\n\tINIT_LIST_HEAD(&frame->reg_list);\n\tframe->flags = 0;\n\tframe->prev = prev;\n\tframe->return_addr = 0;\n\n\tfde = dwarf_lookup_fde(pc);\n\tif (!fde) {\n\t\t/*\n\t\t * This is our normal exit path. There are two reasons\n\t\t * why we might exit here,\n\t\t *\n\t\t *\ta) pc has no asscociated DWARF frame info and so\n\t\t *\twe don't know how to unwind this frame. This is\n\t\t *\tusually the case when we're trying to unwind a\n\t\t *\tframe that was called from some assembly code\n\t\t *\tthat has no DWARF info, e.g. syscalls.\n\t\t *\n\t\t *\tb) the DEBUG info for pc is bogus. There's\n\t\t *\treally no way to distinguish this case from the\n\t\t *\tcase above, which sucks because we could print a\n\t\t *\twarning here.\n\t\t */\n\t\tgoto bail;\n\t}\n\n\tcie = dwarf_lookup_cie(fde->cie_pointer);\n\n\tframe->pc = fde->initial_location;\n\n\t/* CIE initial instructions */\n\tdwarf_cfa_execute_insns(cie->initial_instructions,\n\t\t\t\tcie->instructions_end, cie, fde,\n\t\t\t\tframe, pc);\n\n\t/* FDE instructions */\n\tdwarf_cfa_execute_insns(fde->instructions, fde->end, cie,\n\t\t\t\tfde, frame, pc);\n\n\t/* Calculate the CFA */\n\tswitch (frame->flags) {\n\tcase DWARF_FRAME_CFA_REG_OFFSET:\n\t\tif (prev) {\n\t\t\treg = dwarf_frame_reg(prev, frame->cfa_register);\n\t\t\tUNWINDER_BUG_ON(!reg);\n\t\t\tUNWINDER_BUG_ON(reg->flags != DWARF_REG_OFFSET);\n\n\t\t\taddr = prev->cfa + reg->addr;\n\t\t\tframe->cfa = __raw_readl(addr);\n\n\t\t} else {\n\t\t\t/*\n\t\t\t * Again, we're starting from the top of the\n\t\t\t * stack. We need to physically read\n\t\t\t * the contents of a register in order to get\n\t\t\t * the Canonical Frame Address for this\n\t\t\t * function.\n\t\t\t */\n\t\t\tframe->cfa = dwarf_read_arch_reg(frame->cfa_register);\n\t\t}\n\n\t\tframe->cfa += frame->cfa_offset;\n\t\tbreak;\n\tdefault:\n\t\tUNWINDER_BUG();\n\t}\n\n\treg = dwarf_frame_reg(frame, DWARF_ARCH_RA_REG);\n\n\t/*\n\t * If we haven't seen the return address register or the return\n\t * address column is undefined then we must assume that this is\n\t * the end of the callstack.\n\t */\n\tif (!reg || reg->flags == DWARF_UNDEFINED)\n\t\tgoto bail;\n\n\tUNWINDER_BUG_ON(reg->flags != DWARF_REG_OFFSET);\n\n\taddr = frame->cfa + reg->addr;\n\tframe->return_addr = __raw_readl(addr);\n\n\t/*\n\t * Ah, the joys of unwinding through interrupts.\n\t *\n\t * Interrupts are tricky - the DWARF info needs to be _really_\n\t * accurate and unfortunately I'm seeing a lot of bogus DWARF\n\t * info. For example, I've seen interrupts occur in epilogues\n\t * just after the frame pointer (r14) had been restored. The\n\t * problem was that the DWARF info claimed that the CFA could be\n\t * reached by using the value of the frame pointer before it was\n\t * restored.\n\t *\n\t * So until the compiler can be trusted to produce reliable\n\t * DWARF info when it really matters, let's stop unwinding once\n\t * we've calculated the function that was interrupted.\n\t */\n\tif (prev && prev->pc == (unsigned long)ret_from_irq)\n\t\tframe->return_addr = 0;\n\n\treturn frame;\n\nbail:\n\tdwarf_free_frame(frame);\n\treturn NULL;\n}"
+        ],
+        "sink": "UNWINDER_BUG_ON(reg->flags != DWARF_REG_OFFSET);",
+        "final_sink": "UNWINDER_BUG_ON(reg->flags != DWARF_REG_OFFSET);",
+        "source": [
+            "\t\tsta = sta_info_get(sdata, dst);",
+            "\tfor_each_sta_info(local, addr, sta, tmp) {"
+        ],
+        "index": 81
+    },
+    {
+        "prt": "reg",
+        "function_call": [
+            "struct dwarf_frame *dwarf_unwind_stack(unsigned long pc,\n\t\t\t\t       struct dwarf_frame *prev)\n{\n\tstruct dwarf_frame *frame;\n\tstruct dwarf_cie *cie;\n\tstruct dwarf_fde *fde;\n\tstruct dwarf_reg *reg;\n\tunsigned long addr;\n\n\t/*\n\t * If we've been called in to before initialization has\n\t * completed, bail out immediately.\n\t */\n\tif (!dwarf_unwinder_ready)\n\t\treturn NULL;\n\n\t/*\n\t * If we're starting at the top of the stack we need get the\n\t * contents of a physical register to get the CFA in order to\n\t * begin the virtual unwinding of the stack.\n\t *\n\t * NOTE: the return address is guaranteed to be setup by the\n\t * time this function makes its first function call.\n\t */\n\tif (!pc || !prev)\n\t\tpc = _THIS_IP_;\n\n#ifdef CONFIG_FUNCTION_GRAPH_TRACER\n\t/*\n\t * If our stack has been patched by the function graph tracer\n\t * then we might see the address of return_to_handler() where we\n\t * expected to find the real return address.\n\t */\n\tif (pc == (unsigned long)&return_to_handler) {\n\t\tstruct ftrace_ret_stack *ret_stack;\n\n\t\tret_stack = ftrace_graph_get_ret_stack(current, 0);\n\t\tif (ret_stack)\n\t\t\tpc = ret_stack->ret;\n\t\t/*\n\t\t * We currently have no way of tracking how many\n\t\t * return_to_handler()'s we've seen. If there is more\n\t\t * than one patched return address on our stack,\n\t\t * complain loudly.\n\t\t */\n\t\tWARN_ON(ftrace_graph_get_ret_stack(current, 1));\n\t}\n#endif\n\n\tframe = mempool_alloc(dwarf_frame_pool, GFP_ATOMIC);\n\tif (!frame) {\n\t\tprintk(KERN_ERR \"Unable to allocate a dwarf frame\\n\");\n\t\tUNWINDER_BUG();\n\t}\n\n\tINIT_LIST_HEAD(&frame->reg_list);\n\tframe->flags = 0;\n\tframe->prev = prev;\n\tframe->return_addr = 0;\n\n\tfde = dwarf_lookup_fde(pc);\n\tif (!fde) {\n\t\t/*\n\t\t * This is our normal exit path. There are two reasons\n\t\t * why we might exit here,\n\t\t *\n\t\t *\ta) pc has no asscociated DWARF frame info and so\n\t\t *\twe don't know how to unwind this frame. This is\n\t\t *\tusually the case when we're trying to unwind a\n\t\t *\tframe that was called from some assembly code\n\t\t *\tthat has no DWARF info, e.g. syscalls.\n\t\t *\n\t\t *\tb) the DEBUG info for pc is bogus. There's\n\t\t *\treally no way to distinguish this case from the\n\t\t *\tcase above, which sucks because we could print a\n\t\t *\twarning here.\n\t\t */\n\t\tgoto bail;\n\t}\n\n\tcie = dwarf_lookup_cie(fde->cie_pointer);\n\n\tframe->pc = fde->initial_location;\n\n\t/* CIE initial instructions */\n\tdwarf_cfa_execute_insns(cie->initial_instructions,\n\t\t\t\tcie->instructions_end, cie, fde,\n\t\t\t\tframe, pc);\n\n\t/* FDE instructions */\n\tdwarf_cfa_execute_insns(fde->instructions, fde->end, cie,\n\t\t\t\tfde, frame, pc);\n\n\t/* Calculate the CFA */\n\tswitch (frame->flags) {\n\tcase DWARF_FRAME_CFA_REG_OFFSET:\n\t\tif (prev) {\n\t\t\treg = dwarf_frame_reg(prev, frame->cfa_register);\n\t\t\tUNWINDER_BUG_ON(!reg);\n\t\t\tUNWINDER_BUG_ON(reg->flags != DWARF_REG_OFFSET);\n\n\t\t\taddr = prev->cfa + reg->addr;\n\t\t\tframe->cfa = __raw_readl(addr);\n\n\t\t} else {\n\t\t\t/*\n\t\t\t * Again, we're starting from the top of the\n\t\t\t * stack. We need to physically read\n\t\t\t * the contents of a register in order to get\n\t\t\t * the Canonical Frame Address for this\n\t\t\t * function.\n\t\t\t */\n\t\t\tframe->cfa = dwarf_read_arch_reg(frame->cfa_register);\n\t\t}\n\n\t\tframe->cfa += frame->cfa_offset;\n\t\tbreak;\n\tdefault:\n\t\tUNWINDER_BUG();\n\t}\n\n\treg = dwarf_frame_reg(frame, DWARF_ARCH_RA_REG);\n\n\t/*\n\t * If we haven't seen the return address register or the return\n\t * address column is undefined then we must assume that this is\n\t * the end of the callstack.\n\t */\n\tif (!reg || reg->flags == DWARF_UNDEFINED)\n\t\tgoto bail;\n\n\tUNWINDER_BUG_ON(reg->flags != DWARF_REG_OFFSET);\n\n\taddr = frame->cfa + reg->addr;\n\tframe->return_addr = __raw_readl(addr);\n\n\t/*\n\t * Ah, the joys of unwinding through interrupts.\n\t *\n\t * Interrupts are tricky - the DWARF info needs to be _really_\n\t * accurate and unfortunately I'm seeing a lot of bogus DWARF\n\t * info. For example, I've seen interrupts occur in epilogues\n\t * just after the frame pointer (r14) had been restored. The\n\t * problem was that the DWARF info claimed that the CFA could be\n\t * reached by using the value of the frame pointer before it was\n\t * restored.\n\t *\n\t * So until the compiler can be trusted to produce reliable\n\t * DWARF info when it really matters, let's stop unwinding once\n\t * we've calculated the function that was interrupted.\n\t */\n\tif (prev && prev->pc == (unsigned long)ret_from_irq)\n\t\tframe->return_addr = 0;\n\n\treturn frame;\n\nbail:\n\tdwarf_free_frame(frame);\n\treturn NULL;\n}"
+        ],
+        "sink": "addr = prev->cfa + reg->addr;",
+        "final_sink": "addr = prev->cfa + reg->addr;",
+        "source": [
+            "\t\tfound = sdata;",
+            "\tstruct ieee80211_sub_if_data *sdata, *found = NULL;"
+        ],
+        "index": 82
+    },
+    {
+        "prt": "tiop",
+        "function_call": [
+            "static unsigned long lookup_address(struct trapped_io *tiop,\n\t\t\t\t    unsigned long address)\n{\n\tstruct resource *res;\n\tunsigned long vaddr = (unsigned long)tiop->virt_base;\n\tunsigned long len;\n\tint k;\n\n\tfor (k = 0; k < tiop->num_resources; k++) {\n\t\tres = tiop->resource + k;\n\t\tlen = roundup(resource_size(res), PAGE_SIZE);\n\t\tif (address < (vaddr + len))\n\t\t\treturn res->start + (address - vaddr);\n\t\tvaddr += len;\n\t}\n\treturn 0;\n}"
+        ],
+        "sink": "unsigned long vaddr = (unsigned long)tiop->virt_base;",
+        "final_sink": "unsigned long vaddr = (unsigned long)tiop->virt_base;",
+        "source": [
+            "\t\tista = &sta->sta;",
+            "\tstruct ieee80211_sta *ista = NULL;"
+        ],
+        "index": 83
+    },
+    {
+        "prt": "tiop",
+        "function_call": [
+            "static unsigned long from_device(void *dst, const void *src, unsigned long cnt)\n{\n\tstruct trapped_io *tiop;\n\tunsigned long src_addr = (unsigned long)src;\n\tunsigned long long tmp;\n\n\tpr_debug(\"trapped io read 0x%08lx (%ld)\\n\", src_addr, cnt);\n\ttiop = lookup_tiop(src_addr);\n\tWARN_ON(!tiop || (tiop->magic != IO_TRAPPED_MAGIC));\n\n\tsrc_addr = lookup_address(tiop, src_addr);\n\tif (!src_addr)\n\t\treturn cnt;\n\n\ttmp = copy_word(src_addr,\n\t\t\tmax_t(unsigned long, cnt,\n\t\t\t      (tiop->minimum_bus_width / 8)),\n\t\t\t(unsigned long)dst, cnt);\n\n\tpr_debug(\"trapped io read 0x%08lx -> 0x%08llx\\n\", src_addr, tmp);\n\treturn 0;\n}"
+        ],
+        "sink": "(tiop->minimum_bus_width / 8)),",
+        "final_sink": "(tiop->minimum_bus_width / 8)),",
+        "source": [
+            "\t\tu8 *bssid = ieee80211_get_bssid(hdr, rx->skb->len,"
+        ],
+        "index": 84
+    },
+    {
+        "prt": "tiop",
+        "function_call": [
+            "static unsigned long to_device(void *dst, const void *src, unsigned long cnt)\n{\n\tstruct trapped_io *tiop;\n\tunsigned long dst_addr = (unsigned long)dst;\n\tunsigned long long tmp;\n\n\tpr_debug(\"trapped io write 0x%08lx (%ld)\\n\", dst_addr, cnt);\n\ttiop = lookup_tiop(dst_addr);\n\tWARN_ON(!tiop || (tiop->magic != IO_TRAPPED_MAGIC));\n\n\tdst_addr = lookup_address(tiop, dst_addr);\n\tif (!dst_addr)\n\t\treturn cnt;\n\n\ttmp = copy_word((unsigned long)src, cnt,\n\t\t\tdst_addr, max_t(unsigned long, cnt,\n\t\t\t\t\t(tiop->minimum_bus_width / 8)));\n\n\tpr_debug(\"trapped io write 0x%08lx -> 0x%08llx\\n\", dst_addr, tmp);\n\treturn 0;\n}"
+        ],
+        "sink": "(tiop->minimum_bus_width / 8)));",
+        "final_sink": "(tiop->minimum_bus_width / 8)));",
+        "source": [
+            "\t\t\tmonskb = ieee80211_make_monitor_skb(local, &origskb,",
+            "\t\t\t\tmonskb = NULL;",
+            "\tstruct sk_buff *monskb = NULL;"
+        ],
+        "index": 85
+    },
+    {
+        "prt": "p4d",
+        "function_call": [
+            "static pte_t *__get_pte_phys(unsigned long addr)\n{\n\tpgd_t *pgd;\n\tp4d_t *p4d;\n\tpud_t *pud;\n\tpmd_t *pmd;\n\n\tpgd = pgd_offset_k(addr);\n\tif (pgd_none(*pgd)) {\n\t\tpgd_ERROR(*pgd);\n\t\treturn NULL;\n\t}\n\n\tp4d = p4d_alloc(NULL, pgd, addr);\n\tif (unlikely(!p4d)) {\n\t\tp4d_ERROR(*p4d);\n\t\treturn NULL;\n\t}\n\n\tpud = pud_alloc(NULL, p4d, addr);\n\tif (unlikely(!pud)) {\n\t\tpud_ERROR(*pud);\n\t\treturn NULL;\n\t}\n\n\tpmd = pmd_alloc(NULL, pud, addr);\n\tif (unlikely(!pmd)) {\n\t\tpmd_ERROR(*pmd);\n\t\treturn NULL;\n\t}\n\n\treturn pte_offset_kernel(pmd, addr);\n}"
+        ],
+        "sink": "p4d_ERROR(*p4d);",
+        "final_sink": "p4d_ERROR(*p4d);",
+        "source": [
+            "\tsta = sta_info_get_bss(sdata, addr);",
+            "\tfor_each_sta_info(local, addr, sta, tmp) {"
+        ],
+        "index": 86
+    },
+    {
+        "prt": "pud",
+        "function_call": [
+            "static pte_t *__get_pte_phys(unsigned long addr)\n{\n\tpgd_t *pgd;\n\tp4d_t *p4d;\n\tpud_t *pud;\n\tpmd_t *pmd;\n\n\tpgd = pgd_offset_k(addr);\n\tif (pgd_none(*pgd)) {\n\t\tpgd_ERROR(*pgd);\n\t\treturn NULL;\n\t}\n\n\tp4d = p4d_alloc(NULL, pgd, addr);\n\tif (unlikely(!p4d)) {\n\t\tp4d_ERROR(*p4d);\n\t\treturn NULL;\n\t}\n\n\tpud = pud_alloc(NULL, p4d, addr);\n\tif (unlikely(!pud)) {\n\t\tpud_ERROR(*pud);\n\t\treturn NULL;\n\t}\n\n\tpmd = pmd_alloc(NULL, pud, addr);\n\tif (unlikely(!pmd)) {\n\t\tpmd_ERROR(*pmd);\n\t\treturn NULL;\n\t}\n\n\treturn pte_offset_kernel(pmd, addr);\n}"
+        ],
+        "sink": "pud_ERROR(*pud);",
+        "final_sink": "pud_ERROR(*pud);",
+        "source": [
+            "\tsta = sta_info_get(sdata, addr);",
+            "\tfor_each_sta_info(local, addr, sta, tmp) {"
+        ],
+        "index": 87
+    },
+    {
+        "prt": "pmd",
+        "function_call": [
+            "static pte_t *__get_pte_phys(unsigned long addr)\n{\n\tpgd_t *pgd;\n\tp4d_t *p4d;\n\tpud_t *pud;\n\tpmd_t *pmd;\n\n\tpgd = pgd_offset_k(addr);\n\tif (pgd_none(*pgd)) {\n\t\tpgd_ERROR(*pgd);\n\t\treturn NULL;\n\t}\n\n\tp4d = p4d_alloc(NULL, pgd, addr);\n\tif (unlikely(!p4d)) {\n\t\tp4d_ERROR(*p4d);\n\t\treturn NULL;\n\t}\n\n\tpud = pud_alloc(NULL, p4d, addr);\n\tif (unlikely(!pud)) {\n\t\tpud_ERROR(*pud);\n\t\treturn NULL;\n\t}\n\n\tpmd = pmd_alloc(NULL, pud, addr);\n\tif (unlikely(!pmd)) {\n\t\tpmd_ERROR(*pmd);\n\t\treturn NULL;\n\t}\n\n\treturn pte_offset_kernel(pmd, addr);\n}"
+        ],
+        "sink": "pmd_ERROR(*pmd);",
+        "final_sink": "pmd_ERROR(*pmd);",
+        "source": [
+            "\tsinfo = kzalloc(sizeof(struct station_info), GFP_KERNEL);",
+            "\tstruct station_info *sinfo = NULL;"
+        ],
+        "index": 88
+    },
+    {
+        "prt": "handler_data",
+        "function_call": [
+            "unsigned int build_irq(int inofixup, unsigned long iclr, unsigned long imap)\n{\n\tstruct irq_handler_data *handler_data;\n\tstruct ino_bucket *bucket;\n\tunsigned int irq;\n\tint ino;\n\n\tBUG_ON(tlb_type == hypervisor);\n\n\tino = (upa_readq(imap) & (IMAP_IGN | IMAP_INO)) + inofixup;\n\tbucket = &ivector_table[ino];\n\tirq = bucket_get_irq(__pa(bucket));\n\tif (!irq) {\n\t\tirq = irq_alloc(0, ino);\n\t\tbucket_set_irq(__pa(bucket), irq);\n\t\tirq_set_chip_and_handler_name(irq, &sun4u_irq,\n\t\t\t\t\t      handle_fasteoi_irq, \"IVEC\");\n\t}\n\n\thandler_data = irq_get_handler_data(irq);\n\tif (unlikely(handler_data))\n\t\tgoto out;\n\n\thandler_data = kzalloc(sizeof(struct irq_handler_data), GFP_ATOMIC);\n\tif (unlikely(!handler_data)) {\n\t\tprom_printf(\"IRQ: kzalloc(irq_handler_data) failed.\\n\");\n\t\tprom_halt();\n\t}\n\tirq_set_handler_data(irq, handler_data);\n\n\thandler_data->imap  = imap;\n\thandler_data->iclr  = iclr;\n\nout:\n\treturn irq;\n}"
+        ],
+        "sink": "handler_data->imap  = imap;",
+        "final_sink": "handler_data->imap  = imap;",
+        "source": [
+            "\t\tsta = container_of(pubsta, struct sta_info, sta);",
+            "\tstruct sta_info *sta = NULL;"
+        ],
+        "index": 89
+    },
+    {
+        "prt": "handler_data",
+        "function_call": [
+            "unsigned int build_irq(int inofixup, unsigned long iclr, unsigned long imap)\n{\n\tstruct irq_handler_data *handler_data;\n\tstruct ino_bucket *bucket;\n\tunsigned int irq;\n\tint ino;\n\n\tBUG_ON(tlb_type == hypervisor);\n\n\tino = (upa_readq(imap) & (IMAP_IGN | IMAP_INO)) + inofixup;\n\tbucket = &ivector_table[ino];\n\tirq = bucket_get_irq(__pa(bucket));\n\tif (!irq) {\n\t\tirq = irq_alloc(0, ino);\n\t\tbucket_set_irq(__pa(bucket), irq);\n\t\tirq_set_chip_and_handler_name(irq, &sun4u_irq,\n\t\t\t\t\t      handle_fasteoi_irq, \"IVEC\");\n\t}\n\n\thandler_data = irq_get_handler_data(irq);\n\tif (unlikely(handler_data))\n\t\tgoto out;\n\n\thandler_data = kzalloc(sizeof(struct irq_handler_data), GFP_ATOMIC);\n\tif (unlikely(!handler_data)) {\n\t\tprom_printf(\"IRQ: kzalloc(irq_handler_data) failed.\\n\");\n\t\tprom_halt();\n\t}\n\tirq_set_handler_data(irq, handler_data);\n\n\thandler_data->imap  = imap;\n\thandler_data->iclr  = iclr;\n\nout:\n\treturn irq;\n}"
+        ],
+        "sink": "handler_data->iclr  = iclr;",
+        "final_sink": "handler_data->iclr  = iclr;",
+        "source": [
+            "\twhile ((skb = skb_dequeue(&local->skb_queue)) ||",
+            "\t       (skb = skb_dequeue(&local->skb_queue_unreliable))) {",
+            "\t\tskb = NULL;",
+            "\t\tskb = napi_skb_cache_get();",
+            "\t\tskb = kmem_cache_alloc_node(cache, gfp_mask & ~GFP_DMA, node);",
+            "\tskb = nc->skb_cache[--nc->skb_count];",
+            "\t\tskb = NULL;",
+            "\tstruct sk_buff *skb = status->skb;",
+            "\tstruct sk_buff *skb = skb_peek(list);",
+            "\tstruct sk_buff *skb = list_->next;"
+        ],
+        "index": 90
+    },
+    {
+        "prt": "handler_data",
+        "function_call": [
+            "static unsigned int _sun4d_build_device_irq(unsigned int real_irq,\n                                            unsigned int pil,\n                                            unsigned int board)\n{\n\tstruct sun4d_handler_data *handler_data;\n\tunsigned int irq;\n\n\tirq = irq_alloc(real_irq, pil);\n\tif (irq == 0) {\n\t\tprom_printf(\"IRQ: allocate for %d %d %d failed\\n\",\n\t\t\treal_irq, pil, board);\n\t\tgoto err_out;\n\t}\n\n\thandler_data = irq_get_handler_data(irq);\n\tif (unlikely(handler_data))\n\t\tgoto err_out;\n\n\thandler_data = kzalloc(sizeof(struct sun4d_handler_data), GFP_ATOMIC);\n\tif (unlikely(!handler_data)) {\n\t\tprom_printf(\"IRQ: kzalloc(sun4d_handler_data) failed.\\n\");\n\t\tprom_halt();\n\t}\n\thandler_data->cpuid    = board_to_cpu[board];\n\thandler_data->real_irq = real_irq;\n\tirq_set_chip_and_handler_name(irq, &sun4d_irq,\n\t                              handle_level_irq, \"level\");\n\tirq_set_handler_data(irq, handler_data);\n\nerr_out:\n\treturn irq;\n}"
+        ],
+        "sink": "handler_data->cpuid    = board_to_cpu[board];",
+        "final_sink": "handler_data->cpuid    = board_to_cpu[board];",
+        "source": [
+            "\t\tsdata = ieee80211_sdata_from_skb(local, skb);",
+            "\t\tlist_for_each_entry_rcu(sdata, &local->interfaces, list) {"
+        ],
+        "index": 91
+    },
+    {
+        "prt": "handler_data",
+        "function_call": [
+            "static unsigned int _sun4d_build_device_irq(unsigned int real_irq,\n                                            unsigned int pil,\n                                            unsigned int board)\n{\n\tstruct sun4d_handler_data *handler_data;\n\tunsigned int irq;\n\n\tirq = irq_alloc(real_irq, pil);\n\tif (irq == 0) {\n\t\tprom_printf(\"IRQ: allocate for %d %d %d failed\\n\",\n\t\t\treal_irq, pil, board);\n\t\tgoto err_out;\n\t}\n\n\thandler_data = irq_get_handler_data(irq);\n\tif (unlikely(handler_data))\n\t\tgoto err_out;\n\n\thandler_data = kzalloc(sizeof(struct sun4d_handler_data), GFP_ATOMIC);\n\tif (unlikely(!handler_data)) {\n\t\tprom_printf(\"IRQ: kzalloc(sun4d_handler_data) failed.\\n\");\n\t\tprom_halt();\n\t}\n\thandler_data->cpuid    = board_to_cpu[board];\n\thandler_data->real_irq = real_irq;\n\tirq_set_chip_and_handler_name(irq, &sun4d_irq,\n\t                              handle_level_irq, \"level\");\n\tirq_set_handler_data(irq, handler_data);\n\nerr_out:\n\treturn irq;\n}"
+        ],
+        "sink": "handler_data->real_irq = real_irq;",
+        "final_sink": "handler_data->real_irq = real_irq;",
+        "source": [
+            "\telems = &elems_parse->elems;",
+            "\telems = ieee802_11_parse_elems(tf->u.chan_switch_resp.variable,",
+            "\tstruct ieee802_11_elems *elems = NULL;"
+        ],
+        "index": 92
+    },
+    {
+        "prt": "handler_data",
+        "function_call": [
+            "static unsigned int sun4m_build_device_irq(struct platform_device *op,\n\t\t\t\t\t   unsigned int real_irq)\n{\n\tstruct sun4m_handler_data *handler_data;\n\tunsigned int irq;\n\tunsigned int pil;\n\n\tif (real_irq >= OBP_INT_LEVEL_VME) {\n\t\tprom_printf(\"Bogus sun4m IRQ %u\\n\", real_irq);\n\t\tprom_halt();\n\t}\n\tpil = (real_irq & 0xf);\n\tirq = irq_alloc(real_irq, pil);\n\n\tif (irq == 0)\n\t\tgoto out;\n\n\thandler_data = irq_get_handler_data(irq);\n\tif (unlikely(handler_data))\n\t\tgoto out;\n\n\thandler_data = kzalloc(sizeof(struct sun4m_handler_data), GFP_ATOMIC);\n\tif (unlikely(!handler_data)) {\n\t\tprom_printf(\"IRQ: kzalloc(sun4m_handler_data) failed.\\n\");\n\t\tprom_halt();\n\t}\n\n\thandler_data->mask = sun4m_imask[real_irq];\n\thandler_data->percpu = real_irq < OBP_INT_LEVEL_ONBOARD;\n\tirq_set_chip_and_handler_name(irq, &sun4m_irq,\n\t                              handle_level_irq, \"level\");\n\tirq_set_handler_data(irq, handler_data);\n\nout:\n\treturn irq;\n}"
+        ],
+        "sink": "handler_data->mask = sun4m_imask[real_irq];",
+        "final_sink": "handler_data->mask = sun4m_imask[real_irq];",
+        "source": [
+            "\tskb = ieee80211_tdls_ch_sw_tmpl_get(sta, oper_class, chandef,",
+            "\tskb = ieee80211_tdls_build_mgmt_packet_data(sdata, sta->sta.addr,",
+            "\tskb = ieee80211_build_data_template(sdata, skb, 0);",
+            "\tskb = netdev_alloc_skb(sdata->dev,",
+            "\t\tskb = ERR_PTR(-EINVAL);",
+            "\tskb = ieee80211_build_hdr(sdata, skb, info_flags, sta,",
+            "\ttx.skb = skb;",
+            "\tskb = skb_share_check(skb, GFP_ATOMIC);",
+            "\t\tskb = __alloc_skb(len, gfp_mask, SKB_ALLOC_RX, NUMA_NO_NODE);",
+            "\tskb = __build_skb(data, len);",
+            "\t\tskb = napi_skb_cache_get();",
+            "\t\tskb = kmem_cache_alloc_node(cache, gfp_mask & ~GFP_DMA, node);",
+            "\tskb = kmem_cache_alloc(net_hotdata.skbuff_cache, GFP_ATOMIC);",
+            "\tskb = nc->skb_cache[--nc->skb_count];",
+            "\t\tskb = nskb;",
+            "\tstruct sk_buff *skb = NULL;"
+        ],
+        "index": 93
+    },
+    {
+        "prt": "handler_data",
+        "function_call": [
+            "static unsigned int sun4m_build_device_irq(struct platform_device *op,\n\t\t\t\t\t   unsigned int real_irq)\n{\n\tstruct sun4m_handler_data *handler_data;\n\tunsigned int irq;\n\tunsigned int pil;\n\n\tif (real_irq >= OBP_INT_LEVEL_VME) {\n\t\tprom_printf(\"Bogus sun4m IRQ %u\\n\", real_irq);\n\t\tprom_halt();\n\t}\n\tpil = (real_irq & 0xf);\n\tirq = irq_alloc(real_irq, pil);\n\n\tif (irq == 0)\n\t\tgoto out;\n\n\thandler_data = irq_get_handler_data(irq);\n\tif (unlikely(handler_data))\n\t\tgoto out;\n\n\thandler_data = kzalloc(sizeof(struct sun4m_handler_data), GFP_ATOMIC);\n\tif (unlikely(!handler_data)) {\n\t\tprom_printf(\"IRQ: kzalloc(sun4m_handler_data) failed.\\n\");\n\t\tprom_halt();\n\t}\n\n\thandler_data->mask = sun4m_imask[real_irq];\n\thandler_data->percpu = real_irq < OBP_INT_LEVEL_ONBOARD;\n\tirq_set_chip_and_handler_name(irq, &sun4m_irq,\n\t                              handle_level_irq, \"level\");\n\tirq_set_handler_data(irq, handler_data);\n\nout:\n\treturn irq;\n}"
+        ],
+        "sink": "handler_data->percpu = real_irq < OBP_INT_LEVEL_ONBOARD;",
+        "final_sink": "handler_data->percpu = real_irq < OBP_INT_LEVEL_ONBOARD;",
+        "source": [
+            "\tskb = ieee80211_tdls_build_mgmt_packet_data(sdata, peer,",
+            "\tskb = netdev_alloc_skb(sdata->dev,",
+            "\t\tskb = __alloc_skb(len, gfp_mask, SKB_ALLOC_RX, NUMA_NO_NODE);",
+            "\tskb = __build_skb(data, len);",
+            "\t\tskb = napi_skb_cache_get();",
+            "\t\tskb = kmem_cache_alloc_node(cache, gfp_mask & ~GFP_DMA, node);",
+            "\tskb = kmem_cache_alloc(net_hotdata.skbuff_cache, GFP_ATOMIC);",
+            "\tskb = nc->skb_cache[--nc->skb_count];",
+            "\tstruct sk_buff *skb = NULL;"
+        ],
+        "index": 94
+    },
+    {
+        "prt": "qi",
+        "function_call": [
+            "static void destroy_queue(struct vector_queue *qi)\n{\n\tint i;\n\tstruct iovec *iov;\n\tstruct vector_private *vp = netdev_priv(qi->dev);\n\tstruct mmsghdr *mmsg_vector;\n\n\tif (qi == NULL)\n\t\treturn;\n\t/* deallocate any skbuffs - we rely on any unused to be\n\t * set to NULL.\n\t */\n\tif (qi->skbuff_vector != NULL) {\n\t\tfor (i = 0; i < qi->max_depth; i++) {\n\t\t\tif (*(qi->skbuff_vector + i) != NULL)\n\t\t\t\tdev_kfree_skb_any(*(qi->skbuff_vector + i));\n\t\t}\n\t\tkfree(qi->skbuff_vector);\n\t}\n\t/* deallocate matching IOV structures including header buffs */\n\tif (qi->mmsg_vector != NULL) {\n\t\tmmsg_vector = qi->mmsg_vector;\n\t\tfor (i = 0; i < qi->max_depth; i++) {\n\t\t\tiov = mmsg_vector->msg_hdr.msg_iov;\n\t\t\tif (iov != NULL) {\n\t\t\t\tif ((vp->header_size > 0) &&\n\t\t\t\t\t(iov->iov_base != NULL))\n\t\t\t\t\tkfree(iov->iov_base);\n\t\t\t\tkfree(iov);\n\t\t\t}\n\t\t\tmmsg_vector++;\n\t\t}\n\t\tkfree(qi->mmsg_vector);\n\t}\n\tkfree(qi);\n}"
+        ],
+        "sink": "struct vector_private *vp = netdev_priv(qi->dev);",
+        "final_sink": "struct vector_private *vp = netdev_priv(qi->dev);",
+        "source": [
+            "\tfor_each_sta_info(local, addr, sta, tmp) {",
+            "\tsta = sta_info_get(sdata, peer);"
+        ],
+        "index": 95
+    },
+    {
+        "prt": "gairesult",
+        "function_call": [
+            "static struct vector_fds *user_init_socket_fds(struct arglist *ifspec, int id)\n{\n\tint err = -ENOMEM;\n\tint fd = -1, gairet;\n\tstruct addrinfo srchints;\n\tstruct addrinfo dsthints;\n\tbool v6, udp;\n\tchar *value;\n\tchar *src, *dst, *srcport, *dstport;\n\tstruct addrinfo *gairesult = NULL;\n\tstruct vector_fds *result = NULL;\n\n\n\tvalue = uml_vector_fetch_arg(ifspec, \"v6\");\n\tv6 = false;\n\tudp = false;\n\tif (value != NULL) {\n\t\tif (strtol((const char *) value, NULL, 10) > 0)\n\t\t\tv6 = true;\n\t}\n\n\tvalue = uml_vector_fetch_arg(ifspec, \"udp\");\n\tif (value != NULL) {\n\t\tif (strtol((const char *) value, NULL, 10) > 0)\n\t\t\tudp = true;\n\t}\n\tsrc = uml_vector_fetch_arg(ifspec, \"src\");\n\tdst = uml_vector_fetch_arg(ifspec, \"dst\");\n\tsrcport = uml_vector_fetch_arg(ifspec, \"srcport\");\n\tdstport = uml_vector_fetch_arg(ifspec, \"dstport\");\n\n\tmemset(&dsthints, 0, sizeof(dsthints));\n\n\tif (v6)\n\t\tdsthints.ai_family = AF_INET6;\n\telse\n\t\tdsthints.ai_family = AF_INET;\n\n\tswitch (id) {\n\tcase ID_GRE:\n\t\tdsthints.ai_socktype = SOCK_RAW;\n\t\tdsthints.ai_protocol = IPPROTO_GRE;\n\t\tbreak;\n\tcase ID_L2TPV3:\n\t\tif (udp) {\n\t\t\tdsthints.ai_socktype = SOCK_DGRAM;\n\t\t\tdsthints.ai_protocol = 0;\n\t\t} else {\n\t\t\tdsthints.ai_socktype = SOCK_RAW;\n\t\t\tdsthints.ai_protocol = IPPROTO_L2TP;\n\t\t}\n\t\tbreak;\n\tdefault:\n\t\tprintk(KERN_ERR \"Unsupported socket type\\n\");\n\t\treturn NULL;\n\t}\n\tmemcpy(&srchints, &dsthints, sizeof(struct addrinfo));\n\n\tgairet = getaddrinfo(src, srcport, &dsthints, &gairesult);\n\tif ((gairet != 0) || (gairesult == NULL)) {\n\t\tprintk(UM_KERN_ERR\n\t\t\t\"socket_open : could not resolve src, error = %s\",\n\t\t\tgai_strerror(gairet)\n\t\t);\n\t\treturn NULL;\n\t}\n\tfd = socket(gairesult->ai_family,\n\t\tgairesult->ai_socktype, gairesult->ai_protocol);\n\tif (fd == -1) {\n\t\tprintk(UM_KERN_ERR\n\t\t\t\"socket_open : could not open socket, error = %d\",\n\t\t\t-errno\n\t\t);\n\t\tgoto cleanup;\n\t}\n\tif (bind(fd,\n\t\t(struct sockaddr *) gairesult->ai_addr,\n\t\tgairesult->ai_addrlen)) {\n\t\tprintk(UM_KERN_ERR L2TPV3_BIND_FAIL, errno);\n\t\tgoto cleanup;\n\t}\n\n\tif (gairesult != NULL)\n\t\tfreeaddrinfo(gairesult);\n\n\tgairesult = NULL;\n\n\tgairet = getaddrinfo(dst, dstport, &dsthints, &gairesult);\n\tif ((gairet != 0) || (gairesult == NULL)) {\n\t\tprintk(UM_KERN_ERR\n\t\t\t\"socket_open : could not resolve dst, error = %s\",\n\t\t\tgai_strerror(gairet)\n\t\t);\n\t\treturn NULL;\n\t}\n\n\tresult = uml_kmalloc(sizeof(struct vector_fds), UM_GFP_KERNEL);\n\tif (result != NULL) {\n\t\tresult->rx_fd = fd;\n\t\tresult->tx_fd = fd;\n\t\tresult->remote_addr = uml_kmalloc(\n\t\t\tgairesult->ai_addrlen, UM_GFP_KERNEL);\n\t\tif (result->remote_addr == NULL)\n\t\t\tgoto cleanup;\n\t\tresult->remote_addr_size = gairesult->ai_addrlen;\n\t\tmemcpy(\n\t\t\tresult->remote_addr,\n\t\t\tgairesult->ai_addr,\n\t\t\tgairesult->ai_addrlen\n\t\t);\n\t}\n\tfreeaddrinfo(gairesult);\n\treturn result;\ncleanup:\n\tif (gairesult != NULL)\n\t\tfreeaddrinfo(gairesult);\n\tprintk(UM_KERN_ERR \"user_init_socket: init failed, error %d\", err);\n\tif (fd >= 0)\n\t\tos_close_file(fd);\n\tif (result != NULL) {\n\t\tkfree(result->remote_addr);\n\t\tkfree(result);\n\t}\n\treturn NULL;\n}"
+        ],
+        "sink": "(struct sockaddr *) gairesult->ai_addr,",
+        "final_sink": "(struct sockaddr *) gairesult->ai_addr,",
+        "source": [
+            "\tap_sta = sta_info_get(sdata, sdata->vif.cfg.ap_addr);"
+        ],
+        "index": 96
+    },
+    {
+        "prt": "gairesult",
+        "function_call": [
+            "static struct vector_fds *user_init_socket_fds(struct arglist *ifspec, int id)\n{\n\tint err = -ENOMEM;\n\tint fd = -1, gairet;\n\tstruct addrinfo srchints;\n\tstruct addrinfo dsthints;\n\tbool v6, udp;\n\tchar *value;\n\tchar *src, *dst, *srcport, *dstport;\n\tstruct addrinfo *gairesult = NULL;\n\tstruct vector_fds *result = NULL;\n\n\n\tvalue = uml_vector_fetch_arg(ifspec, \"v6\");\n\tv6 = false;\n\tudp = false;\n\tif (value != NULL) {\n\t\tif (strtol((const char *) value, NULL, 10) > 0)\n\t\t\tv6 = true;\n\t}\n\n\tvalue = uml_vector_fetch_arg(ifspec, \"udp\");\n\tif (value != NULL) {\n\t\tif (strtol((const char *) value, NULL, 10) > 0)\n\t\t\tudp = true;\n\t}\n\tsrc = uml_vector_fetch_arg(ifspec, \"src\");\n\tdst = uml_vector_fetch_arg(ifspec, \"dst\");\n\tsrcport = uml_vector_fetch_arg(ifspec, \"srcport\");\n\tdstport = uml_vector_fetch_arg(ifspec, \"dstport\");\n\n\tmemset(&dsthints, 0, sizeof(dsthints));\n\n\tif (v6)\n\t\tdsthints.ai_family = AF_INET6;\n\telse\n\t\tdsthints.ai_family = AF_INET;\n\n\tswitch (id) {\n\tcase ID_GRE:\n\t\tdsthints.ai_socktype = SOCK_RAW;\n\t\tdsthints.ai_protocol = IPPROTO_GRE;\n\t\tbreak;\n\tcase ID_L2TPV3:\n\t\tif (udp) {\n\t\t\tdsthints.ai_socktype = SOCK_DGRAM;\n\t\t\tdsthints.ai_protocol = 0;\n\t\t} else {\n\t\t\tdsthints.ai_socktype = SOCK_RAW;\n\t\t\tdsthints.ai_protocol = IPPROTO_L2TP;\n\t\t}\n\t\tbreak;\n\tdefault:\n\t\tprintk(KERN_ERR \"Unsupported socket type\\n\");\n\t\treturn NULL;\n\t}\n\tmemcpy(&srchints, &dsthints, sizeof(struct addrinfo));\n\n\tgairet = getaddrinfo(src, srcport, &dsthints, &gairesult);\n\tif ((gairet != 0) || (gairesult == NULL)) {\n\t\tprintk(UM_KERN_ERR\n\t\t\t\"socket_open : could not resolve src, error = %s\",\n\t\t\tgai_strerror(gairet)\n\t\t);\n\t\treturn NULL;\n\t}\n\tfd = socket(gairesult->ai_family,\n\t\tgairesult->ai_socktype, gairesult->ai_protocol);\n\tif (fd == -1) {\n\t\tprintk(UM_KERN_ERR\n\t\t\t\"socket_open : could not open socket, error = %d\",\n\t\t\t-errno\n\t\t);\n\t\tgoto cleanup;\n\t}\n\tif (bind(fd,\n\t\t(struct sockaddr *) gairesult->ai_addr,\n\t\tgairesult->ai_addrlen)) {\n\t\tprintk(UM_KERN_ERR L2TPV3_BIND_FAIL, errno);\n\t\tgoto cleanup;\n\t}\n\n\tif (gairesult != NULL)\n\t\tfreeaddrinfo(gairesult);\n\n\tgairesult = NULL;\n\n\tgairet = getaddrinfo(dst, dstport, &dsthints, &gairesult);\n\tif ((gairet != 0) || (gairesult == NULL)) {\n\t\tprintk(UM_KERN_ERR\n\t\t\t\"socket_open : could not resolve dst, error = %s\",\n\t\t\tgai_strerror(gairet)\n\t\t);\n\t\treturn NULL;\n\t}\n\n\tresult = uml_kmalloc(sizeof(struct vector_fds), UM_GFP_KERNEL);\n\tif (result != NULL) {\n\t\tresult->rx_fd = fd;\n\t\tresult->tx_fd = fd;\n\t\tresult->remote_addr = uml_kmalloc(\n\t\t\tgairesult->ai_addrlen, UM_GFP_KERNEL);\n\t\tif (result->remote_addr == NULL)\n\t\t\tgoto cleanup;\n\t\tresult->remote_addr_size = gairesult->ai_addrlen;\n\t\tmemcpy(\n\t\t\tresult->remote_addr,\n\t\t\tgairesult->ai_addr,\n\t\t\tgairesult->ai_addrlen\n\t\t);\n\t}\n\tfreeaddrinfo(gairesult);\n\treturn result;\ncleanup:\n\tif (gairesult != NULL)\n\t\tfreeaddrinfo(gairesult);\n\tprintk(UM_KERN_ERR \"user_init_socket: init failed, error %d\", err);\n\tif (fd >= 0)\n\t\tos_close_file(fd);\n\tif (result != NULL) {\n\t\tkfree(result->remote_addr);\n\t\tkfree(result);\n\t}\n\treturn NULL;\n}"
+        ],
+        "sink": "gairesult->ai_addrlen)) {",
+        "final_sink": "gairesult->ai_addrlen)) {",
+        "source": [
+            "\tsband = ieee80211_get_link_sband(link);"
+        ],
+        "index": 97
+    },
+    {
+        "prt": "buf",
+        "function_call": [
+            "static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,\n\t\t\t\t\t  int size)\n{\n\tstruct um_pci_device_reg *reg = priv;\n\tstruct um_pci_device *dev = reg->dev;\n\tstruct virtio_pcidev_msg hdr = {\n\t\t.op = VIRTIO_PCIDEV_OP_CFG_READ,\n\t\t.size = size,\n\t\t.addr = offset,\n\t};\n\t/* buf->data is maximum size - we may only use parts of it */\n\tstruct um_pci_message_buffer *buf;\n\tu8 *data;\n\tunsigned long ret = ULONG_MAX;\n\tsize_t bytes = sizeof(buf->data);\n\n\tif (!dev)\n\t\treturn ULONG_MAX;\n\n\tbuf = get_cpu_var(um_pci_msg_bufs);\n\tdata = buf->data;\n\n\tif (buf)\n\t\tmemset(data, 0xff, bytes);\n\n\tswitch (size) {\n\tcase 1:\n\tcase 2:\n\tcase 4:\n#ifdef CONFIG_64BIT\n\tcase 8:\n#endif\n\t\tbreak;\n\tdefault:\n\t\tWARN(1, \"invalid config space read size %d\\n\", size);\n\t\tgoto out;\n\t}\n\n\tif (um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, data, bytes))\n\t\tgoto out;\n\n\tswitch (size) {\n\tcase 1:\n\t\tret = data[0];\n\t\tbreak;\n\tcase 2:\n\t\tret = le16_to_cpup((void *)data);\n\t\tbreak;\n\tcase 4:\n\t\tret = le32_to_cpup((void *)data);\n\t\tbreak;\n#ifdef CONFIG_64BIT\n\tcase 8:\n\t\tret = le64_to_cpup((void *)data);\n\t\tbreak;\n#endif\n\tdefault:\n\t\tbreak;\n\t}\n\nout:\n\tput_cpu_var(um_pci_msg_bufs);\n\treturn ret;\n}"
+        ],
+        "sink": "data = buf->data;",
+        "final_sink": "data = buf->data;",
+        "source": [
+            "\tfor_each_sta_info(local, addr, sta, tmp) {",
+            "\t\tsta = sta_info_get(sdata, peer);"
+        ],
+        "index": 98
+    },
+    {
+        "prt": "e",
+        "function_call": [
+            "static void time_travel_update_time(unsigned long long next, bool idle)\n{\n\tstruct time_travel_event ne = {\n\t\t.onstack = true,\n\t};\n\tstruct time_travel_event *e;\n\tbool finished = idle;\n\n\t/* add it without a handler - we deal with that specifically below */\n\t__time_travel_add_event(&ne, next);\n\n\tdo {\n\t\te = time_travel_first_event();\n\n\t\tBUG_ON(!e);\n\t\t__time_travel_update_time(e->time, idle);\n\n\t\t/* new events may have been inserted while we were waiting */\n\t\tif (e == time_travel_first_event()) {\n\t\t\tBUG_ON(!time_travel_del_event(e));\n\t\t\tBUG_ON(time_travel_time != e->time);\n\n\t\t\tif (e == &ne) {\n\t\t\t\tfinished = true;\n\t\t\t} else {\n\t\t\t\tif (e->onstack)\n\t\t\t\t\tpanic(\"On-stack event dequeued outside of the stack! time=%lld, event time=%lld, event=%pS\\n\",\n\t\t\t\t\t      time_travel_time, e->time, e);\n\t\t\t\ttime_travel_deliver_event(e);\n\t\t\t}\n\t\t}\n\n\t\te = time_travel_first_event();\n\t\tif (e)\n\t\t\ttime_travel_ext_update_request(e->time);\n\t} while (ne.pending && !finished);\n\n\ttime_travel_del_event(&ne);\n}"
+        ],
+        "sink": "__time_travel_update_time(e->time, idle);",
+        "final_sink": "__time_travel_update_time(e->time, idle);",
+        "source": [
+            "\tsband = ieee80211_get_link_sband(link);"
+        ],
+        "index": 99
+    }
+]
