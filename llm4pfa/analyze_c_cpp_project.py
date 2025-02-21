@@ -83,8 +83,7 @@ def analyze_file(file_path: str) -> Dict[str, Any]:
                 'code': function_code,
                 'comment_density': calculate_comment_density(function_code) if function_code else 0
             }
-            #function_info_dict[function.name] = function_info
-            # 如果函数名已存在，追加到列表中；否则创建新列表
+            # If function name exists, append to the list; otherwise create a new list
             if function.name in function_info_dict:
                 function_info_dict[function.name].append(function_info)
             else:
@@ -99,7 +98,7 @@ def analyze_project(repo_path: str) -> Dict[str, Any]:
     all_function_info = {}
     file_paths = []
 
-    # 收集所有需要分析的文件
+    # Collect all files to analyze
     for dirpath, _, filenames in os.walk(repo_path):
         for filename in filenames:
             if filename.endswith(PROJECT_CONFIG['supported_extensions']):
@@ -107,7 +106,7 @@ def analyze_project(repo_path: str) -> Dict[str, Any]:
 
     logging.info(f"Found {len(file_paths)} files to analyze")
 
-    # 使用线程池并行处理文件
+    # Use thread pool to process files in parallel
     with ThreadPoolExecutor(max_workers=PROJECT_CONFIG['max_workers']) as executor:
         future_to_file = {executor.submit(analyze_file, file_path): file_path 
                          for file_path in file_paths}

@@ -39,7 +39,7 @@ class MetaLlamaModel(BaseModel):
             url="https://api.deepinfra.com/v1/openai/chat/completions",
             headers={
                 "Content-Type": "application/json",
-                "Authorization": "Bearer RvD0ceCuOAVGFHmDLwRw1ZPvlxhoRMt5"
+                "Authorization": "Bearer YOUR_API_KEY"
             },
             model_name="meta-llama/Meta-Llama-3.1-70B-Instruct"
         )
@@ -67,15 +67,14 @@ class MetaLlamaModel(BaseModel):
 class ClaudeModel(BaseModel):
     def __init__(self):
         super().__init__(
-            url="https://api.openai-proxy.org/anthropic/v1/messages",  # 更新为正确的 Anthropic API 端点
+            url="https://api.openai-proxy.org/anthropic/v1/messages",  # Update to correct Anthropic API endpoint
             headers={
-                # "x-api-key": "sk-ImX86a1741f8a2424de9d1d10b35beeed9c08444defFFoOa",
-                "x-api-key": "sk-WyWwU7jQfISp59UFKCFnchx4MU8Yx2FlD3YiG2MsXfq0z8PN",
+                "x-api-key": "YOUR_API_KEY",
                 "anthropic-version": "2023-06-01",
                 "content-type": "application/json"
             },
-            model_name="claude-3-5-sonnet-20240620"  # 更新为最新的 Claude 模型版本
-            # model_name="claude-3-haiku-20240307" #这个版本比较便宜，方便debug
+            model_name="claude-3-5-sonnet-20240620"  # Update to latest Claude model version
+            # model_name="claude-3-haiku-20240307" # This version is cheaper, good for debugging
         )
 
     def send_request(self, data):
@@ -148,13 +147,12 @@ class DeepSeekModel(BaseModel):
             url="https://api.deepseek.com",
             headers={
                 "Content-Type": "application/json",
-                "Authorization": "Bearer sk-711d90254852461baa218e697aab1ee3"
+                "Authorization": "Bearer YOUR_API_KEY"
             },
             model_name="deepseek-chat"
         )
-        # self.client = OpenAI(api_key="sk-711d90254852461baa218e697aab1ee3", base_url=self.url)
         self.client = OpenAI(
-            api_key="sk-c875aefe59f5412a919c431bac6c7cea",
+            api_key="YOUR_API_KEY",
             base_url="https://api.deepseek.com"
         )
     def get_response_with_messages(self, model_name, messages):
@@ -247,7 +245,7 @@ class GPTModel(BaseModel):
                 "Content-Type": "application/json",
             },
             model_name="gpt-4o-mini",
-            api_key="sk-lckHynJCkznlYkWAA4F3172c374240F29994950a9dF5064f"
+            api_key="YOUR_API_KEY"
         )
 
     def get_response_with_messages(self, model_name, messages):
@@ -283,7 +281,7 @@ class QwenModel(BaseModel):
                 "Content-Type": "application/json",
             },
             model_name="qwen2.5-coder-32b-instruct",
-            api_key="sk-ec88acb889c647b3afb01bb7de64f5f2"
+            api_key="YOUR_API_KEY"
         )
 
     def get_response_with_messages(self, model_name, messages):
@@ -299,7 +297,7 @@ class QwenModel(BaseModel):
 
     def get_response_with_tool(self, model_name, messages, tools=tools, tool_choice="auto"):
         try:
-            # 确保消息格式正确
+            # Ensure message format is correct
             formatted_messages = []
             for msg in messages:
                 if isinstance(msg, dict) and "role" in msg and "content" in msg:
@@ -317,7 +315,7 @@ class QwenModel(BaseModel):
                 tools=tools
             )
             
-            # 返回完整的响应对象，包含 tool_calls
+            # Return full response object, including tool_calls
             return response
         except Exception as e:
             return {
