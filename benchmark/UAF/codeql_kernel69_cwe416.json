@@ -1,0 +1,338 @@
+[
+    {
+        "var_name": "conn",
+        "function_name": "ieee80211_chandef_downgrade",
+        "location": {
+            "file_path": "net/mac80211/util.c",
+            "region": {
+                "startLine": 3521,
+                "startColumn": 3,
+                "endColumn": 7
+            },
+            "context": {
+                "startLine": 3519,
+                "endLine": 3523,
+                "snippet": {
+                    "text": "conn->mode = IEEE80211_CONN_MODE_LEGACY;"
+                }
+            }
+        },
+        "function_code": "void ieee80211_chandef_downgrade(struct cfg80211_chan_def *c,\n\t\t\t\t struct ieee80211_conn_settings *conn)\n{\n\tenum nl80211_chan_width new_primary_width;\n\tstruct ieee80211_conn_settings _ignored = {};\n\n\t/* allow passing NULL if caller doesn't care */\n\tif (!conn)\n\t\tconn = &_ignored;\n\nagain:\n\t/* no-HT indicates nothing to do */\n\tnew_primary_width = NL80211_CHAN_WIDTH_20_NOHT;\n\n\tswitch (c->width) {\n\tdefault:\n\tcase NL80211_CHAN_WIDTH_20_NOHT:\n\t\tWARN_ON_ONCE(1);\n\t\tfallthrough;\n\tcase NL80211_CHAN_WIDTH_20:\n\t\tc->width = NL80211_CHAN_WIDTH_20_NOHT;\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_40:\n\t\tc->width = NL80211_CHAN_WIDTH_20;\n\t\tc->center_freq1 = c->chan->center_freq;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_40;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_40;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80P80:\n\t\tc->center_freq2 = 0;\n\t\tc->width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_160:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_320:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_160;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_160;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_1:\n\tcase NL80211_CHAN_WIDTH_2:\n\tcase NL80211_CHAN_WIDTH_4:\n\tcase NL80211_CHAN_WIDTH_8:\n\tcase NL80211_CHAN_WIDTH_16:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_S1G;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_5:\n\tcase NL80211_CHAN_WIDTH_10:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\t}\n\n\tif (new_primary_width != NL80211_CHAN_WIDTH_20_NOHT) {\n\t\tc->center_freq1 = cfg80211_chandef_primary(c, new_primary_width,\n\t\t\t\t\t\t\t   &c->punctured);\n\t\tc->width = new_primary_width;\n\t}\n\n\t/*\n\t * With an 80 MHz channel, we might have the puncturing in the primary\n\t * 40 Mhz channel, but that's not valid when downgraded to 40 MHz width.\n\t * In that case, downgrade again.\n\t */\n\tif (!cfg80211_chandef_valid(c) && c->punctured)\n\t\tgoto again;\n\n\tWARN_ON_ONCE(!cfg80211_chandef_valid(c));\n}",
+        "result": 0
+    },
+    {
+        "var_name": "conn",
+        "function_name": "ieee80211_chandef_downgrade",
+        "location": {
+            "file_path": "net/mac80211/util.c",
+            "region": {
+                "startLine": 3522,
+                "startColumn": 3,
+                "endColumn": 7
+            },
+            "context": {
+                "startLine": 3520,
+                "endLine": 3524,
+                "snippet": {
+                    "text": "conn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;"
+                }
+            }
+        },
+        "function_code": "void ieee80211_chandef_downgrade(struct cfg80211_chan_def *c,\n\t\t\t\t struct ieee80211_conn_settings *conn)\n{\n\tenum nl80211_chan_width new_primary_width;\n\tstruct ieee80211_conn_settings _ignored = {};\n\n\t/* allow passing NULL if caller doesn't care */\n\tif (!conn)\n\t\tconn = &_ignored;\n\nagain:\n\t/* no-HT indicates nothing to do */\n\tnew_primary_width = NL80211_CHAN_WIDTH_20_NOHT;\n\n\tswitch (c->width) {\n\tdefault:\n\tcase NL80211_CHAN_WIDTH_20_NOHT:\n\t\tWARN_ON_ONCE(1);\n\t\tfallthrough;\n\tcase NL80211_CHAN_WIDTH_20:\n\t\tc->width = NL80211_CHAN_WIDTH_20_NOHT;\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_40:\n\t\tc->width = NL80211_CHAN_WIDTH_20;\n\t\tc->center_freq1 = c->chan->center_freq;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_40;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_40;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80P80:\n\t\tc->center_freq2 = 0;\n\t\tc->width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_160:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_320:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_160;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_160;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_1:\n\tcase NL80211_CHAN_WIDTH_2:\n\tcase NL80211_CHAN_WIDTH_4:\n\tcase NL80211_CHAN_WIDTH_8:\n\tcase NL80211_CHAN_WIDTH_16:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_S1G;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_5:\n\tcase NL80211_CHAN_WIDTH_10:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\t}\n\n\tif (new_primary_width != NL80211_CHAN_WIDTH_20_NOHT) {\n\t\tc->center_freq1 = cfg80211_chandef_primary(c, new_primary_width,\n\t\t\t\t\t\t\t   &c->punctured);\n\t\tc->width = new_primary_width;\n\t}\n\n\t/*\n\t * With an 80 MHz channel, we might have the puncturing in the primary\n\t * 40 Mhz channel, but that's not valid when downgraded to 40 MHz width.\n\t * In that case, downgrade again.\n\t */\n\tif (!cfg80211_chandef_valid(c) && c->punctured)\n\t\tgoto again;\n\n\tWARN_ON_ONCE(!cfg80211_chandef_valid(c));\n}",
+        "result": 0
+    },
+    {
+        "var_name": "conn",
+        "function_name": "ieee80211_chandef_downgrade",
+        "location": {
+            "file_path": "net/mac80211/util.c",
+            "region": {
+                "startLine": 3528,
+                "startColumn": 7,
+                "endColumn": 11
+            },
+            "context": {
+                "startLine": 3526,
+                "endLine": 3530,
+                "snippet": {
+                    "text": "if (conn->mode == IEEE80211_CONN_MODE_VHT)"
+                }
+            }
+        },
+        "function_code": "void ieee80211_chandef_downgrade(struct cfg80211_chan_def *c,\n\t\t\t\t struct ieee80211_conn_settings *conn)\n{\n\tenum nl80211_chan_width new_primary_width;\n\tstruct ieee80211_conn_settings _ignored = {};\n\n\t/* allow passing NULL if caller doesn't care */\n\tif (!conn)\n\t\tconn = &_ignored;\n\nagain:\n\t/* no-HT indicates nothing to do */\n\tnew_primary_width = NL80211_CHAN_WIDTH_20_NOHT;\n\n\tswitch (c->width) {\n\tdefault:\n\tcase NL80211_CHAN_WIDTH_20_NOHT:\n\t\tWARN_ON_ONCE(1);\n\t\tfallthrough;\n\tcase NL80211_CHAN_WIDTH_20:\n\t\tc->width = NL80211_CHAN_WIDTH_20_NOHT;\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_40:\n\t\tc->width = NL80211_CHAN_WIDTH_20;\n\t\tc->center_freq1 = c->chan->center_freq;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_40;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_40;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80P80:\n\t\tc->center_freq2 = 0;\n\t\tc->width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_160:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_320:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_160;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_160;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_1:\n\tcase NL80211_CHAN_WIDTH_2:\n\tcase NL80211_CHAN_WIDTH_4:\n\tcase NL80211_CHAN_WIDTH_8:\n\tcase NL80211_CHAN_WIDTH_16:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_S1G;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_5:\n\tcase NL80211_CHAN_WIDTH_10:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\t}\n\n\tif (new_primary_width != NL80211_CHAN_WIDTH_20_NOHT) {\n\t\tc->center_freq1 = cfg80211_chandef_primary(c, new_primary_width,\n\t\t\t\t\t\t\t   &c->punctured);\n\t\tc->width = new_primary_width;\n\t}\n\n\t/*\n\t * With an 80 MHz channel, we might have the puncturing in the primary\n\t * 40 Mhz channel, but that's not valid when downgraded to 40 MHz width.\n\t * In that case, downgrade again.\n\t */\n\tif (!cfg80211_chandef_valid(c) && c->punctured)\n\t\tgoto again;\n\n\tWARN_ON_ONCE(!cfg80211_chandef_valid(c));\n}",
+        "result": 0
+    },
+    {
+        "var_name": "conn",
+        "function_name": "ieee80211_chandef_downgrade",
+        "location": {
+            "file_path": "net/mac80211/util.c",
+            "region": {
+                "startLine": 3529,
+                "startColumn": 4,
+                "endColumn": 8
+            },
+            "context": {
+                "startLine": 3527,
+                "endLine": 3531,
+                "snippet": {
+                    "text": "conn->mode = IEEE80211_CONN_MODE_HT;"
+                }
+            }
+        },
+        "function_code": "void ieee80211_chandef_downgrade(struct cfg80211_chan_def *c,\n\t\t\t\t struct ieee80211_conn_settings *conn)\n{\n\tenum nl80211_chan_width new_primary_width;\n\tstruct ieee80211_conn_settings _ignored = {};\n\n\t/* allow passing NULL if caller doesn't care */\n\tif (!conn)\n\t\tconn = &_ignored;\n\nagain:\n\t/* no-HT indicates nothing to do */\n\tnew_primary_width = NL80211_CHAN_WIDTH_20_NOHT;\n\n\tswitch (c->width) {\n\tdefault:\n\tcase NL80211_CHAN_WIDTH_20_NOHT:\n\t\tWARN_ON_ONCE(1);\n\t\tfallthrough;\n\tcase NL80211_CHAN_WIDTH_20:\n\t\tc->width = NL80211_CHAN_WIDTH_20_NOHT;\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_40:\n\t\tc->width = NL80211_CHAN_WIDTH_20;\n\t\tc->center_freq1 = c->chan->center_freq;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_40;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_40;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80P80:\n\t\tc->center_freq2 = 0;\n\t\tc->width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_160:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_320:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_160;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_160;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_1:\n\tcase NL80211_CHAN_WIDTH_2:\n\tcase NL80211_CHAN_WIDTH_4:\n\tcase NL80211_CHAN_WIDTH_8:\n\tcase NL80211_CHAN_WIDTH_16:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_S1G;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_5:\n\tcase NL80211_CHAN_WIDTH_10:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\t}\n\n\tif (new_primary_width != NL80211_CHAN_WIDTH_20_NOHT) {\n\t\tc->center_freq1 = cfg80211_chandef_primary(c, new_primary_width,\n\t\t\t\t\t\t\t   &c->punctured);\n\t\tc->width = new_primary_width;\n\t}\n\n\t/*\n\t * With an 80 MHz channel, we might have the puncturing in the primary\n\t * 40 Mhz channel, but that's not valid when downgraded to 40 MHz width.\n\t * In that case, downgrade again.\n\t */\n\tif (!cfg80211_chandef_valid(c) && c->punctured)\n\t\tgoto again;\n\n\tWARN_ON_ONCE(!cfg80211_chandef_valid(c));\n}",
+        "result": 0
+    },
+    {
+        "var_name": "conn",
+        "function_name": "ieee80211_chandef_downgrade",
+        "location": {
+            "file_path": "net/mac80211/util.c",
+            "region": {
+                "startLine": 3530,
+                "startColumn": 3,
+                "endColumn": 7
+            },
+            "context": {
+                "startLine": 3528,
+                "endLine": 3532,
+                "snippet": {
+                    "text": "conn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;"
+                }
+            }
+        },
+        "function_code": "void ieee80211_chandef_downgrade(struct cfg80211_chan_def *c,\n\t\t\t\t struct ieee80211_conn_settings *conn)\n{\n\tenum nl80211_chan_width new_primary_width;\n\tstruct ieee80211_conn_settings _ignored = {};\n\n\t/* allow passing NULL if caller doesn't care */\n\tif (!conn)\n\t\tconn = &_ignored;\n\nagain:\n\t/* no-HT indicates nothing to do */\n\tnew_primary_width = NL80211_CHAN_WIDTH_20_NOHT;\n\n\tswitch (c->width) {\n\tdefault:\n\tcase NL80211_CHAN_WIDTH_20_NOHT:\n\t\tWARN_ON_ONCE(1);\n\t\tfallthrough;\n\tcase NL80211_CHAN_WIDTH_20:\n\t\tc->width = NL80211_CHAN_WIDTH_20_NOHT;\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_40:\n\t\tc->width = NL80211_CHAN_WIDTH_20;\n\t\tc->center_freq1 = c->chan->center_freq;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_40;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_40;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80P80:\n\t\tc->center_freq2 = 0;\n\t\tc->width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_160:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_320:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_160;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_160;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_1:\n\tcase NL80211_CHAN_WIDTH_2:\n\tcase NL80211_CHAN_WIDTH_4:\n\tcase NL80211_CHAN_WIDTH_8:\n\tcase NL80211_CHAN_WIDTH_16:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_S1G;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_5:\n\tcase NL80211_CHAN_WIDTH_10:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\t}\n\n\tif (new_primary_width != NL80211_CHAN_WIDTH_20_NOHT) {\n\t\tc->center_freq1 = cfg80211_chandef_primary(c, new_primary_width,\n\t\t\t\t\t\t\t   &c->punctured);\n\t\tc->width = new_primary_width;\n\t}\n\n\t/*\n\t * With an 80 MHz channel, we might have the puncturing in the primary\n\t * 40 Mhz channel, but that's not valid when downgraded to 40 MHz width.\n\t * In that case, downgrade again.\n\t */\n\tif (!cfg80211_chandef_valid(c) && c->punctured)\n\t\tgoto again;\n\n\tWARN_ON_ONCE(!cfg80211_chandef_valid(c));\n}",
+        "result": 0
+    },
+    {
+        "var_name": "conn",
+        "function_name": "ieee80211_chandef_downgrade",
+        "location": {
+            "file_path": "net/mac80211/util.c",
+            "region": {
+                "startLine": 3535,
+                "startColumn": 7,
+                "endColumn": 11
+            },
+            "context": {
+                "startLine": 3533,
+                "endLine": 3537,
+                "snippet": {
+                    "text": "if (conn->mode == IEEE80211_CONN_MODE_VHT)"
+                }
+            }
+        },
+        "function_code": "void ieee80211_chandef_downgrade(struct cfg80211_chan_def *c,\n\t\t\t\t struct ieee80211_conn_settings *conn)\n{\n\tenum nl80211_chan_width new_primary_width;\n\tstruct ieee80211_conn_settings _ignored = {};\n\n\t/* allow passing NULL if caller doesn't care */\n\tif (!conn)\n\t\tconn = &_ignored;\n\nagain:\n\t/* no-HT indicates nothing to do */\n\tnew_primary_width = NL80211_CHAN_WIDTH_20_NOHT;\n\n\tswitch (c->width) {\n\tdefault:\n\tcase NL80211_CHAN_WIDTH_20_NOHT:\n\t\tWARN_ON_ONCE(1);\n\t\tfallthrough;\n\tcase NL80211_CHAN_WIDTH_20:\n\t\tc->width = NL80211_CHAN_WIDTH_20_NOHT;\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_40:\n\t\tc->width = NL80211_CHAN_WIDTH_20;\n\t\tc->center_freq1 = c->chan->center_freq;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_40;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_40;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80P80:\n\t\tc->center_freq2 = 0;\n\t\tc->width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_160:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_320:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_160;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_160;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_1:\n\tcase NL80211_CHAN_WIDTH_2:\n\tcase NL80211_CHAN_WIDTH_4:\n\tcase NL80211_CHAN_WIDTH_8:\n\tcase NL80211_CHAN_WIDTH_16:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_S1G;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_5:\n\tcase NL80211_CHAN_WIDTH_10:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\t}\n\n\tif (new_primary_width != NL80211_CHAN_WIDTH_20_NOHT) {\n\t\tc->center_freq1 = cfg80211_chandef_primary(c, new_primary_width,\n\t\t\t\t\t\t\t   &c->punctured);\n\t\tc->width = new_primary_width;\n\t}\n\n\t/*\n\t * With an 80 MHz channel, we might have the puncturing in the primary\n\t * 40 Mhz channel, but that's not valid when downgraded to 40 MHz width.\n\t * In that case, downgrade again.\n\t */\n\tif (!cfg80211_chandef_valid(c) && c->punctured)\n\t\tgoto again;\n\n\tWARN_ON_ONCE(!cfg80211_chandef_valid(c));\n}",
+        "result": 0
+    },
+    {
+        "var_name": "conn",
+        "function_name": "ieee80211_chandef_downgrade",
+        "location": {
+            "file_path": "net/mac80211/util.c",
+            "region": {
+                "startLine": 3536,
+                "startColumn": 4,
+                "endColumn": 8
+            },
+            "context": {
+                "startLine": 3534,
+                "endLine": 3538,
+                "snippet": {
+                    "text": "conn->mode = IEEE80211_CONN_MODE_HT;"
+                }
+            }
+        },
+        "function_code": "void ieee80211_chandef_downgrade(struct cfg80211_chan_def *c,\n\t\t\t\t struct ieee80211_conn_settings *conn)\n{\n\tenum nl80211_chan_width new_primary_width;\n\tstruct ieee80211_conn_settings _ignored = {};\n\n\t/* allow passing NULL if caller doesn't care */\n\tif (!conn)\n\t\tconn = &_ignored;\n\nagain:\n\t/* no-HT indicates nothing to do */\n\tnew_primary_width = NL80211_CHAN_WIDTH_20_NOHT;\n\n\tswitch (c->width) {\n\tdefault:\n\tcase NL80211_CHAN_WIDTH_20_NOHT:\n\t\tWARN_ON_ONCE(1);\n\t\tfallthrough;\n\tcase NL80211_CHAN_WIDTH_20:\n\t\tc->width = NL80211_CHAN_WIDTH_20_NOHT;\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_40:\n\t\tc->width = NL80211_CHAN_WIDTH_20;\n\t\tc->center_freq1 = c->chan->center_freq;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_40;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_40;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80P80:\n\t\tc->center_freq2 = 0;\n\t\tc->width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_160:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_320:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_160;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_160;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_1:\n\tcase NL80211_CHAN_WIDTH_2:\n\tcase NL80211_CHAN_WIDTH_4:\n\tcase NL80211_CHAN_WIDTH_8:\n\tcase NL80211_CHAN_WIDTH_16:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_S1G;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_5:\n\tcase NL80211_CHAN_WIDTH_10:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\t}\n\n\tif (new_primary_width != NL80211_CHAN_WIDTH_20_NOHT) {\n\t\tc->center_freq1 = cfg80211_chandef_primary(c, new_primary_width,\n\t\t\t\t\t\t\t   &c->punctured);\n\t\tc->width = new_primary_width;\n\t}\n\n\t/*\n\t * With an 80 MHz channel, we might have the puncturing in the primary\n\t * 40 Mhz channel, but that's not valid when downgraded to 40 MHz width.\n\t * In that case, downgrade again.\n\t */\n\tif (!cfg80211_chandef_valid(c) && c->punctured)\n\t\tgoto again;\n\n\tWARN_ON_ONCE(!cfg80211_chandef_valid(c));\n}",
+        "result": 0
+    },
+    {
+        "var_name": "conn",
+        "function_name": "ieee80211_chandef_downgrade",
+        "location": {
+            "file_path": "net/mac80211/util.c",
+            "region": {
+                "startLine": 3537,
+                "startColumn": 3,
+                "endColumn": 7
+            },
+            "context": {
+                "startLine": 3535,
+                "endLine": 3539,
+                "snippet": {
+                    "text": "conn->bw_limit = IEEE80211_CONN_BW_LIMIT_40;"
+                }
+            }
+        },
+        "function_code": "void ieee80211_chandef_downgrade(struct cfg80211_chan_def *c,\n\t\t\t\t struct ieee80211_conn_settings *conn)\n{\n\tenum nl80211_chan_width new_primary_width;\n\tstruct ieee80211_conn_settings _ignored = {};\n\n\t/* allow passing NULL if caller doesn't care */\n\tif (!conn)\n\t\tconn = &_ignored;\n\nagain:\n\t/* no-HT indicates nothing to do */\n\tnew_primary_width = NL80211_CHAN_WIDTH_20_NOHT;\n\n\tswitch (c->width) {\n\tdefault:\n\tcase NL80211_CHAN_WIDTH_20_NOHT:\n\t\tWARN_ON_ONCE(1);\n\t\tfallthrough;\n\tcase NL80211_CHAN_WIDTH_20:\n\t\tc->width = NL80211_CHAN_WIDTH_20_NOHT;\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_40:\n\t\tc->width = NL80211_CHAN_WIDTH_20;\n\t\tc->center_freq1 = c->chan->center_freq;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_40;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_40;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80P80:\n\t\tc->center_freq2 = 0;\n\t\tc->width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_160:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_320:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_160;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_160;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_1:\n\tcase NL80211_CHAN_WIDTH_2:\n\tcase NL80211_CHAN_WIDTH_4:\n\tcase NL80211_CHAN_WIDTH_8:\n\tcase NL80211_CHAN_WIDTH_16:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_S1G;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_5:\n\tcase NL80211_CHAN_WIDTH_10:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\t}\n\n\tif (new_primary_width != NL80211_CHAN_WIDTH_20_NOHT) {\n\t\tc->center_freq1 = cfg80211_chandef_primary(c, new_primary_width,\n\t\t\t\t\t\t\t   &c->punctured);\n\t\tc->width = new_primary_width;\n\t}\n\n\t/*\n\t * With an 80 MHz channel, we might have the puncturing in the primary\n\t * 40 Mhz channel, but that's not valid when downgraded to 40 MHz width.\n\t * In that case, downgrade again.\n\t */\n\tif (!cfg80211_chandef_valid(c) && c->punctured)\n\t\tgoto again;\n\n\tWARN_ON_ONCE(!cfg80211_chandef_valid(c));\n}",
+        "result": 0
+    },
+    {
+        "var_name": "conn",
+        "function_name": "ieee80211_chandef_downgrade",
+        "location": {
+            "file_path": "net/mac80211/util.c",
+            "region": {
+                "startLine": 3542,
+                "startColumn": 3,
+                "endColumn": 7
+            },
+            "context": {
+                "startLine": 3540,
+                "endLine": 3544,
+                "snippet": {
+                    "text": "conn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;"
+                }
+            }
+        },
+        "function_code": "void ieee80211_chandef_downgrade(struct cfg80211_chan_def *c,\n\t\t\t\t struct ieee80211_conn_settings *conn)\n{\n\tenum nl80211_chan_width new_primary_width;\n\tstruct ieee80211_conn_settings _ignored = {};\n\n\t/* allow passing NULL if caller doesn't care */\n\tif (!conn)\n\t\tconn = &_ignored;\n\nagain:\n\t/* no-HT indicates nothing to do */\n\tnew_primary_width = NL80211_CHAN_WIDTH_20_NOHT;\n\n\tswitch (c->width) {\n\tdefault:\n\tcase NL80211_CHAN_WIDTH_20_NOHT:\n\t\tWARN_ON_ONCE(1);\n\t\tfallthrough;\n\tcase NL80211_CHAN_WIDTH_20:\n\t\tc->width = NL80211_CHAN_WIDTH_20_NOHT;\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_40:\n\t\tc->width = NL80211_CHAN_WIDTH_20;\n\t\tc->center_freq1 = c->chan->center_freq;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_40;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_40;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80P80:\n\t\tc->center_freq2 = 0;\n\t\tc->width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_160:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_320:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_160;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_160;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_1:\n\tcase NL80211_CHAN_WIDTH_2:\n\tcase NL80211_CHAN_WIDTH_4:\n\tcase NL80211_CHAN_WIDTH_8:\n\tcase NL80211_CHAN_WIDTH_16:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_S1G;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_5:\n\tcase NL80211_CHAN_WIDTH_10:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\t}\n\n\tif (new_primary_width != NL80211_CHAN_WIDTH_20_NOHT) {\n\t\tc->center_freq1 = cfg80211_chandef_primary(c, new_primary_width,\n\t\t\t\t\t\t\t   &c->punctured);\n\t\tc->width = new_primary_width;\n\t}\n\n\t/*\n\t * With an 80 MHz channel, we might have the puncturing in the primary\n\t * 40 Mhz channel, but that's not valid when downgraded to 40 MHz width.\n\t * In that case, downgrade again.\n\t */\n\tif (!cfg80211_chandef_valid(c) && c->punctured)\n\t\tgoto again;\n\n\tWARN_ON_ONCE(!cfg80211_chandef_valid(c));\n}",
+        "result": 0
+    },
+    {
+        "var_name": "conn",
+        "function_name": "ieee80211_chandef_downgrade",
+        "location": {
+            "file_path": "net/mac80211/util.c",
+            "region": {
+                "startLine": 3546,
+                "startColumn": 3,
+                "endColumn": 7
+            },
+            "context": {
+                "startLine": 3544,
+                "endLine": 3548,
+                "snippet": {
+                    "text": "conn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;"
+                }
+            }
+        },
+        "function_code": "void ieee80211_chandef_downgrade(struct cfg80211_chan_def *c,\n\t\t\t\t struct ieee80211_conn_settings *conn)\n{\n\tenum nl80211_chan_width new_primary_width;\n\tstruct ieee80211_conn_settings _ignored = {};\n\n\t/* allow passing NULL if caller doesn't care */\n\tif (!conn)\n\t\tconn = &_ignored;\n\nagain:\n\t/* no-HT indicates nothing to do */\n\tnew_primary_width = NL80211_CHAN_WIDTH_20_NOHT;\n\n\tswitch (c->width) {\n\tdefault:\n\tcase NL80211_CHAN_WIDTH_20_NOHT:\n\t\tWARN_ON_ONCE(1);\n\t\tfallthrough;\n\tcase NL80211_CHAN_WIDTH_20:\n\t\tc->width = NL80211_CHAN_WIDTH_20_NOHT;\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_40:\n\t\tc->width = NL80211_CHAN_WIDTH_20;\n\t\tc->center_freq1 = c->chan->center_freq;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_40;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_40;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80P80:\n\t\tc->center_freq2 = 0;\n\t\tc->width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_160:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_320:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_160;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_160;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_1:\n\tcase NL80211_CHAN_WIDTH_2:\n\tcase NL80211_CHAN_WIDTH_4:\n\tcase NL80211_CHAN_WIDTH_8:\n\tcase NL80211_CHAN_WIDTH_16:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_S1G;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_5:\n\tcase NL80211_CHAN_WIDTH_10:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\t}\n\n\tif (new_primary_width != NL80211_CHAN_WIDTH_20_NOHT) {\n\t\tc->center_freq1 = cfg80211_chandef_primary(c, new_primary_width,\n\t\t\t\t\t\t\t   &c->punctured);\n\t\tc->width = new_primary_width;\n\t}\n\n\t/*\n\t * With an 80 MHz channel, we might have the puncturing in the primary\n\t * 40 Mhz channel, but that's not valid when downgraded to 40 MHz width.\n\t * In that case, downgrade again.\n\t */\n\tif (!cfg80211_chandef_valid(c) && c->punctured)\n\t\tgoto again;\n\n\tWARN_ON_ONCE(!cfg80211_chandef_valid(c));\n}",
+        "result": 0
+    },
+    {
+        "var_name": "conn",
+        "function_name": "ieee80211_chandef_downgrade",
+        "location": {
+            "file_path": "net/mac80211/util.c",
+            "region": {
+                "startLine": 3550,
+                "startColumn": 3,
+                "endColumn": 7
+            },
+            "context": {
+                "startLine": 3548,
+                "endLine": 3552,
+                "snippet": {
+                    "text": "conn->bw_limit = IEEE80211_CONN_BW_LIMIT_160;"
+                }
+            }
+        },
+        "function_code": "void ieee80211_chandef_downgrade(struct cfg80211_chan_def *c,\n\t\t\t\t struct ieee80211_conn_settings *conn)\n{\n\tenum nl80211_chan_width new_primary_width;\n\tstruct ieee80211_conn_settings _ignored = {};\n\n\t/* allow passing NULL if caller doesn't care */\n\tif (!conn)\n\t\tconn = &_ignored;\n\nagain:\n\t/* no-HT indicates nothing to do */\n\tnew_primary_width = NL80211_CHAN_WIDTH_20_NOHT;\n\n\tswitch (c->width) {\n\tdefault:\n\tcase NL80211_CHAN_WIDTH_20_NOHT:\n\t\tWARN_ON_ONCE(1);\n\t\tfallthrough;\n\tcase NL80211_CHAN_WIDTH_20:\n\t\tc->width = NL80211_CHAN_WIDTH_20_NOHT;\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_40:\n\t\tc->width = NL80211_CHAN_WIDTH_20;\n\t\tc->center_freq1 = c->chan->center_freq;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_40;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_40;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80P80:\n\t\tc->center_freq2 = 0;\n\t\tc->width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_160:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_320:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_160;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_160;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_1:\n\tcase NL80211_CHAN_WIDTH_2:\n\tcase NL80211_CHAN_WIDTH_4:\n\tcase NL80211_CHAN_WIDTH_8:\n\tcase NL80211_CHAN_WIDTH_16:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_S1G;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_5:\n\tcase NL80211_CHAN_WIDTH_10:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\t}\n\n\tif (new_primary_width != NL80211_CHAN_WIDTH_20_NOHT) {\n\t\tc->center_freq1 = cfg80211_chandef_primary(c, new_primary_width,\n\t\t\t\t\t\t\t   &c->punctured);\n\t\tc->width = new_primary_width;\n\t}\n\n\t/*\n\t * With an 80 MHz channel, we might have the puncturing in the primary\n\t * 40 Mhz channel, but that's not valid when downgraded to 40 MHz width.\n\t * In that case, downgrade again.\n\t */\n\tif (!cfg80211_chandef_valid(c) && c->punctured)\n\t\tgoto again;\n\n\tWARN_ON_ONCE(!cfg80211_chandef_valid(c));\n}",
+        "result": 0
+    },
+    {
+        "var_name": "conn",
+        "function_name": "ieee80211_chandef_downgrade",
+        "location": {
+            "file_path": "net/mac80211/util.c",
+            "region": {
+                "startLine": 3559,
+                "startColumn": 3,
+                "endColumn": 7
+            },
+            "context": {
+                "startLine": 3557,
+                "endLine": 3561,
+                "snippet": {
+                    "text": "conn->mode = IEEE80211_CONN_MODE_S1G;"
+                }
+            }
+        },
+        "function_code": "void ieee80211_chandef_downgrade(struct cfg80211_chan_def *c,\n\t\t\t\t struct ieee80211_conn_settings *conn)\n{\n\tenum nl80211_chan_width new_primary_width;\n\tstruct ieee80211_conn_settings _ignored = {};\n\n\t/* allow passing NULL if caller doesn't care */\n\tif (!conn)\n\t\tconn = &_ignored;\n\nagain:\n\t/* no-HT indicates nothing to do */\n\tnew_primary_width = NL80211_CHAN_WIDTH_20_NOHT;\n\n\tswitch (c->width) {\n\tdefault:\n\tcase NL80211_CHAN_WIDTH_20_NOHT:\n\t\tWARN_ON_ONCE(1);\n\t\tfallthrough;\n\tcase NL80211_CHAN_WIDTH_20:\n\t\tc->width = NL80211_CHAN_WIDTH_20_NOHT;\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_40:\n\t\tc->width = NL80211_CHAN_WIDTH_20;\n\t\tc->center_freq1 = c->chan->center_freq;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_40;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_40;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80P80:\n\t\tc->center_freq2 = 0;\n\t\tc->width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_160:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_320:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_160;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_160;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_1:\n\tcase NL80211_CHAN_WIDTH_2:\n\tcase NL80211_CHAN_WIDTH_4:\n\tcase NL80211_CHAN_WIDTH_8:\n\tcase NL80211_CHAN_WIDTH_16:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_S1G;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_5:\n\tcase NL80211_CHAN_WIDTH_10:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\t}\n\n\tif (new_primary_width != NL80211_CHAN_WIDTH_20_NOHT) {\n\t\tc->center_freq1 = cfg80211_chandef_primary(c, new_primary_width,\n\t\t\t\t\t\t\t   &c->punctured);\n\t\tc->width = new_primary_width;\n\t}\n\n\t/*\n\t * With an 80 MHz channel, we might have the puncturing in the primary\n\t * 40 Mhz channel, but that's not valid when downgraded to 40 MHz width.\n\t * In that case, downgrade again.\n\t */\n\tif (!cfg80211_chandef_valid(c) && c->punctured)\n\t\tgoto again;\n\n\tWARN_ON_ONCE(!cfg80211_chandef_valid(c));\n}",
+        "result": 0
+    },
+    {
+        "var_name": "conn",
+        "function_name": "ieee80211_chandef_downgrade",
+        "location": {
+            "file_path": "net/mac80211/util.c",
+            "region": {
+                "startLine": 3560,
+                "startColumn": 3,
+                "endColumn": 7
+            },
+            "context": {
+                "startLine": 3558,
+                "endLine": 3562,
+                "snippet": {
+                    "text": "conn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;"
+                }
+            }
+        },
+        "function_code": "void ieee80211_chandef_downgrade(struct cfg80211_chan_def *c,\n\t\t\t\t struct ieee80211_conn_settings *conn)\n{\n\tenum nl80211_chan_width new_primary_width;\n\tstruct ieee80211_conn_settings _ignored = {};\n\n\t/* allow passing NULL if caller doesn't care */\n\tif (!conn)\n\t\tconn = &_ignored;\n\nagain:\n\t/* no-HT indicates nothing to do */\n\tnew_primary_width = NL80211_CHAN_WIDTH_20_NOHT;\n\n\tswitch (c->width) {\n\tdefault:\n\tcase NL80211_CHAN_WIDTH_20_NOHT:\n\t\tWARN_ON_ONCE(1);\n\t\tfallthrough;\n\tcase NL80211_CHAN_WIDTH_20:\n\t\tc->width = NL80211_CHAN_WIDTH_20_NOHT;\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_40:\n\t\tc->width = NL80211_CHAN_WIDTH_20;\n\t\tc->center_freq1 = c->chan->center_freq;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_40;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_40;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80P80:\n\t\tc->center_freq2 = 0;\n\t\tc->width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_160:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_320:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_160;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_160;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_1:\n\tcase NL80211_CHAN_WIDTH_2:\n\tcase NL80211_CHAN_WIDTH_4:\n\tcase NL80211_CHAN_WIDTH_8:\n\tcase NL80211_CHAN_WIDTH_16:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_S1G;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_5:\n\tcase NL80211_CHAN_WIDTH_10:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\t}\n\n\tif (new_primary_width != NL80211_CHAN_WIDTH_20_NOHT) {\n\t\tc->center_freq1 = cfg80211_chandef_primary(c, new_primary_width,\n\t\t\t\t\t\t\t   &c->punctured);\n\t\tc->width = new_primary_width;\n\t}\n\n\t/*\n\t * With an 80 MHz channel, we might have the puncturing in the primary\n\t * 40 Mhz channel, but that's not valid when downgraded to 40 MHz width.\n\t * In that case, downgrade again.\n\t */\n\tif (!cfg80211_chandef_valid(c) && c->punctured)\n\t\tgoto again;\n\n\tWARN_ON_ONCE(!cfg80211_chandef_valid(c));\n}",
+        "result": 0
+    },
+    {
+        "var_name": "conn",
+        "function_name": "ieee80211_chandef_downgrade",
+        "location": {
+            "file_path": "net/mac80211/util.c",
+            "region": {
+                "startLine": 3566,
+                "startColumn": 3,
+                "endColumn": 7
+            },
+            "context": {
+                "startLine": 3564,
+                "endLine": 3568,
+                "snippet": {
+                    "text": "conn->mode = IEEE80211_CONN_MODE_LEGACY;"
+                }
+            }
+        },
+        "function_code": "void ieee80211_chandef_downgrade(struct cfg80211_chan_def *c,\n\t\t\t\t struct ieee80211_conn_settings *conn)\n{\n\tenum nl80211_chan_width new_primary_width;\n\tstruct ieee80211_conn_settings _ignored = {};\n\n\t/* allow passing NULL if caller doesn't care */\n\tif (!conn)\n\t\tconn = &_ignored;\n\nagain:\n\t/* no-HT indicates nothing to do */\n\tnew_primary_width = NL80211_CHAN_WIDTH_20_NOHT;\n\n\tswitch (c->width) {\n\tdefault:\n\tcase NL80211_CHAN_WIDTH_20_NOHT:\n\t\tWARN_ON_ONCE(1);\n\t\tfallthrough;\n\tcase NL80211_CHAN_WIDTH_20:\n\t\tc->width = NL80211_CHAN_WIDTH_20_NOHT;\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_40:\n\t\tc->width = NL80211_CHAN_WIDTH_20;\n\t\tc->center_freq1 = c->chan->center_freq;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_40;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_40;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80P80:\n\t\tc->center_freq2 = 0;\n\t\tc->width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_160:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_320:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_160;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_160;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_1:\n\tcase NL80211_CHAN_WIDTH_2:\n\tcase NL80211_CHAN_WIDTH_4:\n\tcase NL80211_CHAN_WIDTH_8:\n\tcase NL80211_CHAN_WIDTH_16:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_S1G;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_5:\n\tcase NL80211_CHAN_WIDTH_10:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\t}\n\n\tif (new_primary_width != NL80211_CHAN_WIDTH_20_NOHT) {\n\t\tc->center_freq1 = cfg80211_chandef_primary(c, new_primary_width,\n\t\t\t\t\t\t\t   &c->punctured);\n\t\tc->width = new_primary_width;\n\t}\n\n\t/*\n\t * With an 80 MHz channel, we might have the puncturing in the primary\n\t * 40 Mhz channel, but that's not valid when downgraded to 40 MHz width.\n\t * In that case, downgrade again.\n\t */\n\tif (!cfg80211_chandef_valid(c) && c->punctured)\n\t\tgoto again;\n\n\tWARN_ON_ONCE(!cfg80211_chandef_valid(c));\n}",
+        "result": 0
+    },
+    {
+        "var_name": "conn",
+        "function_name": "ieee80211_chandef_downgrade",
+        "location": {
+            "file_path": "net/mac80211/util.c",
+            "region": {
+                "startLine": 3567,
+                "startColumn": 3,
+                "endColumn": 7
+            },
+            "context": {
+                "startLine": 3565,
+                "endLine": 3569,
+                "snippet": {
+                    "text": "conn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;"
+                }
+            }
+        },
+        "function_code": "void ieee80211_chandef_downgrade(struct cfg80211_chan_def *c,\n\t\t\t\t struct ieee80211_conn_settings *conn)\n{\n\tenum nl80211_chan_width new_primary_width;\n\tstruct ieee80211_conn_settings _ignored = {};\n\n\t/* allow passing NULL if caller doesn't care */\n\tif (!conn)\n\t\tconn = &_ignored;\n\nagain:\n\t/* no-HT indicates nothing to do */\n\tnew_primary_width = NL80211_CHAN_WIDTH_20_NOHT;\n\n\tswitch (c->width) {\n\tdefault:\n\tcase NL80211_CHAN_WIDTH_20_NOHT:\n\t\tWARN_ON_ONCE(1);\n\t\tfallthrough;\n\tcase NL80211_CHAN_WIDTH_20:\n\t\tc->width = NL80211_CHAN_WIDTH_20_NOHT;\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_40:\n\t\tc->width = NL80211_CHAN_WIDTH_20;\n\t\tc->center_freq1 = c->chan->center_freq;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tc->punctured = 0;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_40;\n\t\tif (conn->mode == IEEE80211_CONN_MODE_VHT)\n\t\t\tconn->mode = IEEE80211_CONN_MODE_HT;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_40;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_80P80:\n\t\tc->center_freq2 = 0;\n\t\tc->width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_160:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_80;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_80;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_320:\n\t\tnew_primary_width = NL80211_CHAN_WIDTH_160;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_160;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_1:\n\tcase NL80211_CHAN_WIDTH_2:\n\tcase NL80211_CHAN_WIDTH_4:\n\tcase NL80211_CHAN_WIDTH_8:\n\tcase NL80211_CHAN_WIDTH_16:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_S1G;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\tcase NL80211_CHAN_WIDTH_5:\n\tcase NL80211_CHAN_WIDTH_10:\n\t\tWARN_ON_ONCE(1);\n\t\t/* keep c->width */\n\t\tconn->mode = IEEE80211_CONN_MODE_LEGACY;\n\t\tconn->bw_limit = IEEE80211_CONN_BW_LIMIT_20;\n\t\tbreak;\n\t}\n\n\tif (new_primary_width != NL80211_CHAN_WIDTH_20_NOHT) {\n\t\tc->center_freq1 = cfg80211_chandef_primary(c, new_primary_width,\n\t\t\t\t\t\t\t   &c->punctured);\n\t\tc->width = new_primary_width;\n\t}\n\n\t/*\n\t * With an 80 MHz channel, we might have the puncturing in the primary\n\t * 40 Mhz channel, but that's not valid when downgraded to 40 MHz width.\n\t * In that case, downgrade again.\n\t */\n\tif (!cfg80211_chandef_valid(c) && c->punctured)\n\t\tgoto again;\n\n\tWARN_ON_ONCE(!cfg80211_chandef_valid(c));\n}",
+        "result": 0
+    },
+    {
+        "var_name": "data",
+        "function_name": "ring_buffer_wait",
+        "location": {
+            "file_path": "kernel/trace/ring_buffer.c",
+            "region": {
+                "startLine": 956,
+                "startColumn": 51,
+                "endColumn": 55
+            },
+            "context": {
+                "startLine": 954,
+                "endLine": 958,
+                "snippet": {
+                    "text": "       rb_wait_cond(rbwork, buffer, cpu, full, cond, data));"
+                }
+            }
+        },
+        "function_code": "int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full,\n\t\t     ring_buffer_cond_fn cond, void *data)\n{\n\tstruct ring_buffer_per_cpu *cpu_buffer;\n\tstruct wait_queue_head *waitq;\n\tstruct rb_irq_work *rbwork;\n\tstruct rb_wait_data rdata;\n\tint ret = 0;\n\n\t/*\n\t * Depending on what the caller is waiting for, either any\n\t * data in any cpu buffer, or a specific buffer, put the\n\t * caller on the appropriate wait queue.\n\t */\n\tif (cpu == RING_BUFFER_ALL_CPUS) {\n\t\trbwork = &buffer->irq_work;\n\t\t/* Full only makes sense on per cpu reads */\n\t\tfull = 0;\n\t} else {\n\t\tif (!cpumask_test_cpu(cpu, buffer->cpumask))\n\t\t\treturn -ENODEV;\n\t\tcpu_buffer = buffer->buffers[cpu];\n\t\trbwork = &cpu_buffer->irq_work;\n\t}\n\n\tif (full)\n\t\twaitq = &rbwork->full_waiters;\n\telse\n\t\twaitq = &rbwork->waiters;\n\n\t/* Set up to exit loop as soon as it is woken */\n\tif (!cond) {\n\t\tcond = rb_wait_once;\n\t\trdata.irq_work = rbwork;\n\t\trdata.seq = atomic_read_acquire(&rbwork->seq);\n\t\tdata = &rdata;\n\t}\n\n\tret = wait_event_interruptible((*waitq),\n\t\t\t\trb_wait_cond(rbwork, buffer, cpu, full, cond, data));\n\n\treturn ret;\n}",
+        "result": 0
+    }
+]

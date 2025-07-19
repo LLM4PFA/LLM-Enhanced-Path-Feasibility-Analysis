@@ -1,0 +1,191 @@
+[
+    {
+        "var_name": "session_ticket",
+        "function_name": "SSL_set_session_ticket_ext",
+        "location": {
+            "file_path": "ssl/ssl_sess.c",
+            "region": {
+                "startLine": 1182,
+                "startColumn": 21,
+                "endColumn": 35
+            },
+            "context": {
+                "startLine": 1180,
+                "endLine": 1184,
+                "snippet": {
+                    "text": "sc->ext.session_ticket->length = ext_len;"
+                }
+            }
+        },
+        "function_code": "int SSL_set_session_ticket_ext(SSL *s, void *ext_data, int ext_len)\n{\n    SSL_CONNECTION *sc = SSL_CONNECTION_FROM_SSL(s);\n\n    if (sc == NULL)\n        return 0;\n\n    if (sc->version >= TLS1_VERSION) {\n        OPENSSL_free(sc->ext.session_ticket);\n        sc->ext.session_ticket = NULL;\n        sc->ext.session_ticket =\n            OPENSSL_malloc(sizeof(TLS_SESSION_TICKET_EXT) + ext_len);\n        if (sc->ext.session_ticket == NULL)\n            return 0;\n\n        if (ext_data != NULL) {\n            sc->ext.session_ticket->length = ext_len;\n            sc->ext.session_ticket->data = sc->ext.session_ticket + 1;\n            memcpy(sc->ext.session_ticket->data, ext_data, ext_len);\n        } else {\n            sc->ext.session_ticket->length = 0;\n            sc->ext.session_ticket->data = NULL;\n        }\n\n        return 1;\n    }\n\n    return 0;\n}",
+        "result": 0
+    },
+    {
+        "var_name": "session_ticket",
+        "function_name": "SSL_set_session_ticket_ext",
+        "location": {
+            "file_path": "ssl/ssl_sess.c",
+            "region": {
+                "startLine": 1183,
+                "startColumn": 21,
+                "endColumn": 35
+            },
+            "context": {
+                "startLine": 1181,
+                "endLine": 1185,
+                "snippet": {
+                    "text": "sc->ext.session_ticket->data = sc->ext.session_ticket + 1;"
+                }
+            }
+        },
+        "function_code": "int SSL_set_session_ticket_ext(SSL *s, void *ext_data, int ext_len)\n{\n    SSL_CONNECTION *sc = SSL_CONNECTION_FROM_SSL(s);\n\n    if (sc == NULL)\n        return 0;\n\n    if (sc->version >= TLS1_VERSION) {\n        OPENSSL_free(sc->ext.session_ticket);\n        sc->ext.session_ticket = NULL;\n        sc->ext.session_ticket =\n            OPENSSL_malloc(sizeof(TLS_SESSION_TICKET_EXT) + ext_len);\n        if (sc->ext.session_ticket == NULL)\n            return 0;\n\n        if (ext_data != NULL) {\n            sc->ext.session_ticket->length = ext_len;\n            sc->ext.session_ticket->data = sc->ext.session_ticket + 1;\n            memcpy(sc->ext.session_ticket->data, ext_data, ext_len);\n        } else {\n            sc->ext.session_ticket->length = 0;\n            sc->ext.session_ticket->data = NULL;\n        }\n\n        return 1;\n    }\n\n    return 0;\n}",
+        "result": 0
+    },
+    {
+        "var_name": "data",
+        "function_name": "SSL_set_session_ticket_ext",
+        "location": {
+            "file_path": "ssl/ssl_sess.c",
+            "region": {
+                "startLine": 1184,
+                "startColumn": 28,
+                "endColumn": 42
+            },
+            "context": {
+                "startLine": 1182,
+                "endLine": 1186,
+                "snippet": {
+                    "text": "memcpy(sc->ext.session_ticket->data, ext_data, ext_len);"
+                }
+            }
+        },
+        "function_code": "int SSL_set_session_ticket_ext(SSL *s, void *ext_data, int ext_len)\n{\n    SSL_CONNECTION *sc = SSL_CONNECTION_FROM_SSL(s);\n\n    if (sc == NULL)\n        return 0;\n\n    if (sc->version >= TLS1_VERSION) {\n        OPENSSL_free(sc->ext.session_ticket);\n        sc->ext.session_ticket = NULL;\n        sc->ext.session_ticket =\n            OPENSSL_malloc(sizeof(TLS_SESSION_TICKET_EXT) + ext_len);\n        if (sc->ext.session_ticket == NULL)\n            return 0;\n\n        if (ext_data != NULL) {\n            sc->ext.session_ticket->length = ext_len;\n            sc->ext.session_ticket->data = sc->ext.session_ticket + 1;\n            memcpy(sc->ext.session_ticket->data, ext_data, ext_len);\n        } else {\n            sc->ext.session_ticket->length = 0;\n            sc->ext.session_ticket->data = NULL;\n        }\n\n        return 1;\n    }\n\n    return 0;\n}",
+        "result": 0
+    },
+    {
+        "var_name": "session_ticket",
+        "function_name": "SSL_set_session_ticket_ext",
+        "location": {
+            "file_path": "ssl/ssl_sess.c",
+            "region": {
+                "startLine": 1184,
+                "startColumn": 28,
+                "endColumn": 42
+            },
+            "context": {
+                "startLine": 1182,
+                "endLine": 1186,
+                "snippet": {
+                    "text": "memcpy(sc->ext.session_ticket->data, ext_data, ext_len);"
+                }
+            }
+        },
+        "function_code": "int SSL_set_session_ticket_ext(SSL *s, void *ext_data, int ext_len)\n{\n    SSL_CONNECTION *sc = SSL_CONNECTION_FROM_SSL(s);\n\n    if (sc == NULL)\n        return 0;\n\n    if (sc->version >= TLS1_VERSION) {\n        OPENSSL_free(sc->ext.session_ticket);\n        sc->ext.session_ticket = NULL;\n        sc->ext.session_ticket =\n            OPENSSL_malloc(sizeof(TLS_SESSION_TICKET_EXT) + ext_len);\n        if (sc->ext.session_ticket == NULL)\n            return 0;\n\n        if (ext_data != NULL) {\n            sc->ext.session_ticket->length = ext_len;\n            sc->ext.session_ticket->data = sc->ext.session_ticket + 1;\n            memcpy(sc->ext.session_ticket->data, ext_data, ext_len);\n        } else {\n            sc->ext.session_ticket->length = 0;\n            sc->ext.session_ticket->data = NULL;\n        }\n\n        return 1;\n    }\n\n    return 0;\n}",
+        "result": 0
+    },
+    {
+        "var_name": "session_ticket",
+        "function_name": "SSL_set_session_ticket_ext",
+        "location": {
+            "file_path": "ssl/ssl_sess.c",
+            "region": {
+                "startLine": 1186,
+                "startColumn": 21,
+                "endColumn": 35
+            },
+            "context": {
+                "startLine": 1184,
+                "endLine": 1188,
+                "snippet": {
+                    "text": "sc->ext.session_ticket->length = 0;"
+                }
+            }
+        },
+        "function_code": "int SSL_set_session_ticket_ext(SSL *s, void *ext_data, int ext_len)\n{\n    SSL_CONNECTION *sc = SSL_CONNECTION_FROM_SSL(s);\n\n    if (sc == NULL)\n        return 0;\n\n    if (sc->version >= TLS1_VERSION) {\n        OPENSSL_free(sc->ext.session_ticket);\n        sc->ext.session_ticket = NULL;\n        sc->ext.session_ticket =\n            OPENSSL_malloc(sizeof(TLS_SESSION_TICKET_EXT) + ext_len);\n        if (sc->ext.session_ticket == NULL)\n            return 0;\n\n        if (ext_data != NULL) {\n            sc->ext.session_ticket->length = ext_len;\n            sc->ext.session_ticket->data = sc->ext.session_ticket + 1;\n            memcpy(sc->ext.session_ticket->data, ext_data, ext_len);\n        } else {\n            sc->ext.session_ticket->length = 0;\n            sc->ext.session_ticket->data = NULL;\n        }\n\n        return 1;\n    }\n\n    return 0;\n}",
+        "result": 0
+    },
+    {
+        "var_name": "session_ticket",
+        "function_name": "SSL_set_session_ticket_ext",
+        "location": {
+            "file_path": "ssl/ssl_sess.c",
+            "region": {
+                "startLine": 1187,
+                "startColumn": 21,
+                "endColumn": 35
+            },
+            "context": {
+                "startLine": 1185,
+                "endLine": 1189,
+                "snippet": {
+                    "text": "sc->ext.session_ticket->data = NULL;"
+                }
+            }
+        },
+        "function_code": "int SSL_set_session_ticket_ext(SSL *s, void *ext_data, int ext_len)\n{\n    SSL_CONNECTION *sc = SSL_CONNECTION_FROM_SSL(s);\n\n    if (sc == NULL)\n        return 0;\n\n    if (sc->version >= TLS1_VERSION) {\n        OPENSSL_free(sc->ext.session_ticket);\n        sc->ext.session_ticket = NULL;\n        sc->ext.session_ticket =\n            OPENSSL_malloc(sizeof(TLS_SESSION_TICKET_EXT) + ext_len);\n        if (sc->ext.session_ticket == NULL)\n            return 0;\n\n        if (ext_data != NULL) {\n            sc->ext.session_ticket->length = ext_len;\n            sc->ext.session_ticket->data = sc->ext.session_ticket + 1;\n            memcpy(sc->ext.session_ticket->data, ext_data, ext_len);\n        } else {\n            sc->ext.session_ticket->length = 0;\n            sc->ext.session_ticket->data = NULL;\n        }\n\n        return 1;\n    }\n\n    return 0;\n}",
+        "result": 0
+    },
+    {
+        "var_name": "alpn_selected",
+        "function_name": "tls_parse_stoc_alpn",
+        "location": {
+            "file_path": "ssl/statem/extensions_clnt.c",
+            "region": {
+                "startLine": 1689,
+                "startColumn": 54,
+                "endColumn": 73
+            },
+            "context": {
+                "startLine": 1687,
+                "endLine": 1691,
+                "snippet": {
+                    "text": "|| memcmp(s->session->ext.alpn_selected, s->s3.alpn_selected, len)"
+                }
+            }
+        },
+        "function_code": "int tls_parse_stoc_alpn(SSL_CONNECTION *s, PACKET *pkt, unsigned int context,\n                        X509 *x, size_t chainidx)\n{\n    size_t len;\n    PACKET confpkt, protpkt;\n    int valid = 0;\n\n    /* We must have requested it. */\n    if (!s->s3.alpn_sent) {\n        SSLfatal(s, SSL_AD_UNSUPPORTED_EXTENSION, SSL_R_BAD_EXTENSION);\n        return 0;\n    }\n    /*-\n     * The extension data consists of:\n     *   uint16 list_length\n     *   uint8 proto_length;\n     *   uint8 proto[proto_length];\n     */\n    if (!PACKET_get_net_2_len(pkt, &len)\n        || PACKET_remaining(pkt) != len || !PACKET_get_1_len(pkt, &len)\n        || PACKET_remaining(pkt) != len) {\n        SSLfatal(s, SSL_AD_DECODE_ERROR, SSL_R_BAD_EXTENSION);\n        return 0;\n    }\n\n    /* It must be a protocol that we sent */\n    if (!PACKET_buf_init(&confpkt, s->ext.alpn, s->ext.alpn_len)) {\n        SSLfatal(s, SSL_AD_INTERNAL_ERROR, ERR_R_INTERNAL_ERROR);\n        return 0;\n    }\n    while (PACKET_get_length_prefixed_1(&confpkt, &protpkt)) {\n        if (PACKET_remaining(&protpkt) != len)\n            continue;\n        if (memcmp(PACKET_data(pkt), PACKET_data(&protpkt), len) == 0) {\n            /* Valid protocol found */\n            valid = 1;\n            break;\n        }\n    }\n\n    if (!valid) {\n        /* The protocol sent from the server does not match one we advertised */\n        SSLfatal(s, SSL_AD_DECODE_ERROR, SSL_R_BAD_EXTENSION);\n        return 0;\n    }\n\n    OPENSSL_free(s->s3.alpn_selected);\n    s->s3.alpn_selected = OPENSSL_malloc(len);\n    if (s->s3.alpn_selected == NULL) {\n        s->s3.alpn_selected_len = 0;\n        SSLfatal(s, SSL_AD_INTERNAL_ERROR, ERR_R_INTERNAL_ERROR);\n        return 0;\n    }\n    if (!PACKET_copy_bytes(pkt, s->s3.alpn_selected, len)) {\n        SSLfatal(s, SSL_AD_DECODE_ERROR, SSL_R_BAD_EXTENSION);\n        return 0;\n    }\n    s->s3.alpn_selected_len = len;\n\n    if (s->session->ext.alpn_selected == NULL\n            || s->session->ext.alpn_selected_len != len\n            || memcmp(s->session->ext.alpn_selected, s->s3.alpn_selected, len)\n               != 0) {\n        /* ALPN not consistent with the old session so cannot use early_data */\n        s->ext.early_data_ok = 0;\n    }\n    if (!s->hit) {\n        /*\n         * This is a new session and so alpn_selected should have been\n         * initialised to NULL. We should update it with the selected ALPN.\n         */\n        if (!ossl_assert(s->session->ext.alpn_selected == NULL)) {\n            SSLfatal(s, SSL_AD_INTERNAL_ERROR, ERR_R_INTERNAL_ERROR);\n            return 0;\n        }\n        s->session->ext.alpn_selected =\n            OPENSSL_memdup(s->s3.alpn_selected, s->s3.alpn_selected_len);\n        if (s->session->ext.alpn_selected == NULL) {\n            s->session->ext.alpn_selected_len = 0;\n            SSLfatal(s, SSL_AD_INTERNAL_ERROR, ERR_R_INTERNAL_ERROR);\n            return 0;\n        }\n        s->session->ext.alpn_selected_len = s->s3.alpn_selected_len;\n    }\n\n    return 1;\n}",
+        "result": 0
+    },
+    {
+        "var_name": "npn",
+        "function_name": "tls_parse_stoc_npn",
+        "location": {
+            "file_path": "ssl/statem/extensions_clnt.c",
+            "region": {
+                "startLine": 1620,
+                "startColumn": 12,
+                "endColumn": 22
+            },
+            "context": {
+                "startLine": 1618,
+                "endLine": 1622,
+                "snippet": {
+                    "text": "   memcpy(s->ext.npn, selected, selected_len);"
+                }
+            }
+        },
+        "function_code": "int tls_parse_stoc_npn(SSL_CONNECTION *s, PACKET *pkt, unsigned int context,\n                       X509 *x, size_t chainidx)\n{\n    unsigned char *selected;\n    unsigned char selected_len;\n    PACKET tmppkt;\n    SSL_CTX *sctx = SSL_CONNECTION_GET_CTX(s);\n\n    /* Check if we are in a renegotiation. If so ignore this extension */\n    if (!SSL_IS_FIRST_HANDSHAKE(s))\n        return 1;\n\n    /* We must have requested it. */\n    if (sctx->ext.npn_select_cb == NULL) {\n        SSLfatal(s, SSL_AD_UNSUPPORTED_EXTENSION, SSL_R_BAD_EXTENSION);\n        return 0;\n    }\n\n    /* The data must be valid */\n    tmppkt = *pkt;\n    if (!ssl_next_proto_validate(s, &tmppkt)) {\n        /* SSLfatal() already called */\n        return 0;\n    }\n    if (sctx->ext.npn_select_cb(SSL_CONNECTION_GET_USER_SSL(s),\n                                &selected, &selected_len,\n                                PACKET_data(pkt), PACKET_remaining(pkt),\n                                sctx->ext.npn_select_cb_arg) != SSL_TLSEXT_ERR_OK\n            || selected_len == 0) {\n        SSLfatal(s, SSL_AD_HANDSHAKE_FAILURE, SSL_R_BAD_EXTENSION);\n        return 0;\n    }\n\n    /*\n     * Could be non-NULL if server has sent multiple NPN extensions in\n     * a single Serverhello\n     */\n    OPENSSL_free(s->ext.npn);\n    s->ext.npn = OPENSSL_malloc(selected_len);\n    if (s->ext.npn == NULL) {\n        s->ext.npn_len = 0;\n        SSLfatal(s, SSL_AD_INTERNAL_ERROR, ERR_R_INTERNAL_ERROR);\n        return 0;\n    }\n\n    memcpy(s->ext.npn, selected, selected_len);\n    s->ext.npn_len = selected_len;\n    s->s3.npn_seen = 1;\n\n    return 1;\n}",
+        "result": 0
+    },
+    {
+        "var_name": "p",
+        "function_name": "test_sec_mem_clear",
+        "location": {
+            "file_path": "test/secmemtest.c",
+            "region": {
+                "startLine": 164,
+                "startColumn": 28,
+                "endColumn": 29
+            },
+            "context": {
+                "startLine": 162,
+                "endLine": 166,
+                "snippet": {
+                    "text": "if (!TEST_uchar_eq(p[i], 0))"
+                }
+            }
+        },
+        "function_code": "static int test_sec_mem_clear(void)\n{\n#ifndef OPENSSL_NO_SECURE_MEMORY\n    const int size = 64;\n    unsigned char *p = NULL;\n    int i, res = 0;\n\n    if (!TEST_true(CRYPTO_secure_malloc_init(4096, 32))\n            || !TEST_ptr(p = OPENSSL_secure_malloc(size)))\n        goto err;\n\n    for (i = 0; i < size; i++)\n        if (!TEST_uchar_eq(p[i], 0))\n            goto err;\n\n    for (i = 0; i < size; i++)\n        p[i] = (unsigned char)(i + ' ' + 1);\n\n    OPENSSL_secure_free(p);\n\n    /*\n     * A deliberate use after free here to verify that the memory has been\n     * cleared properly.  Since secure free doesn't return the memory to\n     * libc's memory pool, it technically isn't freed.  However, the header\n     * bytes have to be skipped and these consist of two pointers in the\n     * current implementation.\n     */\n    for (i = sizeof(void *) * 2; i < size; i++)\n        if (!TEST_uchar_eq(p[i], 0))\n            return 0;\n\n    res = 1;\n    p = NULL;\nerr:\n    OPENSSL_secure_free(p);\n    CRYPTO_secure_malloc_done();\n    return res;\n#else\n    return 1;\n#endif\n}",
+        "result": 0
+    }
+]
