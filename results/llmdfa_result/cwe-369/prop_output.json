@@ -1,0 +1,121 @@
+[
+    {
+        "index": 1,
+        "output": [
+            "Explanation: The line 1 initializes the variable `pck_min` with the value passed as a parameter. The line 24 checks if `pck_min` is zero and assigns it a value of 1 if it is. Therefore, if `pck_min` is zero before line 24, it will be set to 1 after line 24. Since line 28 uses the value of `pck_min` after line 24, it cannot be the same as the value of `pck_min` after line 1 (which could be zero). Thus, the values of `pck_min` before line 28 and after line 1 cannot be the same if the initial value was zero.\n\nAnswer: No"
+        ],
+        "result": 0
+    },
+    {
+        "index": 2,
+        "output": [
+            "Explanation: The line 1 initializes the variable `fck_min` with the value passed to the function. The line 32 checks if `fck_min` is zero and assigns it a value of 1 if it is. Therefore, if `fck_min` is zero before line 1, it will remain zero until line 32, where it will be assigned a value of 1. Thus, the value of `fck_min` before line 32 will not be the same as the value of `fck_min` after line 1, leading to a potential divide by zero error at line 32.\n\nAnswer: No"
+        ],
+        "result": 0
+    },
+    {
+        "index": 3,
+        "output": [
+            "Explanation: The line 1 is executed before line 14. At line 9, `out_min` is assigned a value based on its current value; if `out_min` is zero before line 9, it will be set to 1. Therefore, if `out_min` is zero before line 1, it will not be the same as its value after line 1, which will be 1. Thus, the value of `out_min` before line 14 cannot be the same as the value of `out_min` after line 1.\n\nAnswer: No"
+        ],
+        "result": 0
+    },
+    {
+        "index": 4,
+        "output": [
+            "Explanation: The line 1 is executed before line 10. The variable `known` is a parameter of the function and is used at line 10 without being overwritten between line 1 and line 10. Therefore, if `known` is zero before the execution of line 10, it will still be zero after the execution of line 1. This can lead to a divide by zero error at line 10.\n\nAnswer: Yes"
+        ],
+        "result": 1
+    },
+    {
+        "index": 5,
+        "output": [
+            "Explanation: The line 1 is executed before line 4. The variable `srate` is a parameter of the function and is not overwritten between the execution of line 1 and line 4. If `srate` is zero before the execution of line 4, it will remain zero after line 1, leading to a divide by zero error at line 4. Therefore, the value of `srate` before the execution of line 4 and the value of `srate` after line 1 are the same.\n\nAnswer: Yes"
+        ],
+        "result": 1
+    },
+    {
+        "index": 6,
+        "output": [
+            "Explanation: The line 1 is executed before line 23. The variable `rc` is assigned a value from the function `efx_ef10_get_timer_workarounds(efx)` at line 6, and it is not overwritten before line 23. Therefore, if `rc` is zero before line 1, it will remain zero until line 23, leading to a potential divide by zero error when calculating `quantum = 1536000 / rc;`. \n\nAnswer: Yes"
+        ],
+        "result": 1
+    },
+    {
+        "index": 7,
+        "output": [
+            "Explanation: The line 1 initializes the variable `fuart` with the value of `baud * 16`. The line 15 modifies `fuart` by multiplying it with the result of `rounddown_pow_of_two(fref / fuart)`. If `fuart` is zero before line 15, it will remain zero after line 1, and since it is not overwritten between line 1 and line 15, the value of `fuart` before line 15 and after line 1 will be the same (both zero). This can lead to a divide by zero error in line 15 when calculating `fref / fuart`.\n\nAnswer: Yes"
+        ],
+        "result": 1
+    },
+    {
+        "index": 8,
+        "output": [
+            "Explanation: The line 1 initializes `pck_min` with the value passed as a parameter. The line 24 checks if `pck_min` is zero and assigns it a value of 1 if it is. Therefore, if `pck_min` is zero before line 24, it will be set to 1. After line 1, `pck_min` retains its initial value, which could be zero. However, after line 24, if it was zero, it will be changed to 1. Thus, the value of `pck_min` before line 28 cannot be the same as the value after line 1 if it was initially zero, leading to a potential divide by zero error at line 28.\n\nAnswer: No"
+        ],
+        "result": 0
+    },
+    {
+        "index": 9,
+        "output": [
+            "Explanation: The line 1 initializes the variable `fck_min`, but it is not assigned a value in the provided code. The line 30 checks if `fck_min` is zero and assigns it a value of 1 if it is. Therefore, if `fck_min` is zero before line 1, it will remain zero until line 30, where it will be assigned a value of 1. Thus, the value of `fck_min` before line 32 cannot be the same as the value after line 1, leading to a potential divide by zero error at line 32.\n\nAnswer: No"
+        ],
+        "result": 0
+    },
+    {
+        "index": 10,
+        "output": [
+            "Explanation: The line 1 is executed before line 14. At line 9, `out_min` is assigned a value based on its current value; if `out_min` is zero before line 9, it will be set to 1. Therefore, after line 1, `out_min` cannot be zero. Since `out_min` is modified at line 9, it cannot be the same as its value before line 14 if it was zero initially. Thus, the value of `out_min` before line 14 cannot be the same as the value of `out_min` after line 1.\n\nAnswer: No"
+        ],
+        "result": 0
+    },
+    {
+        "index": 11,
+        "output": [
+            "Explanation: The line 1 is executed before line 70. The variable `blocksize` is initialized at line 66 and can be set to zero if the logical block size of the device is zero. Since there is no assignment to `blocksize` between line 1 and line 70, the value of `blocksize` before line 70 can indeed be the same as the value of `blocksize` after line 1, which can lead to a divide by zero error at line 70.\n\nAnswer: Yes"
+        ],
+        "result": 1
+    },
+    {
+        "index": 12,
+        "output": [
+            "Explanation: The line 1 is executed before line 37. The variable `div` is assigned a value at line 11, and there is no overwrite of `div` between line 11 and line 37. Therefore, if `div` is zero before line 1, it will remain zero until line 37, leading to a potential divide by zero error. \n\nAnswer: Yes"
+        ],
+        "result": 1
+    },
+    {
+        "index": 13,
+        "output": [
+            "Explanation: The line 1 initializes the variable `scan_time` with the result of the expression `div_s64(ktime_ms_delta(ktime_get(), advisor_ctx.start_scan), MSEC_PER_SEC)`. If this expression evaluates to zero, then `scan_time` will be zero after line 1. The value of `scan_time` is then checked and set to 1 if it is zero at line 17. Therefore, if `scan_time` is zero before line 24, it means that the value of `scan_time` after line 1 will be 1 (due to the conditional assignment). Since there is no assignment to `scan_time` between lines 1 and 24, the value of `scan_time` before line 24 will be 1, which is not the same as the value of `scan_time` after line 1 (which could be zero). Thus, it is not possible for the value of `scan_time` before line 24 to be the same as the value of `scan_time` after line 1.\n\nAnswer: No"
+        ],
+        "result": 0
+    },
+    {
+        "index": 14,
+        "output": [
+            "Explanation: The line 1 is executed before line 29. The variable `scan_time` is assigned a value at line 15, which is derived from the function `div_s64`. If `scan_time` is zero before line 1, it means that the calculation at line 15 could potentially yield zero. However, since `scan_time` is reassigned at line 17 to be at least 1 if it is zero, it cannot be zero before line 29. Therefore, the value of `scan_time` before line 29 cannot be the same as the value of `scan_time` after line 1, as it would have been modified to be at least 1.\n\nAnswer: No"
+        ],
+        "result": 0
+    },
+    {
+        "index": 15,
+        "output": [
+            "Explanation: The line 1 is executed before line 41. The variable `factor` is assigned a value at line 29, and there is no overwrite of `factor` between line 29 and line 41. Therefore, if `factor` is zero before line 41, it must also be zero after line 29, leading to a potential divide by zero error at line 41.\n\nAnswer: Yes"
+        ],
+        "result": 1
+    },
+    {
+        "index": 16,
+        "output": [
+            "Explanation: The line 1 is executed before line 46. The variable `cpu_percent` is assigned a value at line 24, and there is no overwrite of `cpu_percent` between line 24 and line 46. Therefore, if `cpu_percent` is zero before line 1, it will remain zero before line 46, leading to a potential divide by zero error at line 46.\n\nAnswer: Yes"
+        ],
+        "result": 1
+    },
+    {
+        "index": 17,
+        "output": [
+            "Explanation: The line 1 initializes the function and does not modify `s->pitch_diff_sh16`. The value of `s->pitch_diff_sh16` before the execution of line 94 can be zero, and since there are no assignments or modifications to `s->pitch_diff_sh16` between line 1 and line 94, the value remains the same. Therefore, it is possible for `s->pitch_diff_sh16` to be zero before line 94 and still be zero after line 1, leading to a potential divide by zero error.\n\nAnswer: Yes"
+        ],
+        "result": 1
+    }
+]

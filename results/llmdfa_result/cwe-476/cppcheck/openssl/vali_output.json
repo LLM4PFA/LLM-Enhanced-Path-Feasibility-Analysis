@@ -1,0 +1,22 @@
+[
+    {
+        "index": 1,
+        "result": 1
+    },
+    {
+        "index": 2,
+        "result": 1
+    },
+    {
+        "index": 3,
+        "result": -1
+    },
+    {
+        "index": 4,
+        "result": 1
+    },
+    {
+        "index": 5,
+        "result": 1
+    }
+]
