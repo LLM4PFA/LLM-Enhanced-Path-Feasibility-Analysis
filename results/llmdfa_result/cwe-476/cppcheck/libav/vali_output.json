@@ -1,0 +1,42 @@
+[
+    {
+        "index": 1,
+        "result": 1
+    },
+    {
+        "index": 2,
+        "result": 1
+    },
+    {
+        "index": 3,
+        "result": -1
+    },
+    {
+        "index": 4,
+        "result": -1
+    },
+    {
+        "index": 5,
+        "result": -1
+    },
+    {
+        "index": 6,
+        "result": -1
+    },
+    {
+        "index": 7,
+        "result": 1
+    },
+    {
+        "index": 8,
+        "result": 1
+    },
+    {
+        "index": 9,
+        "result": -1
+    },
+    {
+        "index": 10,
+        "result": -1
+    }
+]
