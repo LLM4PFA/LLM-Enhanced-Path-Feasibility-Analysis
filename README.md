@@ -10,7 +10,7 @@ We construct a new benchmark [SAFP-Bench-C](./benchmark/), which includes false 
 **Static Analyzers.** We use three state-of-the-art and widely-adopted 763 static analyzers: CodeQL, Infer, and CppCheck.
 **Data statistics.** The final benchmark SAFP-Bench-C contains 443 warnings, of which 47 are real bugs and 396 are false positives.  Following Table presents the detailed statistics of SAFP-Bench-C.
 
-![Data Statistics](./Data%20statistics.jpg)
+![Data Statistics](./Data%20statistics.jpg) 
 
 ## Result
 
