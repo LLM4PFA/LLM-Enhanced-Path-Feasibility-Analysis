@@ -15,12 +15,12 @@ from LLM4Detection.baseline_models.model import ModelFactory
 
 import re
 
-code_data_path = PathUtil.codeql_result_data("kernel69_nullpointer_process", "json")
-code_context_path = PathUtil.codeql_result_data("kernel69_nullpointer_gpt4omini_dataflow_function_cache_1017", "json")
-constraints_path = PathUtil.codeql_result_data("kernel69_nullpointer_gpt4omini_constrain_cache_1010", "json")
-output_path = PathUtil.output("codeql_linux_nullpointer_qwen_124_8", "json")
-func_body_cache_path = PathUtil.processed_data(f"function_cache_gpt-4omini_linux", "json")
-result_memory_cache_path = PathUtil.processed_data(f"result_memory_cache", "json")
+code_data_path = PathUtil.codeql_result_data("", "json")
+code_context_path = PathUtil.codeql_result_data("", "json")
+constraints_path = PathUtil.codeql_result_data("", "json")
+output_path = PathUtil.output("", "json")
+func_body_cache_path = PathUtil.processed_data(f"", "json")
+result_memory_cache_path = PathUtil.processed_data(f"", "json")
 codeql_dereferenced_cache = PathUtil.codeql_dereferenced_cache()
 
 function_cache = DataUtils.get_cache(func_body_cache_path)
@@ -30,7 +30,7 @@ code_context_info = DataUtils.load_json(code_context_path)
 prompt = Prompt()
 
 start_num = 0
-end_num = 70
+end_num = 100
 model_name = "gpt"
 
 model = ModelFactory._models[model_name]()
