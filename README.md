@@ -1,6 +1,6 @@
-# LLM-Enhanced-Path-Feasibility-Analysis
+# Agents as Neuro-Symbolic Reasoners: Path Feasibility Reasoning for Precise Static Bug Detection
 
-we propose LLM4PFA, a fine-grained LLM-enhanced framework for path feasibility analysis. By combining static analysis-based path constraint extraction with agent-driven, context-aware value reasoning, LLM4PFA improves complex inter-procedural path feasibility analysis to reduce false positives reported by static bug analyzers.
+we propose PATHAGENT, an agent-driven framework for fine-grained path feasibility analysis. PATHAGENT decomposes complex inter-procedural analysis into localized symbolic range reasoning sub-tasks, and employs an on-demand contextual exploration strategy to adaptively retrieve only the necessary code context. These designs enable precise path feasibility reasoning and effectively reduce false positives reported by static bug analyzers. 
 
 ## Benchmark
 
