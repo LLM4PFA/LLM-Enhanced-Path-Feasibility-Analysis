@@ -1,6 +1,9 @@
+from __future__ import annotations
 import json
 import re
-from LLM4Detection.m_agent.conditions_info import ContextHelper,Conditions
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from LLM4Detection.m_agent.conditions_info import ContextHelper,Conditions
 import clang.cindex
 
 def extract_variable_name(condition):

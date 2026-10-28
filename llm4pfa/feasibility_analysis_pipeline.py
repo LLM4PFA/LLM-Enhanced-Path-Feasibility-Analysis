@@ -1,27 +1,28 @@
 import json
+import os
 import pdb
 
-from util.path_util import PathUtil
-from util.data_utils import DataUtils
-from LLM4Detection.agent_simple import tool_utils
-from LLM4Detection.agent_simple.tool_definion import tools
+from llm4pfa.util.path_util import PathUtil
+from llm4pfa.util.data_utils import DataUtils
+from llm4pfa import function_lookup as tool_utils
+from llm4pfa.tool_definion import tools
 from tqdm import tqdm
 from z3 import *
-from util import extract_util_plus
-from LLM4Detection.agent.tool_utils import is_direct_dereference, extract_function_name, \
+from llm4pfa import extract_util_plus
+from llm4pfa.tool_utils import is_direct_dereference, extract_function_name, \
     get_dereferenced_locations_plus, get_param_name
-from LLM4Detection.agent_simple.prompt_template import Prompt
-from LLM4Detection.baseline_models.model import ModelFactory
+from llm4pfa.prompt_templates import Prompt
+from llm4pfa.model import ModelFactory
 
 import re
 
-code_data_path = PathUtil.codeql_result_data("", "json")
-code_context_path = PathUtil.codeql_result_data("", "json")
-constraints_path = PathUtil.codeql_result_data("", "json")
-output_path = PathUtil.output("", "json")
-func_body_cache_path = PathUtil.processed_data(f"", "json")
-result_memory_cache_path = PathUtil.processed_data(f"", "json")
-codeql_dereferenced_cache = PathUtil.codeql_dereferenced_cache()
+code_data_path = os.environ["PFA_INPUT"]
+code_context_path = os.environ["PFA_CONTEXT"]
+constraints_path = os.environ["PFA_CONSTRAINTS"]
+output_path = os.environ["PFA_OUTPUT"]
+func_body_cache_path = os.environ["PFA_FUNCTION_CACHE"]
+result_memory_cache_path = os.environ["PFA_MEMORY_CACHE"]
+codeql_dereferenced_cache = os.environ["PFA_DEREFERENCE_CACHE"]
 
 function_cache = DataUtils.get_cache(func_body_cache_path)
 result_memory_cache = DataUtils.get_cache(result_memory_cache_path)
@@ -29,9 +30,9 @@ code_context_info = DataUtils.load_json(code_context_path)
 
 prompt = Prompt()
 
-start_num = 0
-end_num = 100
-model_name = "gpt"
+start_num = int(os.environ.get("PFA_START", "0"))
+end_num = int(os.environ.get("PFA_END", "1"))
+model_name = os.environ.get("PFA_MODEL_FACTORY", "gpt")
 
 model = ModelFactory._models[model_name]()
 
@@ -70,7 +71,7 @@ def get_answer_from_model_with_tool(messages, model_name, function_name_list, fu
                     "role": "tool", 
                     "name": "search_function",
                     # "role": "user",
-                    "content": str(context_function_body) + str(prompt.analysis_constraints_prompt_context_multi_(context_function_name, context_function_body, var_name, bug_line_constraint))
+                    "content": str(context_function_body) + str(prompt.analysis_constraints_prompt_context_multi(context_function_name, context_function_body, var_name, bug_line_constraint))
                 }
             )
 
@@ -454,7 +455,7 @@ def detect_pipeline():
             var_name = item['var_name']
             loc_text = item["location"]["context"]["snippet"]["text"]
             target_index = item["location"]["region"]["startLine"]
-            file_path = "/home/zqc/ozy/project/BDCodeQL/linux-6.9.6/" + item["location"]["file_path"]
+            file_path = os.path.join(os.environ["PFA_SOURCE_ROOT"], item["location"]["file_path"])
             code_snippet = item["function_code"]
             original_index = cnt
 

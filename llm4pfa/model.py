@@ -4,7 +4,7 @@ import requests
 from openai import OpenAI
 import os
 import json
-from LLM4Detection.agent_simple.tool_definion import tools
+from llm4pfa.tool_definion import tools
 from anthropic import Anthropic
 
 # Optimized model implementation class to reduce code duplication
@@ -240,12 +240,12 @@ DeepSeek API Error Details (Attempt {attempt + 1}/{max_retries}):
 class GPTModel(BaseModel):
     def __init__(self):
         super().__init__(
-            url="https://openkey.cloud/v1",
+            url=os.environ.get("OPENAI_BASE_URL", "https://openkey.cloud/v1"),
             headers={
                 "Content-Type": "application/json",
             },
-            model_name="gpt-4o-mini",
-            api_key="YOUR_API_KEY"
+            model_name=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
+            api_key=os.environ["OPENAI_API_KEY"]
         )
 
     def get_response_with_messages(self, model_name, messages):

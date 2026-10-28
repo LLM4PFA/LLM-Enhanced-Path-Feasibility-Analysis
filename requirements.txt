@@ -1,0 +1,7 @@
+openai==2.54.0
+anthropic==0.125.0
+z3-solver==4.16.0.0
+libclang==18.1.1
+lizard==1.24.2
+tqdm==4.70.1
+requests==2.34.2

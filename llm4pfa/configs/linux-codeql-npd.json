@@ -1,0 +1,21 @@
+{
+  "id": "linux-codeql-npd",
+  "description": "Linux / CodeQL / NPD, 70 warnings; context and constraints are recovered aligned candidates.",
+  "expected_records": 70,
+  "source_version": "6.9.6",
+  "source_root": "../linux-6.9.6",
+  "model_factory": "gpt",
+  "inputs": {
+    "input": "benchmark/NPD/codeql/codeql_kernel69_nullpointer.json",
+    "context": "llm4pfa/data/linux-codeql-npd/context.json",
+    "constraints": "llm4pfa/data/linux-codeql-npd/constraints.json",
+    "dereferences": "llm4pfa/data/linux-codeql-npd/dereferences.json"
+  },
+  "evidence": {
+    "input": "recovered-original",
+    "context": "identity-aligned-candidate",
+    "constraints": "identity-aligned-candidate",
+    "dereferences": "missing",
+    "tools": "interface-adapter"
+  }
+}
