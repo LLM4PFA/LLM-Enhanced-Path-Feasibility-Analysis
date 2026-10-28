@@ -4,7 +4,7 @@ import requests
 from openai import OpenAI
 import os
 import json
-from llm4pfa.tool_definion import tools
+from llm4pfa.llm.tool_schema import tools
 from anthropic import Anthropic
 
 # Optimized model implementation class to reduce code duplication

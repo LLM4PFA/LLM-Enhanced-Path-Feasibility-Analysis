@@ -26,15 +26,20 @@ PATHAGENT is an agent-driven framework for fine-grained path feasibility analysi
 benchmark/                           Warning datasets
 results/                             Paper experiment results
 llm4pfa/
-  feasibility_analysis_pipeline.py   Path feasibility analysis pipeline
-  extract_util_plus.py               Condition extraction
-  model.py                           Model interfaces
-  prompt_templates.py                Prompts
-  tool_utils.py                      Call parsing, parameter mapping, and dereference lookup
-  function_lookup.py                 Function source lookup
-  tool_definion.py                   Tool interface definitions
-  analyze_c_cpp_project.py           C/C++ function indexing
-  util/                              Data I/O and path utilities
+  analysis/
+    pipeline.py                      Path feasibility analysis pipeline
+    conditions.py                    C/C++ condition extraction
+    call_utils.py                    Call parsing, parameter mapping, and dereference lookup
+  llm/
+    models.py                        Model interfaces
+    prompts.py                       Prompt templates
+    tool_schema.py                   Function lookup tool schema
+  source/
+    lookup.py                        Function source lookup
+    index.py                         C/C++ project function indexing
+  utils/
+    data.py                          JSON data and cache I/O
+    paths.py                         Filesystem helpers
   configs/linux-codeql-npd.json       Linux/CodeQL/NPD configuration
   data/linux-codeql-npd/              Context, constraints, and dereference index
 run.py                               Input validation and execution

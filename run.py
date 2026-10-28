@@ -133,7 +133,7 @@ def check(config, env, allow_missing_dereferences=False):
         except (OSError, ValueError, TypeError):
             errors.append(f'invalid JSON container: {key}')
     errors.extend(validate_data(data, config.get('expected_records')))
-    module = ROOT / 'llm4pfa/tool_definion.py'
+    module = ROOT / 'llm4pfa/llm/tool_schema.py'
     if not module.is_file():
         errors.append(f'missing original module: {module}')
     else:
@@ -142,9 +142,9 @@ def check(config, env, allow_missing_dereferences=False):
             names = {n.id for stmt in tree.body if isinstance(stmt, ast.Assign)
                      for target in stmt.targets for n in ast.walk(target) if isinstance(n, ast.Name)}
             if 'tools' not in names:
-                errors.append('tool_definion.py: top-level tools assignment not found')
+                errors.append('tool_schema.py: top-level tools assignment not found')
         except (SyntaxError, OSError):
-            errors.append('tool_definion.py: invalid Python source')
+            errors.append('tool_schema.py: invalid Python source')
     source = resolve(env.get('PFA_SOURCE_ROOT') or config['source_root'])
     if not source.is_dir():
         errors.append(f'missing source directory: {source}')
@@ -225,7 +225,7 @@ def main():
                        PFA_MEMORY_CACHE=str(directory/'memory-cache.json'), PYTHONUNBUFFERED='1',
                        PYTHONPATH=str(ROOT))
         print('Results:', directory/'results.json', flush=True)
-        completed = subprocess.run([sys.executable, str(ROOT/'llm4pfa/feasibility_analysis_pipeline.py')],
+        completed = subprocess.run([sys.executable, '-m', 'llm4pfa.analysis.pipeline'],
                                    cwd=ROOT, env=runtime)
         if completed.returncode:
             return completed.returncode

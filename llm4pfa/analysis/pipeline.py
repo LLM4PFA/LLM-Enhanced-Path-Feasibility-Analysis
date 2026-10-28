@@ -2,17 +2,17 @@ import json
 import os
 import pdb
 
-from llm4pfa.util.path_util import PathUtil
-from llm4pfa.util.data_utils import DataUtils
-from llm4pfa import function_lookup as tool_utils
-from llm4pfa.tool_definion import tools
+from llm4pfa.utils.paths import PathUtil
+from llm4pfa.utils.data import DataUtils
+from llm4pfa.source import lookup as tool_utils
+from llm4pfa.llm.tool_schema import tools
 from tqdm import tqdm
 from z3 import *
-from llm4pfa import extract_util_plus
-from llm4pfa.tool_utils import is_direct_dereference, extract_function_name, \
+from llm4pfa.analysis import conditions as extract_util_plus
+from llm4pfa.analysis.call_utils import is_direct_dereference, extract_function_name, \
     get_dereferenced_locations_plus, get_param_name
-from llm4pfa.prompt_templates import Prompt
-from llm4pfa.model import ModelFactory
+from llm4pfa.llm.prompts import Prompt
+from llm4pfa.llm.models import ModelFactory
 
 import re
 
