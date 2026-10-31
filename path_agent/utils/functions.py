@@ -1,14 +1,20 @@
+"""Function call parsing, argument mapping, dereference lookup, and source retrieval."""
+
+import os
 import re
+from pathlib import Path
+
+import lizard
 
 
 def is_direct_dereference(variable_name, code_line):
-    # 构建正则表达式，匹配直接显式的解引用以及函数调用中的解引用
+
     #pattern = rf'\b{re.escape(variable_name)}\s*->\s*\w+|\&\s*\w+\s*->\s*{re.escape(variable_name)}'
     pattern = fr'(\*\s*{variable_name}|&?\s*{variable_name}\s*->\s*\w+)'
-    # 使用正则表达式匹配代码行
+
     match = re.search(pattern, code_line)
 
-    # 如果匹配到，返回True，否则返回False
+
     return match is not None
 
 
@@ -17,16 +23,16 @@ def extract_function_name(variable_name, code_line):
     if code_line is None or not isinstance(code_line, str):
         return None
 
-    # 定义 C/C++ 常见控制流关键字
+
     keywords = {'if', 'while', 'for', 'switch', 'catch', 'return'}
 
-    # 修改正则表达式以匹配最后一个函数调用
+
     pattern = rf'(?:[^(]*\([^)]*\))*([a-zA-Z_][a-zA-Z0-9_]*)\s*\(\s*((?:[^\(\)]|\((?:[^\(\)]|\([^()]*\))*\))*?)\b{re.escape(variable_name)}\b'
     match = re.search(pattern, code_line)
 
     if match:
         func_name = match.group(1)
-        # 检查是否为关键字
+
         if func_name not in keywords:
             return func_name
     return None
@@ -57,40 +63,40 @@ def get_param_name(variable_name: str, loc_text: str, new_function_body):
     if not isinstance(new_function_body, str):
         new_function_body = str(new_function_body)
 
-    # 去除前导空白字符
+
     loc_text = loc_text.strip()
 
-    # 修改正则表达式模式，确保捕获参数组
-    # 第一步：匹配函数名；跳过包裹调用的控制流关键字
+
+
     func_pattern = r'\b(?!(?:if|while|for|switch|catch|sizeof)\b)([a-zA-Z_]\w*)\s*\('
     func_match = re.search(func_pattern, loc_text)
     if not func_match:
         return None
 
-    # 第二步：从函数名匹配位置开始匹配参数列表
-    function_name = func_match.group(1)
-    start_pos = func_match.end() - 1  # 从左括号开始
 
-    # 简化的参数匹配模式，只匹配从左括号开始的内容
+    function_name = func_match.group(1)
+    start_pos = func_match.end() - 1
+
+
     param_pattern = r'\((.*?)\)'
     param_match = re.search(param_pattern, loc_text[start_pos:])
     if not param_match:
         return None
 
-    # 获取参数字符串并检查是否包含目标变量
+
     params = param_match.group(1)
     if variable_name not in params:
         return None
 
-    # 添加参数预处理和清理
+
     param_list = []
     for param in params.split(','):
         param = param.strip()
-        if not param:  # 跳过空参数
+        if not param:
             continue
-        # 分割参数并确保有内容后再获取最后一个元素
+
         param_parts = param.strip().split()
-        if param_parts:  # 确保分割后的列表不为空
+        if param_parts:
             cleaned_param = param_parts[-1].strip('*&')
             param_list.append(cleaned_param)
 
@@ -99,13 +105,81 @@ def get_param_name(variable_name: str, loc_text: str, new_function_body):
         match = re.search(r'\((.*?)\)', new_function_body, re.DOTALL)
         if match:
             params_str = match.group(1)
-            # 分割参数列表，忽略逗号内的空格
+
             params = [param.strip() for param in params_str.split(',')]
             if 0 <= position < len(params):
-                # 提取参数名
+
                 param_name = params[position].split()[-1].strip('*')
                 return param_name
         return None
     except ValueError as e:
         print(f"Error: {e}")
         return None
+
+
+def extract_function_code(source_code, start_line, end_line, fun_name = None):
+    if start_line == -1 and end_line == -1:
+        return None
+    if source_code is not None:
+        code = ('\n'.join(source_code.split('\n')[int(start_line) - 1: int(end_line)]))
+        if fun_name is not None:
+            start_line_code = source_code.split('\n')[int(start_line) - 1]
+            if start_line_code.startswith(fun_name) and int(start_line) - 2 >= 0:
+                before_start_line = source_code.split('\n')[int(start_line) - 2]
+                code = before_start_line + '\n' + code
+        return code
+    else:
+        return None
+
+
+def gen_function_info_from_code(filename, code):
+    anal = lizard.analyze_file.analyze_source_code(filename, code)
+    function_info = {}
+    function_info['function_num'] = len(anal.function_list)
+    # print(len(anal.function_list))
+    function_info_dict = {}
+    function_info_map = {}
+    for fun in anal.function_list:
+        temp_dict = {
+            'long_name': fun.long_name,
+            'nloc': fun.nloc,
+            'token_count': fun.token_count,
+            'full_parameters': fun.full_parameters,
+            'parameters': fun.parameters,
+            'parameter_count': fun.parameter_count,
+            'start_line': fun.start_line,
+            'end_line': fun.end_line,
+            'name': fun.name,
+            'filename': fun.filename,
+            'length': fun.length,
+            'code': extract_function_code(code, fun.start_line, fun.end_line, fun.name)
+        }
+        function_info_dict[fun.name] = temp_dict
+        function_info_map[fun.long_name] = temp_dict
+    function_info['function_info_dict'] = function_info_dict
+    return function_info, function_info_map
+
+
+def get_function_info_from_file(file_path):
+    # file_path = f'./C/testcases/{cwe_name}/{file_name}'
+    with open(file_path, 'r', encoding='utf-8') as fp:
+        code = fp.read()
+    # print(code)
+    func_info = gen_function_info_from_code(file_path, code)
+    return func_info
+
+
+def get_func_body_in_repo_by_name(name):
+    repo_path = Path(os.environ["PFA_SOURCE_ROOT"])
+    for dir_path, dir_names, file_names in os.walk(repo_path):
+        for file_name in file_names:
+            if file_name.endswith('.c') or file_name.endswith('.cpp'):
+                file_path = os.path.join(dir_path, file_name)
+                func_info = get_function_info_from_file(file_path)[0]
+                func_info_dict = func_info['function_info_dict']
+                # print(func_info_dict.keys())
+                # print(func_name)
+                if name in func_info_dict:
+                    return func_info_dict[name]['code']
+                # return
+    return None

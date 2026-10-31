@@ -12,7 +12,22 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parent
-DEFAULT = ROOT / 'llm4pfa/configs/linux-codeql-npd.json'
+DEFAULT_CONFIG = {'id': 'linux-codeql-npd',
+ 'description': 'Linux / CodeQL / NPD, 70 warnings; context and constraints are recovered aligned '
+                'candidates.',
+ 'expected_records': 70,
+ 'source_version': '6.9.6',
+ 'source_root': '../linux-6.9.6',
+ 'model_factory': 'gpt',
+ 'inputs': {'input': 'benchmark/NPD/codeql/codeql_kernel69_nullpointer.json',
+            'context': 'path_agent/inputs/call_context.json',
+            'constraints': 'path_agent/inputs/path_constraints.json',
+            'dereferences': 'path_agent/inputs/dereference_index.json'},
+ 'evidence': {'input': 'recovered-original',
+              'context': 'identity-aligned-candidate',
+              'constraints': 'identity-aligned-candidate',
+              'dereferences': 'missing',
+              'tools': 'interface-adapter'}}
 DEPENDENCIES = ['openai', 'anthropic', 'z3', 'clang', 'lizard', 'tqdm', 'requests']
 ENV_INPUTS = {'input': 'PFA_INPUT', 'context': 'PFA_CONTEXT',
               'constraints': 'PFA_CONSTRAINTS', 'dereferences': 'PFA_DEREFERENCE_CACHE'}
@@ -133,7 +148,7 @@ def check(config, env, allow_missing_dereferences=False):
         except (OSError, ValueError, TypeError):
             errors.append(f'invalid JSON container: {key}')
     errors.extend(validate_data(data, config.get('expected_records')))
-    module = ROOT / 'llm4pfa/llm/tool_schema.py'
+    module = ROOT / 'path_agent/tool_schema.py'
     if not module.is_file():
         errors.append(f'missing original module: {module}')
     else:
@@ -186,14 +201,14 @@ def check(config, env, allow_missing_dereferences=False):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('command', choices=['check', 'run'])
-    parser.add_argument('--config', default=str(DEFAULT))
+    parser.add_argument('--config', help='Optional JSON configuration; defaults are defined in this file')
     parser.add_argument('--start', type=int, default=0)
     parser.add_argument('--end', type=int)
     parser.add_argument('--output', help='New output directory; defaults to output/<timestamp>')
     parser.add_argument('--allow-missing-dereferences', action='store_true')
     args = parser.parse_args()
     try:
-        config = json.loads(resolve(args.config).read_text())
+        config = json.loads(resolve(args.config).read_text()) if args.config else DEFAULT_CONFIG
         env = environment()
         report = check(config, env, args.allow_missing_dereferences)
         print('Ready:', report['ready'])
@@ -225,7 +240,7 @@ def main():
                        PFA_MEMORY_CACHE=str(directory/'memory-cache.json'), PYTHONUNBUFFERED='1',
                        PYTHONPATH=str(ROOT))
         print('Results:', directory/'results.json', flush=True)
-        completed = subprocess.run([sys.executable, '-m', 'llm4pfa.analysis.pipeline'],
+        completed = subprocess.run([sys.executable, '-m', 'path_agent.pipeline'],
                                    cwd=ROOT, env=runtime)
         if completed.returncode:
             return completed.returncode

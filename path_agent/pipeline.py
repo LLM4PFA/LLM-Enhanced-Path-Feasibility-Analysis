@@ -2,17 +2,16 @@ import json
 import os
 import pdb
 
-from llm4pfa.utils.paths import PathUtil
-from llm4pfa.utils.data import DataUtils
-from llm4pfa.source import lookup as tool_utils
-from llm4pfa.llm.tool_schema import tools
+from path_agent.utils.io import DataUtils, PathUtil
+from path_agent.utils import functions as tool_utils
+from path_agent.tool_schema import tools
 from tqdm import tqdm
 from z3 import *
-from llm4pfa.analysis import conditions as extract_util_plus
-from llm4pfa.analysis.call_utils import is_direct_dereference, extract_function_name, \
+from path_agent.utils import conditions as extract_util_plus
+from path_agent.utils.functions import is_direct_dereference, extract_function_name, \
     get_dereferenced_locations_plus, get_param_name
-from llm4pfa.llm.prompts import Prompt
-from llm4pfa.llm.models import ModelFactory
+from path_agent.prompts import Prompt
+from path_agent.models import ModelFactory
 
 import re
 
@@ -346,7 +345,7 @@ def data_flow_analysis_pipeline(var_name, loc_text, code_snippet, response_list,
             try:
                 exec(final_response, globals())
                 # pdb.set_trace()
-                # 调用函数
+
                 result = check_constraints()
                 print("goto result:", result)
                 # pdb.set_trace()

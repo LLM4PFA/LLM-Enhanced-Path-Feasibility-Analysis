@@ -1,6 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""JSON, cache, and filesystem utilities."""
+
 import json
+import os
 from pathlib import Path
 
 
@@ -20,3 +21,9 @@ class DataUtils:
     def get_cache(path):
         # Same read-if-present behavior as recovered cache_dataflow_function.py.
         return DataUtils.load_json(path) if Path(path).is_file() else {}
+
+
+class PathUtil:
+    @staticmethod
+    def exists(path):
+        return os.path.exists(path)
