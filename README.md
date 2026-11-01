@@ -35,9 +35,9 @@ path_agent/
     functions.py                     Call parsing, parameter mapping, and function lookup
     function_index.py                C/C++ project function indexing
     io.py                            JSON, cache, and filesystem utilities
-  inputs/
-    call_context.json                Call chains and function context
-    path_constraints.json            Branch conditions and early-exit constraints
+exm_inputs/
+  call_context.json                  Call chains and function context
+  path_constraints.json              Branch conditions and early-exit constraints
 run.py                               Default settings, input validation, and execution
 requirements.txt                     Python dependencies
 .env.example                         Model service and source path settings
@@ -69,9 +69,9 @@ The default configuration analyzes 70 Linux/CodeQL null-pointer warnings and req
 | File | Contents |
 |---|---|
 | `benchmark/NPD/codeql/codeql_kernel69_nullpointer.json` | Warning locations, variables, function source code, and evaluation labels |
-| `path_agent/inputs/call_context.json` | Function call chains and context aligned with each warning |
-| `path_agent/inputs/path_constraints.json` | Target conditions and early-exit constraints |
-| `path_agent/inputs/dereference_index.json` | Dereference statements, line numbers, and file paths for function parameters |
+| `exm_inputs/call_context.json` | Function call chains and context aligned with each warning |
+| `exm_inputs/path_constraints.json` | Target conditions and early-exit constraints |
+| `exm_inputs/dereference_index.json` | Dereference statements, line numbers, and file paths for function parameters |
 
 Default input paths and analysis settings are defined in `DEFAULT_CONFIG` in `run.py`; no separate configuration file is required. Context and constraints must align with the warning records in order. To analyze another dataset, provide matching input files and the corresponding project source code.
 
