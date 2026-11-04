@@ -77,21 +77,26 @@ Default input paths and analysis settings are defined in `DEFAULT_CONFIG` in `ru
 
 ## Usage
 
-First extract path constraints from the warning source code. This step does not call a model API or require a dereference index:
+Run analysis directly; a separate constraint extraction step is not required:
+
+```bash
+.venv/bin/python run.py run --start 0 --end 1
+.venv/bin/python run.py run --start 0 --end 70
+```
+
+The runner validates inputs before analysis. It reuses matching entries from `output/constraints.json` when available and extracts missing or outdated constraints automatically. To validate inputs without starting analysis, run:
+
+```bash
+.venv/bin/python run.py check
+```
+
+Optionally, extract and save constraints in advance for inspection or reuse across runs:
 
 ```bash
 .venv/bin/python run.py extract
 ```
 
-The command processes all warnings by default and writes `output/constraints.json`. Analysis reuses this cache. Changes to the source code, target statement, variable, or extractor invalidate the corresponding entry; missing entries are extracted automatically. Use `--constraint-cache` on both commands to select another cache file.
-
-Then validate the inputs and run analysis:
-
-```bash
-.venv/bin/python run.py check
-.venv/bin/python run.py run --start 0 --end 1
-.venv/bin/python run.py run --start 0 --end 70
-```
+This optional command processes all warnings by default and writes `output/constraints.json`. It does not call a model API or require a dereference index. Changes to the source code, target statement, variable, or extractor invalidate the corresponding cache entry. Use `--constraint-cache` with `extract` and `run` to select another cache file.
 
 Ranges use zero-based indices with an inclusive start and an exclusive end. By default, the runner analyzes one warning. Use `--output` to specify a new output directory. For another dataset, edit `DEFAULT_CONFIG` in `run.py` or supply an external JSON configuration with `--config`.
 
