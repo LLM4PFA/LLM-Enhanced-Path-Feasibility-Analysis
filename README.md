@@ -58,7 +58,7 @@ Edit `.env` to set:
 - `OPENAI_API_KEY`: API key for the model service.
 - `OPENAI_BASE_URL`: Endpoint compatible with OpenAI Chat Completions.
 - `OPENAI_MODEL`: Model name; defaults to `gpt-4o-mini`.
-- `PFA_SOURCE_ROOT`: Absolute path to the Linux 6.9.6 source directory.
+- `PFA_SOURCE_ROOT`: Absolute path to the project source directory.
 
 The target project's source code can reside outside this repository. `.env` is excluded from Git.
 
