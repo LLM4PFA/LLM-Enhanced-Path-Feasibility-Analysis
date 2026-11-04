@@ -24,6 +24,8 @@ codeql_dereferenced_cache = os.environ["PFA_DEREFERENCE_CACHE"]
 
 function_cache = DataUtils.get_cache(func_body_cache_path)
 result_memory_cache = DataUtils.get_cache(result_memory_cache_path)
+constraint_cache_path = os.environ.get("PFA_CONSTRAINT_CACHE")
+constraint_cache = DataUtils.get_cache(constraint_cache_path) if constraint_cache_path else {}
 code_context_info = DataUtils.load_json(code_context_path)
 
 prompt = Prompt()
@@ -155,7 +157,7 @@ def data_flow_analysis_pipeline(var_name, loc_text, code_snippet, response_list,
 
     # get conditional expressions
 
-    extract_conditions_plus = json.loads(extract_util_plus.extract_conditions(var_name, None, loc_text, code_snippet))
+    extract_conditions_plus = extract_util_plus.get_cached_constraints(var_name, loc_text, code_snippet, constraint_cache)
     bug_constraints = extract_conditions_plus.get("bug_line_constraints")
     if not bug_constraints or bug_constraints[0].get("text") != loc_text:
         raise ValueError("Constraint extraction failed to locate the target statement")

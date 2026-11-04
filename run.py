@@ -184,10 +184,40 @@ def check(config, env, allow_missing_dereferences=False):
             'errors': sorted(set(errors)), 'warnings': warnings}
 
 
+def extract(config, start, end, cache_path):
+    from path_agent.utils.conditions import get_cached_constraints
+
+    rows = json.loads(resolve(config['inputs']['input']).read_text())
+    errors = validate_data({'input': rows}, config.get('expected_records'))
+    if errors:
+        raise ValueError('; '.join(errors))
+    end = len(rows) if end is None else end
+    if not 0 <= start < end <= len(rows):
+        raise ValueError(f'expected 0 <= start < end <= {len(rows)}')
+    cache = json.loads(cache_path.read_text()) if cache_path.is_file() else {}
+    if not isinstance(cache, dict):
+        raise ValueError('Constraint cache must be a JSON object')
+    for index in range(start, end):
+        row = rows[index]
+        try:
+            get_cached_constraints(row['var_name'], row['location']['context']['snippet']['text'],
+                                   row['function_code'], cache)
+        except (ValueError, KeyError, TypeError, IndexError) as error:
+            raise ValueError(f'Constraint extraction failed at record {index}: {error}') from error
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = cache_path.with_suffix('.tmp')
+    temporary.write_text(json.dumps(cache, indent=2) + '\n')
+    temporary.replace(cache_path)
+    print(f'Constraints ready: {end-start} warnings; cache: {cache_path}')
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=['check', 'run'])
+    parser.add_argument('command', choices=['extract', 'check', 'run'])
     parser.add_argument('--config', help='Optional JSON configuration; defaults are defined in this file')
+    parser.add_argument('--constraint-cache', default='output/constraints.json',
+                        help='Reusable constraint cache; defaults to output/constraints.json')
     parser.add_argument('--start', type=int, default=0)
     parser.add_argument('--end', type=int)
     parser.add_argument('--output', help='New output directory; defaults to output/<timestamp>')
@@ -195,6 +225,9 @@ def main():
     args = parser.parse_args()
     try:
         config = json.loads(resolve(args.config).read_text()) if args.config else DEFAULT_CONFIG
+        cache_path = resolve(args.constraint_cache)
+        if args.command == 'extract':
+            return extract(config, args.start, args.end, cache_path)
         env = environment()
         report = check(config, env, args.allow_missing_dereferences)
         print('Ready:', report['ready'])
@@ -220,7 +253,7 @@ def main():
             cache = directory/'dereferences.json'
             cache.write_text('{}\n')
             runtime['PFA_DEREFERENCE_CACHE'] = str(cache)
-        runtime.update(PFA_SOURCE_ROOT=report['source_root'], PFA_START=str(start), PFA_END=str(end),
+        runtime.update(PFA_CONSTRAINT_CACHE=str(cache_path), PFA_SOURCE_ROOT=report['source_root'], PFA_START=str(start), PFA_END=str(end),
                        PFA_MODEL_FACTORY=config['model_factory'], PFA_OUTPUT=str(directory/'results.json'),
                        PFA_FUNCTION_CACHE=str(directory/'function-cache.json'),
                        PFA_MEMORY_CACHE=str(directory/'memory-cache.json'), PYTHONUNBUFFERED='1',

@@ -4,7 +4,6 @@ import re
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from LLM4Detection.m_agent.conditions_info import ContextHelper,Conditions
-import clang.cindex
 
 def extract_variable_name(condition):
     """Extract the variable name from a condition like 'res == NULL' or '!res'"""
@@ -402,6 +401,7 @@ def extract_return_goto_conditions(translation_unit, start_line,end_line, var_na
     return conditions
 
 def get_labels_in_range(node, start_line, end_line):
+    import clang.cindex
     labels = []
 
     def visit(node):
@@ -817,6 +817,7 @@ def extract_return_goto_conditions(translation_unit, start_line,end_line, var_na
     return conditions
 
 def get_labels_in_range(node, start_line, end_line):
+    import clang.cindex
     labels = []
 
     def visit(node):
@@ -850,6 +851,7 @@ def extract_var_non_empty_conditions(translation_unit, start_line,end_line, var_
 
 def extract_if_else(if_stmt):
     # children is the child block, index 0 is the if condition, 1 is the if curly brace part, 2 is the else curly brace part, if it is else-if, then else is the if block as a child
+    import clang.cindex
     children = list(if_stmt.get_children())
     else_parts = ''
     if_parts = ''
@@ -867,6 +869,7 @@ def extract_if_else(if_stmt):
     return extract_code(children[0]),if_parts, else_parts
 
 def find_ifdef_range(file_path, target_line):
+    import clang.cindex
     index = clang.cindex.Index.create()
     translation_unit = index.parse(file_path)
 
@@ -926,6 +929,7 @@ def find_function_start(cursor, end_line):
     :param end_line: Target line number, representing a line in the function we want to find.
     :return: Start line number of the function, or None if not found.
     """
+    import clang.cindex
     # Traverse AST, find function node
     for node in cursor.walk_preorder():
         # If it's a function definition (CXXMethod or FunctionDecl)
@@ -940,6 +944,7 @@ def find_function_start(cursor, end_line):
 
 def find_statements_between_lines(node, start_line, end_line, if_statements=None):
     """ Find all if blocks between two lines """
+    import clang.cindex
     if if_statements is None:
         if_statements = []
     
@@ -955,6 +960,7 @@ def find_statements_between_lines(node, start_line, end_line, if_statements=None
     return if_statements
 
 def find_constraints_goto(node, start_line, end_line, results=None, conditions=None):
+    import clang.cindex
     if results is None:
         results = []
     if conditions is None:
@@ -1203,6 +1209,7 @@ def parse_condition(condition):
     return macro_defs
 
 def extract_conditions_s(var_name, target_statement,end_line, function_code,file_path) -> dict:
+    import clang.cindex
     lines = function_code.split('\n')
     index = clang.cindex.Index.create()
     translation_unit = index.parse(file_path)
@@ -1266,3 +1273,18 @@ def extract_conditions_s(var_name, target_statement,end_line, function_code,file
     # return json.dumps(result, indent=4, ensure_ascii=False)
 
 # print(extract_conditions("idev", "idev = __in6_dev_get(dev);","\t\tif (dev && check_stable_privacy(idev, dev_net(dev), mode) < 0)","static int inet6_validate_link_af(const struct net_device *dev,\n\t\t\t\t  const struct nlattr *nla,\n\t\t\t\t  struct netlink_ext_ack *extack)\n{\n\tstruct nlattr *tb[IFLA_INET6_MAX + 1];\n\tstruct inet6_dev *idev = NULL;\n\tint err;\n\n\tif (dev) {\n\t\tidev = __in6_dev_get(dev);\n\t\tif (!idev)\n\t\t\treturn -EAFNOSUPPORT;\n\t}\n\n\terr = nla_parse_nested_deprecated(tb, IFLA_INET6_MAX, nla,\n\t\t\t\t\t  inet6_af_policy, extack);\n\tif (err)\n\t\treturn err;\n\n\tif (!tb[IFLA_INET6_TOKEN] && !tb[IFLA_INET6_ADDR_GEN_MODE])\n\t\treturn -EINVAL;\n\n\tif (tb[IFLA_INET6_ADDR_GEN_MODE]) {\n\t\tu8 mode = nla_get_u8(tb[IFLA_INET6_ADDR_GEN_MODE]);\n\n\t\tif (check_addr_gen_mode(mode) < 0)\n\t\t\treturn -EINVAL;\n\t\tif (dev && check_stable_privacy(idev, dev_net(dev), mode) < 0)\n\t\t\treturn -EINVAL;\n\t}\n\n\treturn 0;\n}"))
+
+def get_cached_constraints(var_name, target_statement, function_code, cache):
+    import hashlib
+    from pathlib import Path
+
+    extractor_hash = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    payload = json.dumps([extractor_hash, var_name, target_statement, function_code])
+    key = hashlib.sha256(payload.encode()).hexdigest()
+    if key not in cache:
+        result = json.loads(extract_conditions(var_name, None, target_statement, function_code))
+        bug_constraints = result.get("bug_line_constraints")
+        if not bug_constraints or bug_constraints[0].get("text") != target_statement:
+            raise ValueError("Constraint extraction failed to locate the target statement")
+        cache[key] = result
+    return json.loads(json.dumps(cache[key]))

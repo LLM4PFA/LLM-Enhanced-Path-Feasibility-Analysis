@@ -71,13 +71,21 @@ The default configuration analyzes 70 Linux/CodeQL null-pointer warnings and req
 | `exm_inputs/call_context.json` | Function call chains and context aligned with each warning |
 | `exm_inputs/dereference_index.json` | Dereference statements, line numbers, and file paths for function parameters |
 
-Default input paths and analysis settings are defined in `DEFAULT_CONFIG` in `run.py`; no separate configuration file is required. Call context must align with the warning records in order. Path constraints are extracted from function source code during analysis. To analyze another dataset, provide matching input files and the corresponding project source code.
+Default input paths and analysis settings are defined in `DEFAULT_CONFIG` in `run.py`; no separate configuration file is required. Call context must align with the warning records in order. Path constraints can be extracted in advance and reused; cache misses are extracted during analysis. To analyze another dataset, provide matching input files and the corresponding project source code.
 
 **`dereference_index.json` is currently missing and must be supplied for complete inter-procedural dereference lookup.**
 
 ## Usage
 
-Validate the configuration and inputs, then analyze a single warning or the full range:
+First extract path constraints from the warning source code. This step does not call a model API or require a dereference index:
+
+```bash
+.venv/bin/python run.py extract
+```
+
+The command processes all warnings by default and writes `output/constraints.json`. Analysis reuses this cache. Changes to the source code, target statement, variable, or extractor invalidate the corresponding entry; missing entries are extracted automatically. Use `--constraint-cache` on both commands to select another cache file.
+
+Then validate the inputs and run analysis:
 
 ```bash
 .venv/bin/python run.py check
