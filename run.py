@@ -13,24 +13,21 @@ import sys
 
 ROOT = Path(__file__).resolve().parent
 DEFAULT_CONFIG = {'id': 'linux-codeql-npd',
- 'description': 'Linux / CodeQL / NPD, 70 warnings; context and constraints are recovered aligned '
-                'candidates.',
+ 'description': 'Linux / CodeQL / NPD, 70 warnings with online constraint extraction.',
  'expected_records': 70,
  'source_version': '6.9.6',
  'source_root': '../linux-6.9.6',
  'model_factory': 'gpt',
  'inputs': {'input': 'benchmark/NPD/codeql/codeql_kernel69_nullpointer.json',
             'context': 'exm_inputs/call_context.json',
-            'constraints': 'exm_inputs/path_constraints.json',
             'dereferences': 'exm_inputs/dereference_index.json'},
  'evidence': {'input': 'recovered-original',
               'context': 'identity-aligned-candidate',
-              'constraints': 'identity-aligned-candidate',
               'dereferences': 'missing',
               'tools': 'interface-adapter'}}
 DEPENDENCIES = ['openai', 'anthropic', 'z3', 'clang', 'lizard', 'tqdm', 'requests']
 ENV_INPUTS = {'input': 'PFA_INPUT', 'context': 'PFA_CONTEXT',
-              'constraints': 'PFA_CONSTRAINTS', 'dereferences': 'PFA_DEREFERENCE_CACHE'}
+              'dereferences': 'PFA_DEREFERENCE_CACHE'}
 
 
 def resolve(value):
@@ -76,7 +73,7 @@ def validate_data(data, expected):
             rows = None
         elif expected and len(rows) != expected:
             errors.append(f'input: expected {expected} records, got {len(rows)}')
-    for key in ['context', 'constraints']:
+    for key in ['context']:
         value = data.get(key)
         if value is not None and (not isinstance(value, list) or (rows is not None and len(value) != len(rows))):
             errors.append(f'{key}: expected a list with the same length as input')
@@ -101,17 +98,6 @@ def validate_data(data, expected):
                     assert normalized(c['function_call'][0]) == normalized(code)
                 except (KeyError, TypeError, AssertionError):
                     errors.append(f'context[{i}]: invalid chain or identity mismatch')
-            con = data.get('constraints')
-            if isinstance(con, list) and i < len(con):
-                try:
-                    c = con[i]
-                    assert isinstance(c['target_conditions'], list)
-                    assert isinstance(c['early_jump_constraints'], list)
-                    for field, target in [('var_name', var), ('loc_text', sink), ('code_snippet', code)]:
-                        if field in c:
-                            assert normalized(c[field]) == normalized(target)
-                except (KeyError, TypeError, AssertionError):
-                    errors.append(f'constraints[{i}]: invalid constraints or identity mismatch')
     deref = data.get('dereferences')
     if deref is not None:
         if not isinstance(deref, dict) or not deref:

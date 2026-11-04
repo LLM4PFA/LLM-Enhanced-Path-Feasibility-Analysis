@@ -17,7 +17,6 @@ import re
 
 code_data_path = os.environ["PFA_INPUT"]
 code_context_path = os.environ["PFA_CONTEXT"]
-constraints_path = os.environ["PFA_CONSTRAINTS"]
 output_path = os.environ["PFA_OUTPUT"]
 func_body_cache_path = os.environ["PFA_FUNCTION_CACHE"]
 result_memory_cache_path = os.environ["PFA_MEMORY_CACHE"]
@@ -157,8 +156,10 @@ def data_flow_analysis_pipeline(var_name, loc_text, code_snippet, response_list,
     # get conditional expressions
 
     extract_conditions_plus = json.loads(extract_util_plus.extract_conditions(var_name, None, loc_text, code_snippet))
-    if extract_conditions_plus["bug_line_constraints"][0]["text"] == loc_text:
-        target_conditions =  extract_conditions_plus["bug_line_constraints"][0]["condition"]
+    bug_constraints = extract_conditions_plus.get("bug_line_constraints")
+    if not bug_constraints or bug_constraints[0].get("text") != loc_text:
+        raise ValueError("Constraint extraction failed to locate the target statement")
+    target_conditions = bug_constraints[0]["condition"]
     early_jump_constraints = extract_conditions_plus["early_jump_constraints"]
 
     goto_label = ""               
@@ -434,7 +435,6 @@ def data_flow_analysis_pipeline(var_name, loc_text, code_snippet, response_list,
 
 def detect_pipeline():
     code_data = DataUtils.load_json(code_data_path)
-    constraints_data = DataUtils.load_json(constraints_path)
 
     gpt_result = []
 
@@ -458,7 +458,7 @@ def detect_pipeline():
             code_snippet = item["function_code"]
             original_index = cnt
 
-            response = data_flow_analysis_pipeline(var_name, loc_text, code_snippet, response_list, function_name_list,function_body_list, target_index, file_path, derefere_cache,constraints_data[cnt]["target_conditions"], constraints_data[cnt]["early_jump_constraints"], 0, cnt,original_index)
+            response = data_flow_analysis_pipeline(var_name, loc_text, code_snippet, response_list, function_name_list,function_body_list, target_index, file_path, derefere_cache,[], [], 0, cnt,original_index)
             cnt += 1
 
         except Exception as e:
