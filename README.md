@@ -97,12 +97,4 @@ This optional command processes all warnings by default and writes `output/const
 
 Ranges use zero-based indices with an inclusive start and an exclusive end. By default, the runner analyzes one warning. Use `--output` to specify a new output directory. For another dataset, edit `DEFAULT_CONFIG` in `run.py` or supply an external JSON configuration with `--config`.
 
-To check the pipeline without a dereference index, explicitly allow an empty index:
-
-```bash
-.venv/bin/python run.py run --start 0 --end 70 --allow-missing-dereferences
-```
-
-In this mode, a missing inter-procedural lookup may return `True` (a feasible path) directly. Such outputs do not represent complete inter-procedural analysis.
-
 Analysis results and function caches are written to `output/<timestamp>/`. Existing directories are never overwritten. Console output is not saved as a log, and runtime artifacts are excluded from Git.
