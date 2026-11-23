@@ -12,8 +12,6 @@ PATHAGENT is an agent-driven framework for fine-grained path feasibility analysi
 - Division by Zero (DBZ)
 - Use Before Initialization (UBI)
 
-![Data Statistics](./Data%20statistics.jpg)
-
 ## Results
 
 - [PATHAGENT results](./results/llmpfa_result/): results across target projects, static analyzers, and backbone models.
