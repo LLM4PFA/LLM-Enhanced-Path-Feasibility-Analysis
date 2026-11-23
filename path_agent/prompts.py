@@ -145,7 +145,7 @@ class Prompt:
         1. Convert only constraints affecting the specified conditions/variables
         2. Add comments explaining why each constraint is included
         3. Maintain original variable names
-        4. Convert C-style expressions properly (e.g., !ptr to ptr!=0)
+        4. Convert C-style expressions properly (e.g., !ptr to ptr==0)
 
         Return only executable Z3 script with explanatory comments.
         """
@@ -183,6 +183,8 @@ class Prompt:
         2. Retain ALL original constraints from the base script
         3. Add any missing variable definitions from constraint sets
         4. Function must return boolean (True if constraints are satisfied)
+           Instantiate a Z3 Solver, add the constraints, and call its check() method.
+           Return solver.check() == sat; never replace solving with a constant or Python comparisons.
         5. Return ONLY the function code without imports
         6. Ensure code is directly executable
 
@@ -213,6 +215,8 @@ class Prompt:
         Output requirements:
         1. Generate a check_constraints() function
         2. Function must return boolean validation result
+           Instantiate a Z3 Solver, add ALL supplied constraints, and call its check() method.
+           Return solver.check() == sat; never replace solving with a constant or Python comparisons.
         3. Return ONLY the function code without imports
         4. Ensure code is directly executable
 
