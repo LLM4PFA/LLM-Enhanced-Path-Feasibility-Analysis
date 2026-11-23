@@ -67,8 +67,6 @@ The default configuration analyzes 70 Linux/CodeQL null-pointer warnings and req
 |---|---|
 | `benchmark/NPD/codeql/codeql_kernel69_nullpointer.json` | Warning locations, variables, function source code, and evaluation labels |
 | `exm_inputs/call_context.json` | Function call chains and context aligned with each warning |
-| `exm_inputs/dereference_index.json` | Dereference statements, line numbers, and file paths for function parameters |
-
 
 ## Usage
 
