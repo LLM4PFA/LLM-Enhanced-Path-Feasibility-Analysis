@@ -71,9 +71,6 @@ The default configuration analyzes 70 Linux/CodeQL null-pointer warnings and req
 | `exm_inputs/call_context.json` | Function call chains and context aligned with each warning |
 | `exm_inputs/dereference_index.json` | Dereference statements, line numbers, and file paths for function parameters |
 
-Default input paths and analysis settings are defined in `DEFAULT_CONFIG` in `run.py`; no separate configuration file is required. Call context must align with the warning records in order. Path constraints can be extracted in advance and reused; cache misses are extracted during analysis. To analyze another dataset, provide matching input files and the corresponding project source code.
-
-**`dereference_index.json` is currently missing and must be supplied for complete inter-procedural dereference lookup.**
 
 ## Usage
 
