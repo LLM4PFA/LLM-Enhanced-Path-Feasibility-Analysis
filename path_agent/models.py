@@ -247,6 +247,7 @@ class GPTModel(BaseModel):
             model_name=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
             api_key=os.environ["OPENAI_API_KEY"]
         )
+        self.client = self.client.with_options(timeout=120.0, max_retries=2)
 
     def get_response_with_messages(self, model_name, messages):
         try:
@@ -257,7 +258,7 @@ class GPTModel(BaseModel):
             )
             return response.choices[0].message.content
         except Exception as e:
-            return f"GPT API call error: {str(e)}"
+            raise RuntimeError(f"GPT API call failed: {type(e).__name__}: {e}") from e
 
     def get_response_with_tool(self, model_name, messages, tools=tools, tool_choice="auto"):
         try:
@@ -270,7 +271,7 @@ class GPTModel(BaseModel):
             )
             return response.choices[0].message
         except Exception as e:
-            return f"GPT with tool API call error: {str(e)+str(messages)}"
+            raise RuntimeError(f"GPT tool API call failed: {type(e).__name__}: {e}") from e
 
 # Qwen model implementation
 class QwenModel(BaseModel):
