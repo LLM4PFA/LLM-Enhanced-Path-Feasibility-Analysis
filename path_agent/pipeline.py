@@ -98,21 +98,27 @@ def get_answer_from_model_without_tool(messages, model_name):
 
 
 def process_final_response(response,content=''):
-
-    try:
-        response = response.split("```python")[1].split("```")[0]
-
-        response = response.replace("from z3 import *", "")
-    except Exception as e:
-        print(e)
-        response = response
-
-    return response
+    match = re.search(r"```(?:python)?\s*\n?(.*?)```", response, re.S)
+    return (match.group(1) if match else response).replace("from z3 import *", "").strip()
 
 def process_array_response(response):
-    response = response.split("```json")[1].split("```")[0]
-    cleaned_string = response.strip()
-    return json.loads(cleaned_string)
+    match = re.search(r"```(?:json)?\s*\n?(.*?)```", response, re.S)
+    value = json.loads(match.group(1).strip() if match else response.strip())
+    if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
+        raise ValueError("Expected a JSON array of constraint strings")
+    return value
+
+
+def execute_constraints(script):
+    # Use a fresh namespace so an earlier case's function cannot be reused.
+    if not re.search(r"\bSolver\s*\(", script) or not re.search(r"\.check\s*\(", script):
+        raise ValueError("check_constraints must create a Z3 Solver and call solver.check()")
+    namespace = {key: value for key, value in globals().items() if key != 'check_constraints'}
+    exec(script, namespace)
+    result = namespace['check_constraints']()
+    if type(result) is not bool:
+        raise ValueError("check_constraints must return a Python bool")
+    return result
 
 def process_goto_conditions(early_jump_constraints, goto_label):
     early_jump_constraints_list = []
@@ -167,10 +173,10 @@ def data_flow_analysis_pipeline(var_name, loc_text, code_snippet, response_list,
     goto_label = ""               
     z3_constraints = ""
 
-    for item_constraint in target_conditions:
+    for item_constraint in list(target_conditions):
         if "goto" in item_constraint["condition"] or "return" in item_constraint["condition"]:
             target_conditions.remove(item_constraint)
-            goto_label = item_constraint
+            goto_label = item_constraint['condition'].removeprefix('goto ').strip()
 
         
     # generate z3 template
@@ -184,7 +190,7 @@ def data_flow_analysis_pipeline(var_name, loc_text, code_snippet, response_list,
 
     # symbolic range reasoning with LLM
 
-    target_conditions = [item for item in target_conditions if "while" not in item]
+    target_conditions = [item for item in target_conditions if "while" not in item['condition']]
 
     if target_conditions != []:
         for item_constraint in target_conditions:
@@ -210,6 +216,8 @@ def data_flow_analysis_pipeline(var_name, loc_text, code_snippet, response_list,
 
                 llm_response_str = llm_response.content if hasattr(llm_response, 'content') else str(llm_response)
                 response_list.append("step 2 context analysis:" + llm_response_str)
+                messages.extend([{'role': 'user', 'content': user_prompt},
+                                 {'role': 'assistant', 'content': llm_response_str}])
 
                 if "Not satisfied" in llm_response_str:
                     gpt_result = {
@@ -236,7 +244,9 @@ def data_flow_analysis_pipeline(var_name, loc_text, code_snippet, response_list,
         bug_line_constraints_response_process = process_final_response(bug_line_constraints_response)
 
         # optimize z3 script
-        merged_prompt = prompt.get_z3_extract(bug_line_constraints_response_process)
+        merged_prompt = prompt.get_z3_extract(
+            'Base constraints (retain all):\n' + response_message_target +
+            '\nAdditional inferred constraints:\n' + bug_line_constraints_response_process)
         messages = [{"role": "user", "content": merged_prompt}]
         final_response = get_answer_from_model_without_tool(messages, model_name)
         response_list.append("step 2 analysis: " + final_response)
@@ -248,8 +258,7 @@ def data_flow_analysis_pipeline(var_name, loc_text, code_snippet, response_list,
         while (cnt <= 3):
             cnt += 1
             try:
-                exec(final_response, globals())
-                result = check_constraints()
+                result = execute_constraints(final_response)
                 print("dereference constraint:", result)
                 if not result:
                     gpt_result = {
@@ -266,6 +275,8 @@ def data_flow_analysis_pipeline(var_name, loc_text, code_snippet, response_list,
                 else:
                     break
             except Exception as e:
+                if cnt >= 4:
+                    raise RuntimeError('Z3 generation failed after four attempts: ' + str(e)) from e
                 print(e)
                 # pdb.set_trace()
                 messages.append({"role": "assistant", "content": final_response})
@@ -346,10 +357,9 @@ def data_flow_analysis_pipeline(var_name, loc_text, code_snippet, response_list,
         while (cnt <= 3):
             cnt += 1
             try:
-                exec(final_response, globals())
+                result = execute_constraints(final_response)
                 # pdb.set_trace()
 
-                result = check_constraints()
                 print("goto result:", result)
                 # pdb.set_trace()
 
@@ -366,6 +376,8 @@ def data_flow_analysis_pipeline(var_name, loc_text, code_snippet, response_list,
                     cnt = 5
                     break
             except Exception as e:
+                if cnt >= 4:
+                    raise RuntimeError('Z3 generation failed after four attempts: ' + str(e)) from e
                 print(e)
                 # pdb.set_trace()
                 messages.append({"role": "assistant", "content": final_response})
